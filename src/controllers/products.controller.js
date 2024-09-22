@@ -174,7 +174,7 @@ export class ProductController {
 
             await this.productsService.deleteProduct(pid);
 
-            // Enviar correo si el usuario es premium
+            // Enviar correo si el usuario es premium  
             if (user && user.role === 'premium' || 'admin') {
                 await sendEmail({
                     to: user.email,

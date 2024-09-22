@@ -2,10 +2,16 @@
 <table>
   {{#each products}}
     <tr>
-      <td>{{this.name}}</td>
-      <td>{{this.email}}</td>
+      <td>{{this._id}}</td>
+      <td>{{this.title}}</td>
+      <td>{{this.description}}</td>
+      <td>{{this.code}}</td>
+      <td>{{this.price}}</td>
+      <td>{{this.stock}}</td>
+      <td>{{this.category}}</td>
+      <td>{{this.owner}}</td>
       <td><a href="/admin/users/edit/{{this._id}}">Editar</a></td>
-      <td><a href="/admin/users/delete/{{this._id}}">Eliminar</a></td>
+      <td><a href="/admin/products/{{this._id}}">Eliminar</a></td>
     </tr>
   {{/each}}
 </table>

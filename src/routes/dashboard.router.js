@@ -16,7 +16,7 @@ const {
 
 const {
     getDashProducts,
-    getDash,
+    deleteProduct,
 } = new ProductController();
 
 const {
@@ -38,7 +38,8 @@ DashboardRouter.get('/users', passportCall('login', 'admin'), isAdmin, getDashUs
 
 DashboardRouter.get('/products', passportCall('login', 'admin'), isAdmin, getDashProducts);
 
+DashboardRouter.delete('/products/:pid', passportCall('login', 'admin'), isAdmin, deleteProduct);
 
 DashboardRouter.get('/tickets', passportCall('login', 'admin'), isAdmin, getTickets);
 
-export default DashboardRouter;
+export default DashboardRouter;  
