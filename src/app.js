@@ -14,7 +14,6 @@ import router from './routes/index.js';
 import dotenv from 'dotenv';
 import UserDTO from './dao/dto/user.dto.js';
 import { Server } from 'socket.io';
-import { chatMM } from './routes/chat.router.js';
 import errorHandler from './middlewares/errors/index.js';
 import { addLogger } from './utils/logger.js';
 import swaggerConfig from './config/swagger.js';
@@ -133,18 +132,6 @@ io.on('connection', (socket)=>{
         users[socket.id] = username
         io.emit('userConnected', username)
     })
-
-    socket.on('chatMessage', async (data) => {
-        const { username, message } = data;
-        try {
-            await chatMM.addChat(username, message);
-            io.emit('message', { username, message });
-        } catch (error) {
-            console.error(
-                'Error al procesar el mensaje del chat!', error
-            )
-        }
-    });
 
     socket.on('disconnect', ()=>{
         const username = users[socket.id]
