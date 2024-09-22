@@ -13,7 +13,7 @@ export class ProductController {
     getHome = (req, res) => {
         res.redirect('/products?page=1');
     }
-
+    
     getLogin = (req, res) => {
         res.render('login');
     }
@@ -43,6 +43,30 @@ export class ProductController {
             result.isValid = !(page <= 0 || page > result.totalPages);
 
             res.render('products', { user: req.user, products: result.docs, cartId, ...result });
+
+        } catch (error) {
+            req.logger.error(
+                `Error al obtener los productos: ${error.message}. Método: ${req.method}, URL: ${req.url} - ${new Date().toLocaleDateString()}`
+            );
+            res.status(500).send({ error: 'Ocurrió un error al obtener los productos.' });
+        }
+    }    
+
+    getDashProducts = async (req, res) => {
+        try {
+            const page = req.query.page ? parseInt(req.query.page) : 1;
+            const limit = req.query.limit ? parseInt(req.query.limit) : 12;
+            const sortOrder = req.query.sort ? req.query.sort : null;
+            const category = req.query.category ? req.query.category : null;
+            const status = req.query.status ? req.query.status : null;
+
+            const result = await this.productsService.getProducts(page, limit, sortOrder, category, status);
+
+            result.prevLink = result.hasPrevPage ? `/products?page=${result.prevPage}` : '';
+            result.nextLink = result.hasNextPage ? `/products?page=${result.nextPage}` : '';
+            result.isValid = !(page <= 0 || page > result.totalPages);
+
+            res.render('adminProducts', { products: result.docs, ...result });
 
         } catch (error) {
             req.logger.error(
@@ -151,7 +175,7 @@ export class ProductController {
             await this.productsService.deleteProduct(pid);
 
             // Enviar correo si el usuario es premium
-            if (user && user.role === 'premium') {
+            if (user && user.role === 'premium' || 'admin') {
                 await sendEmail({
                     to: user.email,
                     subject: 'Producto eliminado',

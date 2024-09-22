@@ -173,6 +173,27 @@ export class UserController {
         }
     }
 
+    getDashUsers = async (req, res) => {
+        try {
+            const result = await this.usersService.getAllUsers();
+            const users = result.map(user => ({
+                _id: user._id,
+                first_name: user.first_name,
+                last_name: user.last_name,
+                role: user.role,
+                email: user.email,
+                last_connection: user.last_connection,
+            }));
+            console.log(result);
+            res.render('adminUsers', { users });
+            console.log(users); 
+
+        } catch (error) {
+            req.logger.error(`Error al obtener los usuarios: ${error.message}`);
+            res.status(500).send({ error: 'Ocurrió un error al obtener los usuarios.' });
+        }
+    }  
+
     deleteInactiveUsers = async (req, res) => {
         try {
             const result = await this.usersService.deleteInactiveUsers();

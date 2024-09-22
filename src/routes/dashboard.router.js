@@ -15,11 +15,12 @@ const {
 } = new CartController();
 
 const {
-    getAllProducts,
+    getDashProducts,
+    getDash,
 } = new ProductController();
 
 const {
-    getAllUsers,
+    getDashUsers,
     isAdmin,
 } = new UserController();
 
@@ -33,9 +34,10 @@ const {
 
 DashboardRouter.get('/', passportCall('login', 'admin'), isAdmin, renderAdmin);
 
-DashboardRouter.get('/users', passportCall('login', 'admin'), isAdmin, getAllUsers);
+DashboardRouter.get('/users', passportCall('login', 'admin'), isAdmin, getDashUsers);
 
-// DashboardRouter.get('/products', passportCall('login', 'admin'), isAdmin, getAllProducts);
+DashboardRouter.get('/products', passportCall('login', 'admin'), isAdmin, getDashProducts);
+
 
 DashboardRouter.get('/tickets', passportCall('login', 'admin'), isAdmin, getTickets);
 

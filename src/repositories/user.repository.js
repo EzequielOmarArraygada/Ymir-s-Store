@@ -44,7 +44,7 @@ export class UserRepository {
     async getAllUsers() {
         try {
             // Retornamos solo los campos necesarios
-            return await this.model.find({}, 'first_name email role');
+            return await this.model.find({}, 'first_name last_name email role last_connection');
         } catch (error) {
             console.error('Error al obtener todos los usuarios:', error);
             throw error;
