@@ -8,17 +8,22 @@ export class TicketController {
         this.ticketsService = new TicketManagerMongo();
     }
 
-
     getTickets = async (req, res) => {
         try {
-            let result = await this.ticketsService.getTickets()
-            res.send({ result: 'success', payload: result });
-        } catch (error) {
-            req.logger.error(
-                `Error al recuperar tickets: ${error.message}. Método: ${req.method}, URL: ${req.url} - ${new Date().toLocaleDateString()}`
-            );
-            res.status(500).send({ error: 'Ocurrió un error al obtener los tickets'});
-        }
-    }
+            const result = await this.ticketsService.getTickets();
+            const tickets = result.map(ticket => ({
+                _id: ticket._id,
+                code: ticket.code,
+                purchaser: ticket.purchaser.email,
+                totalAmount: ticket.totalAmount,
+                purchase_datetime: ticket.purchase_datetime,
+            }));
+            res.render('adminTickets', { tickets });
 
-}
+        } catch (error) {
+            req.logger.error(`Error al obtener los tickets: ${error.message}`);
+            res.status(500).send({ error: 'Ocurrió un error al obtener los tickets.' });
+        }
+    }  
+
+} 
