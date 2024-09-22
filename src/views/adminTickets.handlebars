@@ -1,0 +1,11 @@
+<input type="text" id="search" placeholder="Buscar producto..">
+<table>
+  {{#each tickets}}
+    <tr>
+      <td>{{this.name}}</td>
+      <td>{{this.email}}</td>
+      <td><a href="/admin/users/edit/{{this._id}}">Editar</a></td>
+      <td><a href="/admin/users/delete/{{this._id}}">Eliminar</a></td>
+    </tr>
+  {{/each}}
+</table>

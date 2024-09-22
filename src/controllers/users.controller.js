@@ -239,5 +239,11 @@ export class UserController {
             res.status(400).send('Error al restablecer la contraseña');
         }
     }
-    
+
+    isAdmin = async (req, res, next) => {
+        if (req.user.role === 'admin') {
+          return next();
+        }
+        res.redirect('/login');
+      }
 }

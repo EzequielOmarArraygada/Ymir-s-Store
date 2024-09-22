@@ -1,7 +1,7 @@
 import config from '../config/config.js';
-import ProductController from './product.controller.js';
+import { ProductController } from './products.controller.js';
 
-export default class ViewsController {
+export class ViewsController {
   constructor() {
     this.productController = new ProductController();
   }
@@ -93,5 +93,9 @@ export default class ViewsController {
         );
         res.status(500).send(`Error en la solicitud del carrito. ${error.message}`);
       });
+  };
+
+  renderAdmin = (req, res) => {
+    res.render('adminDashboard', { title: 'Admin Dashboard' });
   };
 }
