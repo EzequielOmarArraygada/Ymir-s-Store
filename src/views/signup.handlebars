@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registrarse</title>
+    <style>
+        /* Estilos CSS para la página de signup */
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            background-color: #D9FFDF; /* Color de fondo */
+            padding: 20px;
+        }
+        .center {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        form {
+            background-color: #FFDDDD; /* Fondo del formulario */
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            max-width: 400px;
+            width: 100%;
+        }
+        form label {
+            display: block;
+            margin-bottom: 10px;
+            color: #333;
+        }
+        form input[type="text"],
+        form input[type="email"],
+        form input[type="password"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        form button {
+            background-color: #FFFFCF; /* Color de botón */
+            color: #333;
+            border: none;
+            padding: 12px 20px;
+            cursor: pointer;
+            border-radius: 4px;
+            margin-right: 10px;
+        }
+        form button.secondary {
+            background-color: #D9FFFF; /* Color de botón secundario */
+            color: #333;
+        }
+        form button:hover {
+            background-color: #FFF0CF; /* Color de botón al pasar el mouse */
+        }
+    </style>
+</head>
+<body>
+    <div class="center">
+        <form method="POST" action="/api/sessions/signup">
+            <h2>Registrarse</h2>
+            <label for="first_name">Nombre:</label>
+            <input type="text" id="first_name" name="first_name" required>
+
+            <label for="last_name">Apellido:</label>
+            <input type="text" id="last_name" name="last_name" required>
+
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" required>
+
+            <label for="age">Edad:</label>
+            <input type="text" id="age" name="age">
+
+            <label for="password">Contraseña:</label>
+            <input type="password" id="password" name="password" required>
+
+            <button type="submit">Registrar</button>
+            <a href="/login"><button type="button" class="secondary">Ya tengo cuenta</button></a>
+        </form>
+    </div>
+</body>
+</html>

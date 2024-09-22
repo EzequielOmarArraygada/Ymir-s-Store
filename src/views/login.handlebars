@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Iniciar Sesión</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            background-color: #D9FFFF; 
+            padding: 20px;
+        }
+        .center {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .form {
+            background-color: #FFFFCF; 
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            max-width: 400px;
+            width: 100%;
+        }
+        .form label {
+            display: block;
+            margin-bottom: 10px;
+            color: #333;
+        }
+        .form input[type="email"],
+        .form input[type="password"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        .form button {
+            background-color: #faa3a3; 
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+        .form button:hover {
+            background-color: #f5cbcb; 
+        }
+        .create-account {
+            margin-top: 15px;
+            text-align: center;
+            color: #666;
+        }
+        .create-account a {
+            color: #007bff;
+            text-decoration: none;
+        }
+        .create-account a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="center">
+        <div class="form">
+            <h2>Iniciar Sesión</h2>
+            <form method="POST" action="/api/sessions/login">
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email" required>
+                <label for="password">Contraseña:</label>
+                <input type="password" id="password" name="password" required>
+                <button type="submit">Ingresar</button>
+            </form>
+            <div class="create-account">
+                <p>¿No tienes cuenta de usuario? <a href="/signup">Regístrate</a></p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

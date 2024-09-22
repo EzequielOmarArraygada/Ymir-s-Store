@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Carrito de Compras</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            background-color: #D9FFDF;
+            padding: 20px;
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+        .cart-items {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+        .cart-item {
+            background-color: #FFDDDD;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 10px;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .cart-item-details {
+            flex-grow: 1;
+        }
+        .cart-item h2 {
+            color: #333;
+            font-size: 1.2em;
+            margin-bottom: 5px;
+        }
+        .cart-item p {
+            color: #666;
+            margin-bottom: 5px;
+        }
+        .checkout-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        .checkoutButton {
+            background-color: #FFFFCF;
+            color: #333;
+            border: none;
+            padding: 12px 24px;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: background-color 0.3s ease;
+        }
+        .checkoutButton:hover {
+            background-color: #FFF0CF;
+        }
+        .remove-item {
+            background-color: #f03232;
+            color: #070707;
+            border: none;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: background-color 0.3s ease;
+        }
+        .remove-item:hover {
+            background-color: #FFF0CF;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.4);
+            padding-top: 60px;
+            transition: opacity 0.3s ease;
+        }
+        .modal-content {
+            background-color: #D9FFFF;
+            margin: auto;
+            padding: 20px;
+            border: none;
+            width: 80%;
+            max-width: 600px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            position: relative;
+            text-align: center;
+            animation: modalShow 0.5s ease-out;
+        }
+        @keyframes modalShow {
+            from { transform: translateY(-50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        .close {
+            color: #aaa;
+            font-size: 28px;
+            font-weight: bold;
+            position: absolute;
+            top: 10px;
+            right: 20px;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+        .close:hover,
+        .close:focus {
+            color: #333;
+            text-decoration: none;
+        }
+        .modal-content h2 {
+            color: #333;
+            margin-bottom: 15px;
+        }
+        .modal-content p {
+            color: #666;
+        }
+        .modal-content ul {
+            list-style-type: none;
+            padding: 0;
+            text-align: left;
+        }
+        .modal-content ul li {
+            margin-bottom: 10px;
+            color: #333;
+            display: flex;
+            align-items: center;
+        }
+        .modal-content ul li img {
+            width: 40px;
+            height: 40px;
+            margin-right: 10px;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <ul class="cart-items">
+        {{#each productsDetails}}
+        <li class="cart-item">
+            <div class="cart-item-details">
+                <h2>{{this.title}}</h2>
+                <p>Precio: ${{this.price}}</p>
+                <p>Cantidad: {{this.quantity}}</p>
+            </div>
+            <button class="remove-item" data-product-id="{{this._id}}">X</button>
+        </li>
+        {{/each}}
+    </ul>
+    <div>
+        <strong>Total:</strong> ${{totalPrice}}
+    </div>
+    <div class="checkout-buttons">
+        <button class="checkoutButton" id="empty-cart">Vaciar Carrito</button>
+        <button class="checkoutButton" id="checkoutButton">Finalizar Compra</button>
+    </div>
+    <div id="ticketModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>¡Gracias por comprar con nosotros!</h2>
+            <p>Detalles de la compra:</p>
+            <ul id="ticketDetails"></ul>
+            <p>Total: <span id="ticketTotal"></span></p>
+            <h5>Recibirás un email a tu correo con los datos de la compra</h5>
+        </div>
+    </div>
+    <script>
+        document.getElementById('checkoutButton').addEventListener('click', async function() {
+            try {
+                const cartId = '{{cartId}}';
+
+                const response = await fetch(`/api/carts/${cartId}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    const modal = document.getElementById('ticketModal');
+                    modal.style.display = 'block';
+
+                    const ticketDetails = document.getElementById('ticketDetails');
+                    ticketDetails.innerHTML = '';
+                    data.ticket.products.forEach(product => {
+                        const li = document.createElement('li');
+                        const img = document.createElement('img');
+                        img.src = `/uploads/assets/${product.thumbnail}`;
+                        img.alt = product.title;
+                        li.appendChild(img);
+                        li.appendChild(document.createTextNode(`${product.quantity} x ${product.title} - $${product.price}`));
+                        ticketDetails.appendChild(li);
+                    });
+
+                    const ticketTotal = document.getElementById('ticketTotal');
+                    ticketTotal.textContent = `$${data.ticket.totalAmount}`;
+
+                    const closeBtn = document.querySelector('.close');
+                    closeBtn.addEventListener('click', function() {
+                        modal.style.display = 'none';
+                        window.location.href = `/api/carts/${cartId}`;
+                    });
+
+                } else {
+                    console.error('Error al procesar la compra:', data.error);
+                    Swal.fire('', 'Error al procesar la compra', 'error');
+                }
+
+            } catch (error) {
+                console.error('Error al procesar la compra:', error);
+                Swal.fire('', 'Error al procesar la compra', 'error');
+            }
+        });
+
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('.remove-item').forEach(button => {
+                button.addEventListener('click', async (event) => {
+                    const productId = event.target.dataset.productId;
+                    const cartId = '{{cartId}}'; 
+                    try {
+                        const response = await fetch(`/api/carts/${cartId}/products/${productId}`, {
+                            method: 'DELETE'
+                        });
+                        if (response.ok) {
+                            location.reload(); 
+                        } else {
+                            console.error('Error al eliminar el artículo del carrito');
+                        }
+                    } catch (error) {
+                        console.error('Error al comunicarse con el servidor', error);
+                    }
+                });
+            });
+
+            document.getElementById('empty-cart').addEventListener('click', async () => {
+                const cartId = '{{cartId}}'; 
+                try {
+                    const response = await fetch(`/api/carts/${cartId}`, {
+                        method: 'DELETE'
+                    });
+                    if (response.ok) {
+                        location.reload(); 
+                    } else {
+                        console.error('Error al vaciar el carrito');
+                    }
+                } catch (error) {
+                    console.error('Error al comunicarse con el servidor', error);
+                }
+            });
+        });
+    </script>
+</body>
+</html>

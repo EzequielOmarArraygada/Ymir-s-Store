@@ -1,0 +1,187 @@
+{{#if user}}
+    <h2>Bienvenido, {{user.first_name}} ({{user.email}}), eres {{user.role}}</h2>
+    <h3>Tu contraseña es {{user.password}}</h3>
+{{/if}}
+<h2>Agregar Nuevo Producto</h2>
+<form id='addProductForm'>
+    <label for='title'>Título:</label>
+    <input type='text' id='title' name='title' required><br>
+
+    <label for='description'>Descripción:</label>
+    <textarea id='description' name='description' required></textarea><br>
+
+    <label for='price'>Precio:</label>
+    <input type='number' id='price' name='price' step='0.01' required><br>
+
+    <label for='thumbnail'>URL de la Imagen:</label>
+    <input type='text' id='thumbnail' name='thumbnail' required><br>
+
+    <label for='code'>Código:</label>
+    <input type='number' id='code' name='code' required><br>
+
+    <label for='stock'>Stock:</label>
+    <input type='number' id='stock' name='stock' required><br>
+
+    <label for='category'>Categoría:</label>
+    <select id='category' name='category' required>
+        <option value='Barbie'>Barbie</option>
+        <option value='Playmobil'>Playmobil</option>
+        <option value='Lego'>Lego</option>
+        <option value='Play-Doh'>Play-Doh</option>
+    </select><br>
+
+    <label for='status'>Estado:</label>
+    <select id='status' name='status' required>
+        <option value='Disponible'>Disponible</option>
+        <option value='No-Disponible'>No-Disponible</option>
+    </select><br>
+
+    <button type='submit'>Agregar Producto</button>
+</form>
+
+<h2>Editar Producto</h2>
+<form id='editProductForm'>
+    <label for='editProductId'>ID:</label>
+    <input type='text' id='editProductId' name='editProductId' required><br> 
+    
+    <label for='editTitle'>Título:</label>
+    <input type='text' id='editTitle' name='editTitle' required><br>
+
+    <label for='editDescription'>Descripción:</label>
+    <textarea id='editDescription' name='editDescription' required></textarea><br>
+
+    <label for='editPrice'>Precio:</label>
+    <input type='number' id='editPrice' name='editPrice' step='0.01' required><br>
+
+    <label for='editThumbnail'>URL de la Imagen:</label>
+    <input type='text' id='editThumbnail' name='editThumbnail' required><br>
+
+    <label for='editCode'>Código:</label>
+    <input type='number' id='editCode' name='editCode' required><br>
+
+    <label for='editStock'>Stock:</label>
+    <input type='number' id='editStock' name='editStock' required><br>
+
+    <label for='editCategory'>Categoría:</label>
+    <select id='editCategory' name='editCategory' required>
+        <option value='Barbie'>Barbie</option>
+        <option value='Playmobil'>Playmobil</option>
+        <option value='Lego'>Lego</option>
+        <option value='Play-Doh'>Play-Doh</option>
+    </select><br>
+
+    <label for='editStatus'>Estado:</label>
+    <select id='editStatus' name='editStatus' required>
+        <option value='Disponible'>Disponible</option>
+        <option value='No-Disponible'>No-Disponible</option>
+    </select><br>
+
+    <button type='submit'>Guardar Cambios</button>
+</form>
+
+<h2>Eliminar Producto</h2>
+<form id='deleteProductForm'>
+    <label for='deleteProductId'>ID del Producto:</label>
+    <input type='text' id='deleteProductId' name='deleteProductId' required><br>
+
+    <button type='submit'>Eliminar Producto</button>
+</form>
+
+<script>
+    document.getElementById('deleteProductForm').addEventListener('submit', async (event) => {
+        event.preventDefault();
+        const pid = document.getElementById('deleteProductId').value;
+        
+        try {
+            const response = await fetch(`http://localhost:8080/${pid}`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+            
+            const data = await response.json();
+            if (data.result === 'success') {
+                alert('Producto eliminado');
+                location.reload();
+            } else {
+                alert('Error al eliminar ' + data.error);
+            }
+        } catch (error) {
+            console.error(
+                'Error al enviar la solicitud', error
+            )
+            alert('Error interno del servidor');
+        }
+    });
+</script>
+
+
+<script>
+    document.getElementById('editProductForm').addEventListener('submit', async (event) => {
+        event.preventDefault();
+        const form = event.target;
+        const formData = new FormData(form);
+        const jsonData = {};
+        const pid = document.getElementById('editProductId').value;
+        
+        try {
+            const response = await fetch(`http://localhost:8080/${pid}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(jsonData) // Enviar solo los campos que se desean actualizar
+            });
+            const data = await response.json();
+            
+            if (data.result === 'success') {
+                alert('Producto actualizado');
+                // Recargar la página para mostrar los cambios
+                location.reload();
+            } else {
+                alert('Error al actualizar ' + data.error);
+            }
+        } catch (error) {
+            console.error(
+                'Error al enviar datos del formulario', error
+            )
+            alert('Error interno del servidor');
+        }
+    });
+</script>
+
+<script>
+    document.getElementById('addProductForm').addEventListener('submit', async (event) => {
+        event.preventDefault();
+        const form = event.target;
+        const formData = new FormData(form);
+        const jsonData = {};
+        formData.forEach((value, key) => {
+            jsonData[key] = value;
+        });
+        
+        try {
+            const response = await fetch('http://localhost:8080/products', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(jsonData)
+            });
+            const data = await response.json();
+            if (data.result === 'success') {
+                alert('Producto agregado con éxito');
+                location.reload();
+            } else {
+                alert('Error al agregar el producto: ' + data.error);
+            }
+        } catch (error) {
+            console.error(
+                'Error al enviar datos del formulario:', error 
+            )
+            alert('Error interno del servidor');
+        }
+    });
+</script>
+

@@ -1,0 +1,11 @@
+<h1>Ticket de Compra</h1>
+<p>Detalles del carrito:</p>
+<ul>
+    {{#each productsDetails}}
+        <li>{{this.name}} - Cantidad: {{this.quantity}} - Precio Unitario: {{this.price}} - Subtotal: {{this.subtotal}}</li>
+    {{/each}}
+</ul>
+<p>Total: {{totalPrice}}</p>
+<form action="/products" method="get">
+    <button type="submit">Volver a Productos</button>
+</form>

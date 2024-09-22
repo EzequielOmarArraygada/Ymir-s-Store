@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+    <meta charset='UTF-8'>
+    <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+    <title>Document</title>
+    <script src='https://cdn.jsdelivr.net/npm/sweetalert2@11'></script>
+</head>
+<body>
+    <div id='username_form'>
+        <h1>Ingrese su Nombre de Usuario</h1>
+        <form>
+            <input type='text' id='username' required>
+            <button type='submit'>Unirse al Chat</button>
+        </form>
+    </div>
+    <div id='chat_form' style='display: none;'>
+        <h1>Sala de Chat</h1>
+        <div id='chat_messages'></div>
+        <form>
+            <input type='text' id='message'>
+            <button type='submit'>Enviar</button>
+        </form>
+    </div>
+
+    <script src='/socket.io/socket.io.js'></script>
+    <script src='/scripts.js'></script>
+</body>
+</html>

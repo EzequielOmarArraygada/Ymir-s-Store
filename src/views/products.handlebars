@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista de Productos</title>
+    <style>
+    body {
+        font-family: 'Arial', sans-serif;
+        line-height: 1.6;
+        background-color: #D9FFFF; 
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+    }
+
+    h1 {
+        color: #333;
+        text-align: center;
+    }
+
+    .container {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 36px;
+        justify-content: space-between;
+        margin-top: 2%;
+    }
+
+    .card {
+        background-color: #FFFFCF; 
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        width: 250px;
+        padding: 20px;
+        text-align: center;
+        transition: transform 0.3s ease;
+    }
+
+    .card:hover {
+        transform: translateY(-5px); 
+    }
+
+    .card img {
+        max-width: 100%;
+        border-radius: 8px;
+        margin-bottom: 15px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .card h2 {
+        color: #333;
+        font-size: clamp(1rem, 1.5vw, 1.5rem);
+        margin-bottom: 10px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        text-decoration: none;
+    }
+
+    .card p {
+        color: #666;
+        line-height: 1.4;
+    }
+
+    .card a {
+        text-decoration: none;
+    }
+
+    .quantityWrapper {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .quantityButton {
+        background-color: #f5aeae; 
+        color: #333;
+        border: none;
+        padding: 5px 10px;
+        cursor: pointer;
+        border-radius: 4px;
+        transition: background-color 0.3s ease;
+    }
+
+    .quantityButton:hover {
+        background-color: #f8d0d0; 
+    }
+
+    .quantityInput {
+        width: 25px;
+        text-align: center;
+        -moz-appearance: textfield; 
+    }
+
+    .quantityInput::-webkit-outer-spin-button,
+    .quantityInput::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+
+    .addToCartButton {
+        background-color: #f5aeae; 
+        color: #333;
+        border: none;
+        padding: 8px 16px;
+        cursor: pointer;
+        border-radius: 4px;
+        transition: background-color 0.3s ease;
+        margin-top: 10px;
+    }
+
+    .addToCartButton:hover {
+        background-color: #f8d0d0; 
+    }
+
+    .carousel-item img {
+        width: auto;
+        height: 230px;
+        object-fit: cover;
+    }
+
+    .carousel-container {
+        width: auto;
+        overflow: hidden;
+        border-radius: 16px; 
+        margin-bottom: 20px;
+    }
+
+    .pagination {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-top: 20px;
+    }
+
+    .pagination a {
+        color: #333;
+        padding: 8px 16px;
+        text-decoration: none;
+        border: 1px solid #ccc;
+        margin: 0 5px;
+        margin-top: 1%;
+        border-radius: 4px;
+        transition: background-color 0.3s ease, color 0.3s ease;
+    }
+
+    .pagination a:hover {
+        background-color: #ff6456;
+        color: #fff;
+    }
+</style>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+    function updateQuantity(id, change) {
+    const input = document.getElementById(`quantityInput-${id}`);
+    let currentValue = parseInt(input.value);  
+
+    if (!isNaN(currentValue)) {  
+        currentValue += change;  
+        if (currentValue >= 1 && currentValue <= parseInt(input.max)) {
+            input.value = currentValue; 
+        }
+    }
+}
+
+    document.addEventListener('DOMContentLoaded', () => {
+        document.querySelectorAll('.quantityButton').forEach(button => {
+            button.addEventListener('click', () => {
+                const id = button.getAttribute('data-id');
+                const change = parseInt(button.getAttribute('data-change'));
+                updateQuantity(id, change);
+            });
+        });
+
+        const cartId = '{{user.cart}}';
+        document.querySelectorAll('.addToCartButton').forEach(button => {
+            button.addEventListener('click', async () => {
+                const productId = button.getAttribute('data-productid');
+                const quantity = document.getElementById(`quantityInput-${productId}`).value;
+
+                try {
+                    const response = await fetch(`/api/carts/${cartId}/${productId}`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ quantity })
+                    });
+
+                    if (response.ok) {
+                        Swal.fire('', 'Producto agregado al carrito', 'success');
+                        updateCartCount(); 
+                    } else {
+                        Swal.fire('¡Error!', 'Error al agregar el producto', 'error');
+                    }
+                } catch (error) {
+                    console.error('Error al agregar el producto', error);
+                    Swal.fire('Error interno', 'Error interno del servidor', 'error');
+                }
+            });
+        });
+
+        async function updateCartCount() {
+    try {
+        const response = await fetch(`/api/carts/${cartId}/count`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+        });
+        if (response.ok) {
+            const cart = await response.json();
+            const cartCount = cart.cart.products.reduce((total, product) => total + product.quantity, 0);
+            const cartCountGreaterThanZero = cartCount > 0;
+            document.getElementById('cart-count').innerText = cartCount;
+            document.getElementById('cart-count').style.display = cartCountGreaterThanZero ? 'inline-block' : 'none';
+        }
+    } catch (error) {
+        console.error('Error al obtener el conteo del carrito', error);
+    }
+}
+
+        document.getElementById('goToCartButton').addEventListener('click', () => {
+            const cartId = '{{user.cart}}';
+            window.location.href = `/api/carts/${cartId}`;
+        });
+
+        updateCartCount();
+    });
+    </script>
+</head>
+<body>
+    <div id="productCarousel" class="carousel slide carousel-container" data-ride="carousel">
+        <div class="carousel-inner">
+            <div class="carousel-item active">
+                <img src="/uploads/assets/publicidad_1.jpg" class="d-block w-100" alt="Imagen 1">
+            </div>
+            <div class="carousel-item">
+                <img src="/uploads/assets/publicidad_2.jpg" class="d-block w-100" alt="Imagen 2">
+            </div>
+            <div class="carousel-item">
+                <img src="/uploads/assets/publicidad_3.jpg" class="d-block w-100" alt="Imagen 3">
+            </div>
+            <div class="carousel-item">
+                <img src="/uploads/assets/publicidad_4.jpg" class="d-block w-100" alt="Imagen 4">
+            </div>
+        </div>
+        <a class="carousel-control-prev" href="#productCarousel" role="button" data-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="sr-only">Anterior</span>
+        </a>
+        <a class="carousel-control-next" href="#productCarousel" role="button" data-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="sr-only">Siguiente</span>
+        </a>
+    </div>
+    
+    <div class="container">
+    {{#each products}}
+    <div class="card">
+        <a href="/products/details/{{this._id}}">
+        <img src="/uploads/assets/{{thumbnail}}" alt="Imagen de producto">
+        <h2>{{title}}</h2>
+        <p>{{description}}</p>
+        <h3>$ {{price}}</h3>
+        </a>
+        <div class="quantityWrapper">
+            <button class="quantityButton" data-id="{{_id}}" data-change="-1">-</button>
+            <input id="quantityInput-{{_id}}" class="quantityInput" type="number" value="1" min="1" max="99">
+            <button class="quantityButton" data-id="{{_id}}" data-change="1">+</button>
+        </div>
+        <button class="addToCartButton" data-productid="{{_id}}">Añadir al carrito</button>
+    </div>
+    {{/each}}
+    </div>
+
+    <div class="pagination">
+        {{#if hasPrevPage}}
+        <a href="?page={{prevPage}}">Anterior</a>
+        {{/if}}
+        {{#if hasNextPage}}
+        <a href="?page={{nextPage}}">Siguiente</a>
+        {{/if}}
+    </div>
+</body>
+</html>
