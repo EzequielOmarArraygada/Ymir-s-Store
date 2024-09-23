@@ -1,4 +1,115 @@
+<style>
+  body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f4f4f9;
+  }
+
+  /* Tabla estilizada */
+  .table {
+    background-color: white;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    width: 100%; /* Para asegurar que la tabla ocupe todo el ancho */
+  }
+
+  th, td {
+    padding: 12px;
+    text-align: center; /* Centrado horizontal */
+    border-bottom: 1px solid #ddd;
+    vertical-align: middle; /* Centrado vertical */
+    height: 60px; /* Altura mínima para centrar mejor el contenido */
+  }
+
+  th {
+    background-color: #fff;
+    color: #333;
+    font-weight: bold;
+  }
+
+  td {
+    background-color: #f9f9f9;
+  }
+
+  /* Estilo del input de búsqueda */
+  #search {
+    width: 100%;
+    padding: 8px; /* Reducido para un aspecto más estético */
+    margin-bottom: 20px;
+    border: 2px solid #ff6456;
+    border-radius: 5px;
+    background-color: #fff;
+    color: #333;
+    transition: border-color 0.3s; /* Añadido para un efecto al enfocar */
+  }
+
+  #search:focus {
+    border-color: #ff4c3b; /* Cambia el borde al enfocar */
+  }
+
+  /* Estilo del selector de orden */
+  select {
+    padding: 10px;
+    margin: 0 10px;
+    border: 2px solid #ff6456;
+    border-radius: 5px;
+    background-color: #fff;
+    color: #333;
+  }
+
+  /* Estilos del botón */
+  .btn {
+    padding: 8px 16px; /* Reducido para un tamaño más pequeño */
+    font-size: 14px; /* Tamaño de fuente más pequeño */
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+
+  .btn-primary {
+    background-color: #5bc0de; /* Color celeste */
+    color: white;
+    font-weight: bold;
+  }
+
+  .btn-primary:hover {
+    background-color: #31b0d5; /* Color más oscuro al pasar el ratón */
+  }
+
+  .btn-danger {
+    background-color: #f56363; /* Rojo más claro */
+    color: white;
+  }
+
+  .btn-danger:hover {
+    background-color: #f05555; /* Color más oscuro al pasar el ratón */
+  }
+</style>
+
 <script>
+  function searchByTitle() {
+    const searchInput = document.getElementById('search').value.toLowerCase();
+    const rows = document.querySelectorAll('tbody tr');
+
+    rows.forEach(row => {
+      const title = row.querySelector('td:nth-child(2)').textContent.toLowerCase();
+      row.style.display = title.includes(searchInput) ? '' : 'none';
+    });
+  }
+
+  function sortByColumn(columnIndex) {
+    const rows = Array.from(document.querySelectorAll('tbody tr'));
+    const sortedRows = rows.sort((a, b) => {
+      const aText = a.querySelector(`td:nth-child(${columnIndex})`).textContent;
+      const bText = b.querySelector(`td:nth-child(${columnIndex})`).textContent;
+      return aText.localeCompare(bText, undefined, { numeric: true });
+    });
+
+    const tbody = document.querySelector('tbody');
+    tbody.innerHTML = '';
+    sortedRows.forEach(row => tbody.appendChild(row));
+  }
+
   async function deleteProduct(productId) {
     const { value: result } = await Swal.fire({
       title: '¿Estás seguro?',
@@ -31,11 +142,36 @@
     }
   }
 </script>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<input type="text" id="search" placeholder="Buscar producto..">
-<table>
-  {{#each products}}
+
+<!-- Input de búsqueda -->
+<input type="text" id="search" class="form-control" placeholder="Buscar producto por título..." oninput="searchByTitle()">
+
+<!-- Selector de orden -->
+<select onchange="sortByColumn(this.value)" class="form-control">
+  <option value="2">Ordenar por Título</option>
+  <option value="4">Ordenar por Código</option>
+  <option value="5">Ordenar por Precio</option>
+  <option value="6">Ordenar por Stock</option>
+  <option value="7">Ordenar por Categoría</option>
+</select>
+
+<!-- Tabla de productos -->
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>Título</th>
+      <th>Descripción</th>
+      <th>Código</th>
+      <th>Precio</th>
+      <th>Stock</th>
+      <th>Categoría</th>
+      <th>Dueño</th>
+      <th>Acciones</th>
+    </tr>
+  </thead>
+  <tbody>
+    {{#each products}}
     <tr>
       <td>{{this._id}}</td>
       <td>{{this.title}}</td>
@@ -45,10 +181,58 @@
       <td>{{this.stock}}</td>
       <td>{{this.category}}</td>
       <td>{{this.owner}}</td>
-      <td><a href="/admin/users/edit/{{this._id}}">Editar</a></td>
       <td>
-      <button onclick="deleteProduct('{{this._id}}')">Eliminar</button>
+        <button class="btn btn-primary" data-toggle="modal" data-target="#editProductModal{{this._id}}">Editar</button>
+        <button onclick="deleteProduct('{{this._id}}')" class="btn btn-danger">Eliminar</button>
       </td>
     </tr>
-  {{/each}}
+
+    <!-- Modal de edición de producto -->
+    <div class="modal fade" id="editProductModal{{this._id}}" tabindex="-1" role="dialog" aria-labelledby="editProductLabel{{this._id}}" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="editProductLabel{{this._id}}">Editar Producto</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <form id="editProductForm{{this._id}}">
+              <div class="form-group">
+                <label for="productTitle{{this._id}}">Título</label>
+                <input type="text" class="form-control" name="title" id="productTitle{{this._id}}" value="{{this.title}}">
+              </div>
+              <div class="form-group">
+                <label for="productDescription{{this._id}}">Descripción</label>
+                <textarea class="form-control" name="description" id="productDescription{{this._id}}">{{this.description}}</textarea>
+              </div>
+              <div class="form-group">
+                <label for="productPrice{{this._id}}">Precio</label>
+                <input type="number" class="form-control" name="price" id="productPrice{{this._id}}" value="{{this.price}}">
+              </div>
+              <div class="form-group">
+                <label for="productStock{{this._id}}">Stock</label>
+                <input type="number" class="form-control" name="stock" id="productStock{{this._id}}" value="{{this.stock}}">
+              </div>
+              <div class="form-group">
+                <label for="productCategory{{this._id}}">Categoría</label>
+                <input type="text" class="form-control" name="category" id="productCategory{{this._id}}" value="{{this.category}}">
+              </div>
+              <div class="form-group">
+                <label for="productThumbnail{{this._id}}">Subir imagen</label>
+                <input type="file" class="form-control-file" name="thumbnail" id="productThumbnail{{this._id}}">
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+            <button type="button" class="btn btn-primary" onclick="updateProduct('{{this._id}}')">Guardar Cambios</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    {{/each}}
+  </tbody>
 </table>
