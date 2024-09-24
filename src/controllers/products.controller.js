@@ -147,20 +147,22 @@ export class ProductController {
     
     updateProduct = async (req, res, next) => {
         try {
-            let { pid } = req.params;
-            let updatedProduct = req.body;
-            let result = await this.productsService.updateProduct(pid, updatedProduct);
+            const { pid } = req.params;
+            const updatedData = req.body;
+            if (req.file) {
+                updatedData.thumbnail = `/uploads/assets/${req.file.filename}`; 
+            }
+            const result = await this.productsService.updateProduct(pid, updatedData);
             res.send({ result: 'success', payload: result });
         } catch (error) {
-            req.logger.error(
-                `Error al actualizar el producto: ${error.message}. Método: ${req.method}, URL: ${req.url} - ${new Date().toLocaleDateString()}`
-            );
-            res.status(500).send({ error: 'Ocurrió un error al actualizar el producto.' });
+            req.logger.error(`Error al actualizar el producto: ${error.message}`);
+            res.status(500).send({ error: 'Error al actualizar el producto.' });
         }
-    }
+    };
     
 
     deleteProduct = async (req, res) => {
+        console.log("ID del producto a eliminar:", req.params.id);
         try {
             const { pid } = req.params;
             const product = await this.productsService.getProduct(pid);

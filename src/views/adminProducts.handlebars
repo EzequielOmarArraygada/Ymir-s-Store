@@ -110,37 +110,76 @@
     sortedRows.forEach(row => tbody.appendChild(row));
   }
 
-  async function deleteProduct(productId) {
-    const { value: result } = await Swal.fire({
-      title: '¿Estás seguro?',
-      text: "¡No podrás recuperar este producto!",
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonColor: '#3085d6',
-      cancelButtonColor: '#d33',
-      confirmButtonText: 'Sí, eliminarlo!',
-      cancelButtonText: 'Cancelar'
-    });
+  function openEditModal(product) {
+  document.getElementById('productId').value = product._id; // Verifica que product._id es correcto
+  document.getElementById('productTitle').value = product.title;
+  document.getElementById('productDescription').value = product.description;
+  document.getElementById('productPrice').value = product.price;
 
-    if (result) {
-      const response = await fetch(`/admin/products/${productId}`, {
-        method: 'DELETE',
+  var modal = new bootstrap.Modal(document.getElementById('editProductModal'));
+  modal.show();
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+  document.getElementById('editProductForm').addEventListener('submit', async function (event) {
+    event.preventDefault();
+
+    const formData = new FormData(this); // Capturamos los datos del formulario, incluyendo la imagen
+    const productId = document.getElementById('productId').value;
+
+    try {
+      const response = await fetch(`/admin/products/update/${productId}`, {
+        method: 'PUT',
+        body: formData, 
       });
 
       if (response.ok) {
-        Swal.fire(
-          'Eliminado!',
-          'El producto ha sido eliminado.',
-          'success'
-        );
-        // Recargar la página o actualizar la tabla de productos
-        location.reload();
+        Swal.fire('Producto Actualizado', 'El producto ha sido actualizado correctamente.', 'success');
+        location.reload(); // Recargamos la página para ver los cambios actualizados
       } else {
         const error = await response.json();
         Swal.fire('Error', error.message, 'error');
       }
+    } catch (error) {
+      Swal.fire('Error', 'Ocurrió un problema al actualizar el producto.', 'error');
+    }
+  });
+});
+
+
+
+ async function deleteProduct(event, productId) {
+  event.preventDefault(); // Prevenir comportamiento predeterminado
+  const { value: result } = await Swal.fire({
+    title: '¿Estás seguro?',
+    text: "¡No podrás recuperar este producto!",
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: '#3085d6',
+    cancelButtonColor: '#d33',
+    confirmButtonText: 'Sí, eliminarlo!',
+    cancelButtonText: 'Cancelar'
+  });
+
+  if (result) {
+    const response = await fetch(`/admin/products/delete/${productId}`, { 
+      method: 'DELETE',
+    });
+
+    if (response.ok) {
+      Swal.fire(
+        'Eliminado!',
+        'El producto ha sido eliminado.',
+        'success'
+      );
+      location.reload(); // Recargar la página o actualizar la tabla de productos
+    } else {
+      const error = await response.json();
+      Swal.fire('Error', error.message, 'error');
     }
   }
+}
+
 </script>
 
 <!-- Input de búsqueda -->
@@ -182,57 +221,47 @@
       <td>{{this.category}}</td>
       <td>{{this.owner}}</td>
       <td>
-        <button class="btn btn-primary" data-toggle="modal" data-target="#editProductModal{{this._id}}">Editar</button>
-        <button onclick="deleteProduct('{{this._id}}')" class="btn btn-danger">Eliminar</button>
+        <button onclick='openEditModal({{json this}})' class="btn btn-primary">Editar</button>
+        <button onclick="deleteProduct(event, '{{this._id}}')" class="btn btn-danger">Eliminar</button>
       </td>
     </tr>
-
-    <!-- Modal de edición de producto -->
-    <div class="modal fade" id="editProductModal{{this._id}}" tabindex="-1" role="dialog" aria-labelledby="editProductLabel{{this._id}}" aria-hidden="true">
-      <div class="modal-dialog" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="editProductLabel{{this._id}}">Editar Producto</h5>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-              <span aria-hidden="true">&times;</span>
-            </button>
+    {{/each}}
+<!-- Modal de edición de producto (fuera del bucle) -->
+<div class="modal fade" id="editProductModal" tabindex="-1" aria-labelledby="editProductModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="editProductModalLabel">Editar Producto</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <form id="editProductForm" enctype="multipart/form-data">
+        <div class="modal-body">
+          <!-- Campos del producto -->
+          <input type="hidden" id="productId" name="productId" />
+          <div class="mb-3">
+            <label for="productTitle" class="form-label">Título</label>
+            <input type="text" class="form-control" id="productTitle" name="title" required>
           </div>
-          <div class="modal-body">
-            <form id="editProductForm{{this._id}}">
-              <div class="form-group">
-                <label for="productTitle{{this._id}}">Título</label>
-                <input type="text" class="form-control" name="title" id="productTitle{{this._id}}" value="{{this.title}}">
-              </div>
-              <div class="form-group">
-                <label for="productDescription{{this._id}}">Descripción</label>
-                <textarea class="form-control" name="description" id="productDescription{{this._id}}">{{this.description}}</textarea>
-              </div>
-              <div class="form-group">
-                <label for="productPrice{{this._id}}">Precio</label>
-                <input type="number" class="form-control" name="price" id="productPrice{{this._id}}" value="{{this.price}}">
-              </div>
-              <div class="form-group">
-                <label for="productStock{{this._id}}">Stock</label>
-                <input type="number" class="form-control" name="stock" id="productStock{{this._id}}" value="{{this.stock}}">
-              </div>
-              <div class="form-group">
-                <label for="productCategory{{this._id}}">Categoría</label>
-                <input type="text" class="form-control" name="category" id="productCategory{{this._id}}" value="{{this.category}}">
-              </div>
-              <div class="form-group">
-                <label for="productThumbnail{{this._id}}">Subir imagen</label>
-                <input type="file" class="form-control-file" name="thumbnail" id="productThumbnail{{this._id}}">
-              </div>
-            </form>
+          <div class="mb-3">
+            <label for="productDescription" class="form-label">Descripción</label>
+            <textarea class="form-control" id="productDescription" name="description" required></textarea>
           </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-            <button type="button" class="btn btn-primary" onclick="updateProduct('{{this._id}}')">Guardar Cambios</button>
+          <div class="mb-3">
+            <label for="productPrice" class="form-label">Precio</label>
+            <input type="number" class="form-control" id="productPrice" name="price" required>
+          </div>
+          <div class="mb-3">
+            <label for="productImage" class="form-label">Imagen</label>
+            <input type="file" class="form-control" id="productImage" name="thumbnail">
           </div>
         </div>
-      </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+          <button type="submit" class="btn btn-primary">Guardar cambios</button>
+        </div>
+      </form>
     </div>
-
-    {{/each}}
+  </div>
+</div>
   </tbody>
 </table>

@@ -10,7 +10,7 @@ const storage = multer.diskStorage({
         } else if (file.originalname === 'product.jpg') {
             folder = 'products';
         } else {
-            folder = 'documents';
+            folder = 'assets';
         }
         const dir = path.join(process.cwd(), `uploads/${folder}`);
 
@@ -27,5 +27,6 @@ const upload = multer({
     storage: storage,
     limits: { fileSize: 1024 * 1024 * 5 },
 });
+
 
 export default upload;

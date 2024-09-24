@@ -27,9 +27,16 @@ const __dirname = dirname(__filename)
 
 const app = express();
 const PORT = process.env.PORT || 8080
+const hbs = handlebars.create({
+    helpers: {
+        json: function(context) {
+            return JSON.stringify(context);
+        }
+    }
+});
 
+app.engine('handlebars', hbs.engine);
 app.use(addLogger)
-app.engine('handlebars', handlebars.engine())
 app.set('views', __dirname + '/views') 
 app.set('view engine', 'handlebars')
 app.use(express.static(__dirname + '/views'))
@@ -41,6 +48,8 @@ app.use(cookieParser())
 app.use(express.urlencoded({ extended: true }));
 
 swaggerConfig(app);
+
+
 
 app.use((err, req, res, next) => {
     req.logger.fatal(

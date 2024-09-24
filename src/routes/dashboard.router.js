@@ -5,6 +5,7 @@ import { UserController } from '../controllers/users.controller.js';
 import { ViewsController } from '../controllers/views.controller.js'
 import { TicketController } from '../controllers/tickets.controller.js'
 import utils from '../utils.js';
+import upload from '../middlewares/upload.js';
 
 const { passportCall } = utils;
 const DashboardRouter = Router()
@@ -17,6 +18,7 @@ const {
 const {
     getDashProducts,
     deleteProduct,
+    updateProduct,
 } = new ProductController();
 
 const {
@@ -38,8 +40,11 @@ DashboardRouter.get('/users', passportCall('login', 'admin'), isAdmin, getDashUs
 
 DashboardRouter.get('/products', passportCall('login', 'admin'), isAdmin, getDashProducts);
 
-DashboardRouter.delete('/products/:pid', passportCall('login', 'admin'), isAdmin, deleteProduct);
+DashboardRouter.delete('/products/delete/:pid', passportCall('login', 'admin'), isAdmin, deleteProduct);
 
 DashboardRouter.get('/tickets', passportCall('login', 'admin'), isAdmin, getTickets);
+
+DashboardRouter.put('/products/update/:pid', upload.single('thumbnail'), passportCall('login', 'admin'), isAdmin, updateProduct);
+
 
 export default DashboardRouter;  
