@@ -33,6 +33,10 @@
         .cart-item-details {
             flex-grow: 1;
         }
+        .DetailImg{
+            width: 100px;
+            margin-right: 200px;
+        }
         .cart-item h2 {
             color: #333;
             font-size: 1.2em;
@@ -151,6 +155,7 @@
                 <p>Precio: ${{this.price}}</p>
                 <p>Cantidad: {{this.quantity}}</p>
             </div>
+            <img src="{{this.thumbnail}}" alt="DetailImg" class="DetailImg">
             <button class="remove-item" data-product-id="{{this._id}}">X</button>
         </li>
         {{/each}}
@@ -195,7 +200,7 @@
                     data.ticket.products.forEach(product => {
                         const li = document.createElement('li');
                         const img = document.createElement('img');
-                        img.src = `/uploads/assets/${product.thumbnail}`;
+                        img.src = `${product.thumbnail}`;
                         img.alt = product.title;
                         li.appendChild(img);
                         li.appendChild(document.createTextNode(`${product.quantity} x ${product.title} - $${product.price}`));
