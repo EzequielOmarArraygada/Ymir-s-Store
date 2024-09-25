@@ -7,9 +7,10 @@ const isValidatePassword = (user, password) => bcrypt.compareSync(password, user
 const productManager = new ProductManagerMongo();
 
 const requirePremium = (req, res, next) => {
-    if (req.session.role !== 'premium') {
-        req.logger.warning(`Acceso denegado: Solo usuarios premium. ${req.method} en ${req.url} - ${new Date().toLocaleDateString()}`);
-        return res.status(403).send('Acceso denegado: Solo usuarios premium');
+    // Permitir acceso si el rol es 'premium' o 'admin'
+    if (req.session.role !== 'premium' && req.session.role !== 'admin') {
+        req.logger.warning(`Acceso denegado: Solo usuarios premium o admin. ${req.method} en ${req.url} - ${new Date().toLocaleDateString()}`);
+        return res.status(403).send('Acceso denegado: Solo usuarios premium o admin');
     }
     next();
 };
@@ -54,13 +55,12 @@ const passportCall = (strategy, role) => {
                 `Rol de usuario: ${user.role}. ${req.method} en ${req.url} - ${new Date().toLocaleDateString()}`
             );
 
-            if (user.role !== role && user.role !== 'premium') {
+            if (user.role !== role && user.role !== 'admin') {
                 req.logger.warning(
                     `Acceso denegado. Rol de usuario incorrecto: ${user.role} se requiere: ${role}. ${req.method} en ${req.url} - ${new Date().toLocaleDateString()}`
                 );
                 return res.status(403).send({ error: `Acceso denegado. Rol de usuario incorrecto.` });
             }
-
             req.user = user;
             next();
         })(req, res, next);
