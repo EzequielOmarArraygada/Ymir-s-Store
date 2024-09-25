@@ -20,13 +20,15 @@
     text-align: center;
     text-decoration: none; /* Quita el subrayado del enlace */
     transition: transform 0.2s; /* Transición al hacer hover */
-    width: 150px; /* Ancho de la tarjeta */
+    width: 170px; /* Ancho de la tarjeta */
+    padding: 5px;
 }
 
 .card img {
-    width: 100%; /* Imagen ocupa todo el ancho de la tarjeta */
+    width: auto; /* Imagen ocupa todo el ancho de la tarjeta */
     border-top-left-radius: 8px; /* Bordes redondeados en la parte superior */
     border-top-right-radius: 8px; /* Bordes redondeados en la parte superior */
+    margin: 5%
 }
 
 .card h2 {
@@ -58,7 +60,7 @@
         <h2>Usuarios</h2>
     </a>
     <a href="/admin/products?page=1" class="card">
-        <img src="/uploads/assets/products.jpg" alt="Productos">
+        <img src="/uploads/assets/products.png" alt="Productos">
         <h2>Productos</h2>
     </a>
     <a href="/admin/tickets" class="card">
