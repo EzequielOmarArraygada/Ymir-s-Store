@@ -49,19 +49,52 @@
 .card:hover {
     transform: scale(1.05); /* Efecto de escalado al hacer hover */
 }
+
+ .navbarDash {
+        background-color: #fffefe; /* Cambiamos a blanco */
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px 20px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        margin-bottom: 3%;
+    }
+
+    .navbar-leftDash {
+        display: flex;
+        align-items: center;
+    }
+
+    .navbar-logoDash img {
+        width: 50px; /* Ajusta el tamaño del logo según sea necesario */
+        height: auto;
+        margin-right: 20px;
+    }
+
+    .navbar-itemDash {
+        margin-right: 15px;
+        text-decoration: none;
+        color: #333;
+        font-weight: bold;
+    }
+
+    .navbar-itemDash:last-child {
+        margin-right: 0;
+    }
+
 </style>
 
-<div class="navbar"></div>
-<div class="navbar-left">
-    <div class="navbar-logo">
+<div class="navbarDash">
+<div class="navbar-leftDash">
+    <div class="navbar-logoDash">
         <img src="/uploads/assets/conf.png" alt="Logo">
     </div>
-    <a href="/admin" class="navbar-item">Dashboard</a>
-    <a href="/admin/users?page=1" class="navbar-item">Usuarios</a>
-    <a href="/admin/products?page=1" class="navbar-item">Productos</a>
-    <a href="/admin/tickets" class="navbar-item">Pedidos</a>
+    <a href="/admin" class="navbar-itemDash">Dashboard</a>
+    <a href="/admin/users?page=1" class="navbar-itemDash">Usuarios</a>
+    <a href="/admin/products?page=1" class="navbar-itemDash">Productos</a>
+    <a href="/admin/tickets" class="navbar-itemDash">Pedidos</a>
 </div>
-
+</div>
 <h1 class="dashboard-title">Panel de control Ata Uma Shop</h1>
 
 <div class="card-container">

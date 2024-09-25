@@ -116,6 +116,41 @@
         background-color: #ff6456;
         color: #fff;
     }
+    .btn-add{
+      margin-top: 2%;
+      margin-bottom: 2%;
+    }
+     .navbarDash {
+        background-color: #fffefe; /* Cambiamos a blanco */
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px 20px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        margin-bottom: 3%;
+    }
+
+    .navbar-leftDash {
+        display: flex;
+        align-items: center;
+    }
+
+    .navbar-logoDash img {
+        width: 50px; /* Ajusta el tamaño del logo según sea necesario */
+        height: auto;
+        margin-right: 20px;
+    }
+
+    .navbar-itemDash {
+        margin-right: 15px;
+        text-decoration: none;
+        color: #333;
+        font-weight: bold;
+    }
+
+    .navbar-itemDash:last-child {
+        margin-right: 0;
+    }
 </style>
 
 <script>
@@ -240,15 +275,16 @@ document.addEventListener('DOMContentLoaded', function() {
 
 </script>
 
-<div class="navbar"></div>
-<div class="navbar-left">
-    <div class="navbar-logo">
+<div class="navbarDash">
+<div class="navbar-leftDash">
+    <div class="navbar-logoDash">
         <img src="/uploads/assets/conf.png" alt="Logo">
     </div>
-    <a href="/admin" class="navbar-item">Dashboard</a>
-    <a href="/admin/users?page=1" class="navbar-item">Usuarios</a>
-    <a href="/admin/products?page=1" class="navbar-item">Productos</a>
-    <a href="/admin/tickets" class="navbar-item">Pedidos</a>
+    <a href="/admin" class="navbar-itemDash">Dashboard</a>
+    <a href="/admin/users?page=1" class="navbar-itemDash">Usuarios</a>
+    <a href="/admin/products?page=1" class="navbar-itemDash">Productos</a>
+    <a href="/admin/tickets" class="navbar-itemDash">Pedidos</a>
+</div>
 </div>
 
 <!-- Input de búsqueda -->
@@ -263,7 +299,7 @@ document.addEventListener('DOMContentLoaded', function() {
   <option value="7">Ordenar por Categoría</option>
 </select>
 
-<button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addProductModal">Agregar Producto</button>
+<button class="btn btn-success btn-add" data-bs-toggle="modal" data-bs-target="#addProductModal">Agregar Producto</button>
 
 <!-- Tabla de productos -->
 <table class="table table-striped">
@@ -344,7 +380,7 @@ document.addEventListener('DOMContentLoaded', function() {
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="addProductModalLabel">Agregar Nuevo Producto</h5>
+        <h5 class="modal-title" id="addProductModalLabel">Nuevo producto:</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <form id="addProductForm" enctype="multipart/form-data">
@@ -372,7 +408,12 @@ document.addEventListener('DOMContentLoaded', function() {
           </div>
           <div class="mb-3">
             <label for="newProductCategory" class="form-label">Categoría</label>
-            <input type="text" class="form-control" id="newProductCategory" name="category">
+            <select name="category" id="newProductCategory" class="form-control" type="text">
+            <option value="Piratas">Piratas</option>
+            <option value="Halloween">Halloween</option>
+            <option value="Cuentos">Cuentos</option>
+            <option value="Superheroes">Superhéroes</option>
+            </select>
           </div>
           <div class="mb-3">
             <label for="newProductImage" class="form-label">Imagen</label>
