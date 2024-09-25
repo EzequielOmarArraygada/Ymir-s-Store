@@ -84,6 +84,11 @@
   .btn-danger:hover {
     background-color: #f05555; /* Color más oscuro al pasar el ratón */
   }
+
+  button.btn-success, select {
+  margin-top: 15px;
+}
+
   .pagination {
         display: flex;
         justify-content: center;
@@ -366,8 +371,10 @@ document.addEventListener('DOMContentLoaded', function() {
     </div>
   </div>
 </div>
+  </tbody>
+</table>
 
-<div class="pagination"></div>
+<div class="pagination">
         {{#if hasPrevPage}}
         <a href="?page={{prevPage}}">Anterior</a>
         {{/if}}
@@ -375,5 +382,3 @@ document.addEventListener('DOMContentLoaded', function() {
         <a href="?page={{nextPage}}">Siguiente</a>
         {{/if}}
     </div>
-  </tbody>
-</table>
