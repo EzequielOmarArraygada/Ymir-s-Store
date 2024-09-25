@@ -183,7 +183,7 @@ document.addEventListener('DOMContentLoaded', function() {
       });
 
       if (response.ok) {
-        Swal.fire('Producto Actualizado', 'El producto ha sido agregado correctamente.', 'success');
+        Swal.fire('Producto Agregado', 'El producto ha sido agregado correctamente.', 'success');
           document.getElementById('addProductForm').reset(); // Limpiar formulario
         location.reload(); // Recargamos la página para ver los cambios actualizados
       } else {
@@ -340,7 +340,7 @@ document.addEventListener('DOMContentLoaded', function() {
           <div class="mb-3">
             <label for="newProductCode" class="form-label">Código</label>
             <textarea class="form-control" id="newProductCode" name="code" required></textarea>
-          </div>
+          </div>  
           <div class="mb-3">
             <label for="newProductPrice" class="form-label">Precio</label>
             <input type="number" class="form-control" id="newProductPrice" name="price" required>

@@ -107,21 +107,25 @@ export class ProductController {
     
     addProduct = async (req, res, next) => {
         try {
-            const { title, description, price, thumbnail, code, stock, category, status } = req.body;
+            let { title, description, price, thumbnail, code, stock, category, status } = req.body;
             const user = req.user; 
 
             if (user.role !== 'premium' && user.role !== 'admin') {
                 return res.status(403).send('Solo los usuarios premium pueden agregar productos.');
             }
 
-            if (!title || !description || !price || !thumbnail || !code || !stock || !category ) {
+            if (!title || !description || !price || !code || !stock || !category ) {
                 const err = new CustomError(
                     'Error al crear el producto',
-                    generateErrorInfo({ title, description, price, thumbnail, code, stock, category, status }),
+                    generateErrorInfo({ title, description, price, code, stock, category }),
                     'Error al intentar crear el producto',
                     EError.INVALID_TYPES_ERROR
                 );
                 return next(err);
+            }
+            
+            if (req.file) {
+                thumbnail = `/uploads/assets/${req.file.filename}`; 
             }
 
             const result = await this.productsService.addProduct({

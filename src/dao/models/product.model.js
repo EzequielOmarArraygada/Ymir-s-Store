@@ -8,10 +8,10 @@ const productSchema = new mongoose.Schema({
     description: { type: String, required: true, max: 300 },
     code: { type: String, required: true, max: 10, unique: true, index: true },
     price: { type: Number, required: true },
-    status: { type: Boolean, required: true, default: true },
+    status: { type: Boolean, default: true },
     stock: { type: Number, required: true, integer: true },
     category: { type: String, required: true, max: 20, index: true },
-    thumbnail: { type: String, required: true },
+    thumbnail: { type: String    },
     owner: { type: mongoose.Schema.Types.ObjectId, ref: 'User', default: null },
 });
 
@@ -20,3 +20,4 @@ productSchema.plugin(mongoosePaginate);
 const productModel = mongoose.model(productCollection, productSchema);
 
 export default productModel;
+  
