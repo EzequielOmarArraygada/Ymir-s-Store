@@ -84,6 +84,28 @@
   .btn-danger:hover {
     background-color: #f05555; /* Color más oscuro al pasar el ratón */
   }
+  .pagination {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-top: 20px;
+    }
+
+    .pagination a {
+        color: #333;
+        padding: 8px 16px;
+        text-decoration: none;
+        border: 1px solid #ccc;
+        margin: 0 5px;
+        margin-top: 1%;
+        border-radius: 4px;
+        transition: background-color 0.3s ease, color 0.3s ease;
+    }
+
+    .pagination a:hover {
+        background-color: #ff6456;
+        color: #fff;
+    }
 </style>
 
 <script>
@@ -115,6 +137,8 @@
   document.getElementById('productTitle').value = product.title;
   document.getElementById('productDescription').value = product.description;
   document.getElementById('productPrice').value = product.price;
+  document.getElementById('productStock').value = product.stock;
+
 
   var modal = new bootstrap.Modal(document.getElementById('editProductModal'));
   modal.show();
@@ -146,7 +170,31 @@ document.addEventListener('DOMContentLoaded', function() {
   });
 });
 
+document.addEventListener('DOMContentLoaded', function() {
+  document.getElementById('addProductForm').addEventListener('submit', async function (event) {
+    event.preventDefault();
 
+    const formData = new FormData(this); // Capturamos los datos del formulario, incluyendo la imagen
+
+    try {
+      const response = await fetch(`/admin/products/add`, {
+        method: 'POST',
+        body: formData, 
+      });
+
+      if (response.ok) {
+        Swal.fire('Producto Actualizado', 'El producto ha sido agregado correctamente.', 'success');
+          document.getElementById('addProductForm').reset(); // Limpiar formulario
+        location.reload(); // Recargamos la página para ver los cambios actualizados
+      } else {
+        const error = await response.json();
+        Swal.fire('Error', error.message, 'error');
+      }
+    } catch (error) {
+      Swal.fire('Error', 'Ocurrió un problema al agregar el producto', 'error');
+    }
+  });
+});
 
  async function deleteProduct(event, productId) {
   event.preventDefault(); // Prevenir comportamiento predeterminado
@@ -194,6 +242,8 @@ document.addEventListener('DOMContentLoaded', function() {
   <option value="7">Ordenar por Categoría</option>
 </select>
 
+<button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addProductModal">Agregar Producto</button>
+
 <!-- Tabla de productos -->
 <table class="table table-striped">
   <thead>
@@ -226,6 +276,7 @@ document.addEventListener('DOMContentLoaded', function() {
       </td>
     </tr>
     {{/each}}
+
 <!-- Modal de edición de producto (fuera del bucle) -->
 <div class="modal fade" id="editProductModal" tabindex="-1" aria-labelledby="editProductModalLabel" aria-hidden="true">
   <div class="modal-dialog">
@@ -251,6 +302,10 @@ document.addEventListener('DOMContentLoaded', function() {
             <input type="number" class="form-control" id="productPrice" name="price" required>
           </div>
           <div class="mb-3">
+            <label for="productStock" class="form-label">Stock</label>
+            <input type="number" class="form-control" id="productStock" name="stock">
+          </div>
+          <div class="mb-3">
             <label for="productImage" class="form-label">Imagen</label>
             <input type="file" class="form-control" id="productImage" name="thumbnail">
           </div>
@@ -263,5 +318,62 @@ document.addEventListener('DOMContentLoaded', function() {
     </div>
   </div>
 </div>
+<!-- Modal de agregar producto -->
+<div class="modal fade" id="addProductModal" tabindex="-1" aria-labelledby="addProductModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="addProductModalLabel">Agregar Nuevo Producto</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <form id="addProductForm" enctype="multipart/form-data">
+        <div class="modal-body">
+          <!-- Campos del nuevo producto -->
+          <div class="mb-3">
+            <label for="newProductTitle" class="form-label">Título</label>
+            <input type="text" class="form-control" id="newProductTitle" name="title" required>
+          </div>
+          <div class="mb-3">
+            <label for="newProductDescription" class="form-label">Descripción</label>
+            <textarea class="form-control" id="newProductDescription" name="description" required></textarea>
+          </div>
+          <div class="mb-3">
+            <label for="newProductCode" class="form-label">Código</label>
+            <textarea class="form-control" id="newProductCode" name="code" required></textarea>
+          </div>
+          <div class="mb-3">
+            <label for="newProductPrice" class="form-label">Precio</label>
+            <input type="number" class="form-control" id="newProductPrice" name="price" required>
+          </div>
+          <div class="mb-3">
+            <label for="newProductStock" class="form-label">Stock</label>
+            <input type="number" class="form-control" id="newProductStock" name="stock">
+          </div>
+          <div class="mb-3">
+            <label for="newProductCategory" class="form-label">Categoría</label>
+            <input type="text" class="form-control" id="newProductCategory" name="category">
+          </div>
+          <div class="mb-3">
+            <label for="newProductImage" class="form-label">Imagen</label>
+            <input type="file" class="form-control" id="newProductImage" name="thumbnail">
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+          <button type="submit" class="btn btn-primary">Guardar Producto</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<div class="pagination"></div>
+        {{#if hasPrevPage}}
+        <a href="?page={{prevPage}}">Anterior</a>
+        {{/if}}
+        {{#if hasNextPage}}
+        <a href="?page={{nextPage}}">Siguiente</a>
+        {{/if}}
+    </div>
   </tbody>
 </table>

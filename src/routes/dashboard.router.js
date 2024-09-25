@@ -19,6 +19,7 @@ const {
     getDashProducts,
     deleteProduct,
     updateProduct,
+    addProduct,
 } = new ProductController();
 
 const {
@@ -46,5 +47,6 @@ DashboardRouter.get('/tickets', passportCall('login', 'admin'), isAdmin, getTick
 
 DashboardRouter.put('/products/update/:pid', upload.single('thumbnail'), passportCall('login', 'admin'), isAdmin, updateProduct);
 
+DashboardRouter.post('/products/add', upload.single('thumbnail'), passportCall('login', 'admin'), isAdmin, addProduct);
 
 export default DashboardRouter;  

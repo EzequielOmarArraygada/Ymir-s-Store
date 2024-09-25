@@ -110,11 +110,11 @@ export class ProductController {
             const { title, description, price, thumbnail, code, stock, category, status } = req.body;
             const user = req.user; 
 
-            if (user.role !== 'premium') {
+            if (user.role !== 'premium' && user.role !== 'admin') {
                 return res.status(403).send('Solo los usuarios premium pueden agregar productos.');
             }
 
-            if (!title || !description || !price || !thumbnail || !code || !stock || !category || !status) {
+            if (!title || !description || !price || !thumbnail || !code || !stock || !category ) {
                 const err = new CustomError(
                     'Error al crear el producto',
                     generateErrorInfo({ title, description, price, thumbnail, code, stock, category, status }),

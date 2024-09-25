@@ -11,10 +11,7 @@ const {
     getSignup,
     getProducts,
     getProductById,
-    addProduct,
-    updateProduct,
-    deleteProduct,
-    getProductDetails
+    getProductDetails,
 } = new ProductController();
 
 /**
