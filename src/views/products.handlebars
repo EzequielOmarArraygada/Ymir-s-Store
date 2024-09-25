@@ -5,6 +5,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lista de Productos</title>
     <style>
+
+        @media (max-width: 768px) {
+    .product-details-card {
+        padding: 10px;
+    }
+
+    .product-info h1 {
+        font-size: 1.5rem;
+    }
+
+    .addButton {
+        flex-direction: column; /* Cambiar la disposición a columna en pantallas pequeñas */
+    }
+}
     body {
         font-family: 'Arial', sans-serif;
         line-height: 1.6;
@@ -23,8 +37,8 @@
     .container {
         display: flex;
         flex-wrap: wrap;
-        gap: 36px;
-        justify-content: space-between;
+        gap: 20px;
+        justify-content: center;
         margin-top: 2%;
     }
 
@@ -32,10 +46,12 @@
         background-color: #FFFFCF; 
         border-radius: 8px;
         box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-        width: 250px;
+        width: 100%;
+        max-width: 300px;
         padding: 20px;
         text-align: center;
         transition: transform 0.3s ease;
+        flex: 1 1 250px;
     }
 
     .card:hover {
@@ -117,8 +133,8 @@
     }
 
     .carousel-item img {
-        width: auto;
-        height: 230px;
+        width: 100%;
+        height: auto;
         object-fit: cover;
     }
 

@@ -4,28 +4,35 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{product.title}} - Detalles del Producto</title>
    <style>
+    body {
+        font-family: 'Arial', sans-serif;
+        line-height: 1.6;
+        background-color: #D9FFFF; 
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+    }
 .product-details-container {
     display: flex;
-    justify-content: center;
+    flex-direction: column; /* Cambiar a columna para pantallas pequeñas */
+    align-items: center;
     padding: 20px;
 }
 
 .product-details-card {
-    max-width: 900px;
-    padding: 20px;
-    border: 1px solid #ccc;
-    border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 600px; /* Limitar el ancho máximo */
     display: flex;
-    justify-content: center;
+    flex-direction: column; /* Cambiar a columna en pantallas pequeñas */
+    align-items: center;
 }
 
 .product-image-large {
-    width: 40%;
+    width: 100%;
+    max-width: 400px; /* Ajustar ancho de la imagen */
     height: auto;
-    border-radius: 10px;
-    margin-bottom: 20px;
-    margin-right: 20px;
+    margin: 0 auto 20px; /* Centrar y ajustar margen */
 }
 
 .product-info h1 {
