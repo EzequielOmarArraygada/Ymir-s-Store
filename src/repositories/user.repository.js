@@ -89,4 +89,13 @@ export class UserRepository {
         }
     }
     
+    async deleteUser(uid){
+        try {
+            return await this.model.findByIdAndDelete(uid);
+        } catch (error) {
+            console.error(`Error al eliminar el usuario con ID ${uid}:`, error);
+            throw error;
+        }
+    }
+
 }

@@ -1,4 +1,5 @@
 import { UserManagerMongo } from '../dao/services/managers/UserManagerMongo.js';
+import { ProductManagerMongo } from '../dao/services/managers/ProductManagerMongo.js';
 import jwt from 'jsonwebtoken';
 import utils from '../utils.js';
 import UserDTO from '../dao/dto/user.dto.js';
@@ -7,6 +8,7 @@ import User from '../dao/models/user.model.js';
 import path from 'path';
 import { sendPasswordResetEmail } from '../services/mailing.js';
 import bcrypt from 'bcrypt';
+import { sendEmail } from '../services/mailing.js';
 
 
 dotenv.config();
@@ -14,6 +16,7 @@ dotenv.config();
 export class UserController {
     constructor() {
         this.usersService = new UserManagerMongo();
+        this.productsService = new ProductManagerMongo()
     }
 
     postSignup = async (req, res) => {
@@ -310,36 +313,31 @@ export class UserController {
      };
     
 
-    // deleteUser = async (req, res) => {
-    //     console.log("ID del producto a eliminar:", req.params.id);
-    //     try {
-    //         const { pid } = req.params;
-    //         const product = await this.productsService.getProduct(pid);
+     deleteUser = async (req, res) => {
+         try {
+             const { uid } = req.params;
+             const userDeleted = await this.usersService.findById(uid);
+             const user = req.user; 
 
-    //         if (!product) {
-    //             return res.status(404).send({ status: 'error', message: 'Producto no encontrado' });
-    //         }
+             if (!userDeleted) {
+                 return res.status(404).send({ status: 'error', message: 'Producto no encontrado' });
+             }
 
-    //         // Encuentra el usuario dueño del producto
-    //         const user = await this.productsService.findUserByProductId(pid);
+             await this.usersService.deleteUser(uid);
 
-    //         await this.productsService.deleteProduct(pid);
+             if (user && user.role === 'admin') {
+                 await sendEmail({
+                     to: user.email,
+                     subject: 'Usuario eliminado',
+                     text: `El usuario ${userDeleted._id} ha sido eliminado.`
+                 });
+                 req.logger.info(`Correo enviado a ${user.email} sobre la eliminación del producto ${uid}`);
+             }
 
-    //         // Enviar correo si el usuario es premium  
-    //         if (user && user.role === 'premium' || 'admin') {
-    //             await sendEmail({
-    //                 to: user.email,
-    //                 subject: 'Producto eliminado',
-    //                 text: `Tu producto con ID ${pid} ha sido eliminado.`
-    //             });
-    //             req.logger.info(`Correo enviado a ${user.email} sobre la eliminación del producto ${pid}`);
-    //         }
-
-    //         res.send({ status: 'success', message: 'Producto eliminado exitosamente' });
-    //     } catch (error) {
-    //         req.logger.error(`Error al eliminar producto: ${error.message}, ${req.method} en ${req.url}`);
-    //         res.status(500).send({ status: 'error', message: 'Error interno del servidor' });
-    //     }
-    // }
-
+             res.send({ status: 'success', message: 'Producto eliminado exitosamente' });
+         } catch (error) {
+             req.logger.error(`Error al eliminar producto: ${error.message}, ${req.method} en ${req.url}`);
+             res.status(500).send({ status: 'error', message: 'Error interno del servidor' });
+         }
+     }
 }
