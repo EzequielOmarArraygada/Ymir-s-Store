@@ -283,31 +283,21 @@ document.addEventListener('DOMContentLoaded', function() {
   });
 });
 
-{{!-- document.addEventListener('DOMContentLoaded', function() {
-  document.getElementById('addUserForm').addEventListener('submit', async function (event) {
-    event.preventDefault();
-
-    const formData = new FormData(this); 
-
-    try {
-      const response = await fetch(`/admin/users/add`, {
-        method: 'POST',
-        body: formData, 
-      });
-
-      if (response.ok) {
-        Swal.fire('Usuario agregado', 'El usuario ha sido agregado correctamente.', 'success');
-          document.getElementById('addUserForm').reset(); // Limpiar formulario
-        location.reload(); // Recargamos la página para ver los cambios actualizados
-      } else {
-        const error = await response.json();
-        Swal.fire('Error', error.message, 'error');
-      }
-    } catch (error) {
-      Swal.fire('Error', 'Ocurrió un problema al agregar el user', 'error');
-    }
-  });
-}); --}}
+    document.addEventListener('DOMContentLoaded', function () {
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get('success') === 'true') {
+            // Mostrar SweetAlert
+            Swal.fire({
+                icon: 'success',
+                title: 'Usuario creado',
+                text: 'El usuario ha sido creado correctamente.',
+                confirmButtonText: 'OK'
+            }).then(() => {
+                // Quitar el parámetro de la URL para evitar que el SweetAlert se muestre en recargas futuras
+                window.history.replaceState(null, null, window.location.pathname);
+            });
+        }
+    });
 
  async function deleteUser(event, userId) {
   event.preventDefault(); // Prevenir comportamiento predeterminado

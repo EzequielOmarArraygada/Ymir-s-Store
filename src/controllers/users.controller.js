@@ -21,9 +21,9 @@ export class UserController {
     }
 
     postSignupDash = async (req, res) => {
-        res.redirect('/admin/users');
-    }
-
+        res.redirect('/admin/users?success=true');
+    };
+    
     postLogin = async (req, res) => {
         const { email, password } = req.body;
         try {
