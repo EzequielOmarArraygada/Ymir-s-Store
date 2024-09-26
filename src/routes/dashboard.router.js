@@ -27,7 +27,8 @@ const {
 const {
     getDashUsers,
     isAdmin,
-    postSignupDash
+    postSignupDash,
+    updateUser
 } = new UserController();
 
 const {
@@ -57,5 +58,6 @@ DashboardRouter.post('/users/add', passport.authenticate('signup', {
     failureMessage: true 
 }), postSignupDash);
 
+DashboardRouter.put('/users/update/:uid', upload.single('profileImage'), passportCall('login', 'admin'), isAdmin, updateUser);
 
 export default DashboardRouter;    

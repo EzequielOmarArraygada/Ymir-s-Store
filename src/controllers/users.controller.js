@@ -186,6 +186,7 @@ export class UserController {
                 last_name: user.last_name,
                 role: user.role,
                 email: user.email,
+                age: user.age,
                 last_connection: user.last_connection,
             }));
             res.render('adminUsers', { users });
@@ -296,20 +297,17 @@ export class UserController {
         }
     }
 
-    // updateUser = async (req, res, next) => {
-    //     try {
-    //         const { pid } = req.params;
-    //         const updatedData = req.body;
-    //         if (req.file) {
-    //             updatedData.age = `/uploads/assets/${req.file.filename}`; 
-    //         }
-    //         const result = await this.productsService.updateProduct(pid, updatedData);
-    //         res.send({ result: 'success', payload: result });
-    //     } catch (error) {
-    //         req.logger.error(`Error al actualizar el producto: ${error.message}`);
-    //         res.status(500).send({ error: 'Error al actualizar el producto.' });
-    //     }
-    // };
+     updateUser = async (req, res, next) => {
+        try {
+             const { uid } = req.params;
+             const updatedData = req.body;
+             const result = await this.usersService.updateUser(uid, updatedData);
+             res.send({ result: 'success', payload: result });
+         } catch (error) {
+             req.logger.error(`Error al actualizar el usuario ${error.message}`);
+             res.status(500).send({ error: 'Error al actualizar el usuario.' });
+         }
+     };
     
 
     // deleteUser = async (req, res) => {

@@ -44,7 +44,7 @@ export class UserRepository {
     async getAllUsers() {
         try {
             // Retornamos solo los campos necesarios
-            return await this.model.find({}, 'first_name last_name email role last_connection');
+            return await this.model.find({}, 'first_name last_name email age role last_connection');
         } catch (error) {
             console.error('Error al obtener todos los usuarios:', error);
             throw error;
@@ -75,5 +75,18 @@ export class UserRepository {
         }
     }
 
+    async updateUser(uid, updatedUser){
+        try {
+            const result = await this.model.findByIdAndUpdate(uid, updatedUser, { new: true });
+            if (!result) {
+                console.error(`No se encontró el usuario con el ID: ${uid}`);
+                throw new Error(`No se pudo actualizar el usuario`);
+            }
+            return result;
+        } catch (error) {
+            console.error(`Error al actualizar el usuario`, error);
+            throw error;
+        }
+    }
     
 }

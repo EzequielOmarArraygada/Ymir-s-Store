@@ -29,5 +29,9 @@ export class UserManagerMongo {
     async deleteInactiveUsers() {
         return await this.repository.deleteInactiveUsers();
     }
+
+    async updateUser(uid, updatedUser){
+        return await this.repository.updateUser(uid, updatedUser);
+    }
     
 }
