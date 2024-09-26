@@ -6,6 +6,8 @@ import { ViewsController } from '../controllers/views.controller.js'
 import { TicketController } from '../controllers/tickets.controller.js'
 import utils from '../utils.js';
 import upload from '../middlewares/upload.js';
+import passport from 'passport';
+
 
 const { passportCall } = utils;
 const DashboardRouter = Router()
@@ -25,6 +27,7 @@ const {
 const {
     getDashUsers,
     isAdmin,
+    postSignupDash
 } = new UserController();
 
 const {
@@ -49,4 +52,10 @@ DashboardRouter.put('/products/update/:pid', upload.single('thumbnail'), passpor
 
 DashboardRouter.post('/products/add', upload.single('thumbnail'), passportCall('login', 'admin'), isAdmin, addProduct);
 
-export default DashboardRouter;  
+DashboardRouter.post('/users/add', passport.authenticate('signup', { 
+    failureRedirect: '/failregister', 
+    failureMessage: true 
+}), postSignupDash);
+
+
+export default DashboardRouter;    

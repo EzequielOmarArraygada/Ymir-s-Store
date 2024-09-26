@@ -20,6 +20,10 @@ export class UserController {
         res.redirect('/login');
     }
 
+    postSignupDash = async (req, res) => {
+        res.redirect('/admin/users');
+    }
+
     postLogin = async (req, res) => {
         const { email, password } = req.body;
         try {
@@ -184,10 +188,7 @@ export class UserController {
                 email: user.email,
                 last_connection: user.last_connection,
             }));
-            console.log(result);
             res.render('adminUsers', { users });
-            console.log(users); 
-
         } catch (error) {
             req.logger.error(`Error al obtener los usuarios: ${error.message}`);
             res.status(500).send({ error: 'Ocurrió un error al obtener los usuarios.' });
@@ -267,4 +268,80 @@ export class UserController {
         }
         res.redirect('/login');
       }
+
+    addUser = async (req, res, next) => {
+        try {
+            const { first_name, last_name, email, age, password, role } = req.body;
+            const user = req.user; 
+
+            if (user.role !== 'admin') {
+                return res.status(403).send('Solo los usuarios admin pueden crear usuarios.');
+            }
+
+            const result = await this.usersService.createOne({
+                first_name,
+                last_name,
+                email,
+                age,
+                password: utils.createHash(password),
+                role
+            });
+
+            res.send({ result: 'success', payload: result });
+        } catch (error) {
+            req.logger.error(
+                `Error al agregar el producto: ${error.message}. Método: ${req.method}, URL: ${req.url} - ${new Date().toLocaleDateString()}`
+            );
+            res.status(500).send({ error: 'Error interno del servidor.' });
+        }
+    }
+
+    // updateUser = async (req, res, next) => {
+    //     try {
+    //         const { pid } = req.params;
+    //         const updatedData = req.body;
+    //         if (req.file) {
+    //             updatedData.age = `/uploads/assets/${req.file.filename}`; 
+    //         }
+    //         const result = await this.productsService.updateProduct(pid, updatedData);
+    //         res.send({ result: 'success', payload: result });
+    //     } catch (error) {
+    //         req.logger.error(`Error al actualizar el producto: ${error.message}`);
+    //         res.status(500).send({ error: 'Error al actualizar el producto.' });
+    //     }
+    // };
+    
+
+    // deleteUser = async (req, res) => {
+    //     console.log("ID del producto a eliminar:", req.params.id);
+    //     try {
+    //         const { pid } = req.params;
+    //         const product = await this.productsService.getProduct(pid);
+
+    //         if (!product) {
+    //             return res.status(404).send({ status: 'error', message: 'Producto no encontrado' });
+    //         }
+
+    //         // Encuentra el usuario dueño del producto
+    //         const user = await this.productsService.findUserByProductId(pid);
+
+    //         await this.productsService.deleteProduct(pid);
+
+    //         // Enviar correo si el usuario es premium  
+    //         if (user && user.role === 'premium' || 'admin') {
+    //             await sendEmail({
+    //                 to: user.email,
+    //                 subject: 'Producto eliminado',
+    //                 text: `Tu producto con ID ${pid} ha sido eliminado.`
+    //             });
+    //             req.logger.info(`Correo enviado a ${user.email} sobre la eliminación del producto ${pid}`);
+    //         }
+
+    //         res.send({ status: 'success', message: 'Producto eliminado exitosamente' });
+    //     } catch (error) {
+    //         req.logger.error(`Error al eliminar producto: ${error.message}, ${req.method} en ${req.url}`);
+    //         res.status(500).send({ status: 'error', message: 'Error interno del servidor' });
+    //     }
+    // }
+
 }
