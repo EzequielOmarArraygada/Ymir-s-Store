@@ -17,6 +17,7 @@ import { Server } from 'socket.io';
 import errorHandler from './middlewares/errors/index.js';
 import { addLogger } from './utils/logger.js';
 import swaggerConfig from './config/swagger.js';
+import { engine } from 'express-handlebars';
 
 dotenv.config();
 
@@ -27,15 +28,21 @@ const __dirname = dirname(__filename)
 
 const app = express();
 const PORT = process.env.PORT || 8080
-const hbs = handlebars.create({
-    helpers: {
-        json: function(context) {
-            return JSON.stringify(context);
-        }
-    }
-});
 
-app.engine('handlebars', hbs.engine);
+app.engine(
+    'handlebars',
+    engine({
+      runtimeOptions: {
+        allowProtoPropertiesByDefault: true,
+        allowProtoMethodsByDefault: true,
+      },
+      helpers: {
+        json: function (context) {
+          return JSON.stringify(context);
+        },
+      },
+    })
+  );
 app.use(addLogger)
 app.set('views', __dirname + '/views') 
 app.set('view engine', 'handlebars')
