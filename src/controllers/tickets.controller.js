@@ -27,4 +27,16 @@ export class TicketController {
         }
     }  
 
+    getTicketDetails = async (req, res) => {
+        try {
+            let { tid } = req.params;
+            let ticket = await this.ticketsService.getTicket(tid);
+            res.render('adminTicketsDetails', { ticket });
+        } catch (error) {
+            console.error(error);
+            res.status(500).send('Error al obtener los detalles del ticket');
+        }
+    };
+
 } 
+

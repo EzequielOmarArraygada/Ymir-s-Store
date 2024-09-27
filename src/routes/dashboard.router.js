@@ -38,6 +38,8 @@ const {
 
 const {
     getTickets,
+    updateStatus,
+    getTicketDetails
 } = new TicketController
 
 DashboardRouter.get('/', passportCall('login', 'admin'), isAdmin, renderAdmin);
@@ -63,5 +65,6 @@ DashboardRouter.put('/users/update/:uid', upload.single('profileImage'), passpor
 
 DashboardRouter.delete('/users/delete/:uid', passportCall('login', 'admin'), isAdmin, deleteUser);
 
+DashboardRouter.get('/tickets/details/:tid', passportCall('login', 'admin'), isAdmin, getTicketDetails);
 
 export default DashboardRouter;    

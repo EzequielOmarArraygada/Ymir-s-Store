@@ -14,4 +14,13 @@ export class TicketRepository {
         }
     }
 
+    async getTicketById(tid){
+        try {
+            return await this.model.findById(tid).lean(); 
+        } catch (error) {
+            console.error(`Error al obtener el ticket con ID ${pid}:`, error);
+            throw error;
+        }
+    }
+
 }

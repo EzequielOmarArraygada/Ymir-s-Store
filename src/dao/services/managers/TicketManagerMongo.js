@@ -14,5 +14,8 @@ export class TicketManagerMongo {
         }
     }
 
+    async getTicket(tid){
+        return await this.ticketRepository.getTicketById(tid);
+    }
 
 }

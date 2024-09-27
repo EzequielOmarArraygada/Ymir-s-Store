@@ -1,51 +1,52 @@
 <style>
   body {
     font-family: 'Arial', sans-serif;
-    background-color: #D9FFFF;
+    background-color: #F0F8FF;
     padding: 20px;
     display: flex;
     flex-direction: column;
     min-height: 100vh;
   }
 
-  .navbarDash {
-    background-color: #fffefe;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 10px 20px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    margin-bottom: 3%;
-  }
+ .navbarDash {
+        background-color: #fffefe; /* Cambiamos a blanco */
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px 20px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        margin-bottom: 3%;
+    }
 
-  .navbar-leftDash {
-    display: flex;
-    align-items: center;
-  }
+    .navbar-leftDash {
+        display: flex;
+        align-items: center;
+    }
 
-  .navbar-logoDash img {
-    width: 50px;
-    height: auto;
-    margin-right: 20px;
-  }
+    .navbar-logoDash img {
+        width: 50px; /* Ajusta el tamaño del logo según sea necesario */
+        height: auto;
+        margin-right: 20px;
+    }
 
-  .navbar-itemDash {
-    margin-right: 15px;
-    text-decoration: none;
-    color: #333;
-    font-weight: bold;
-  }
+    .navbar-itemDash {
+        margin-right: 15px;
+        text-decoration: none;
+        color: #333;
+        font-weight: bold;
+    }
 
-  .navbar-itemDash:last-child {
-    margin-right: 0;
-  }
+    .navbar-itemDash:last-child {
+        margin-right: 0;
+    }
 
   #search {
     margin-bottom: 20px;
-    padding: 10px;
+    padding: 12px;
     border: 1px solid #ccc;
     border-radius: 5px;
     width: 100%;
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
   }
 
   .ticket-container {
@@ -56,29 +57,36 @@
   }
 
   .ticket-card {
-    background-color: #fff;
-    border: 1px solid #ccc;
-    border-radius: 8px;
+    background-color: #ffffff;
+    border: 1px solid #ddd;
+    border-radius: 10px;
     padding: 20px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
     width: calc(33.333% - 20px);
-    box-sizing: border-box;
-    transition: transform 0.2s;
+    transition: transform 0.3s, box-shadow 0.3s;
+    text-decoration: none; /* Para que no aparezca el subrayado por defecto en los enlaces */
+    color: inherit; /* Para heredar el color del texto de la tarjeta */
+    display: block; /* Para hacer toda la tarjeta clicable */
   }
 
   .ticket-card:hover {
     transform: scale(1.05);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
   }
 
   .ticket-card h3 {
     margin-top: 0;
-    font-size: 18px;
+    font-size: 20px;
     color: #333;
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 10px;
+    margin-bottom: 10px;
   }
 
   .ticket-details {
     margin: 10px 0;
     color: #555;
+    font-size: 14px;
   }
 
   .ticket-products {
@@ -89,16 +97,24 @@
 
   .ticket-products li {
     background-color: #f9f9f9;
-    padding: 5px;
+    padding: 8px;
     margin-bottom: 5px;
     border-radius: 5px;
+    border-left: 4px solid #007bff;
+    color: #333;
+    font-size: 14px;
   }
 
   .ticket-actions a {
-    text-decoration: none;
+    text-decoration: underline;
     margin-right: 10px;
     color: #007bff;
     font-weight: bold;
+    transition: color 0.3s ease;
+  }
+
+  .ticket-actions a:hover {
+    color: #0056b3;
   }
 
   /* Estilos Responsivos */
@@ -131,7 +147,7 @@
 
 <div class="ticket-container">
   {{#each tickets}}
-  <div class="ticket-card">
+  <a href="/admin/tickets/details/{{this._id}}" class="ticket-card">
     <h3>Ticket ID: {{this._id}}</h3>
     <div class="ticket-details">
       <p><strong>Comprador:</strong> {{this.purchaser}}</p>
@@ -141,7 +157,6 @@
     <h4>Productos:</h4>
     
     {{#if this.products}}
-    <!-- Mostrar los productos para depuración -->
     <ul class="ticket-products">
       {{#each this.products}}
       <li>{{this.title}} - Cantidad: {{this.quantity}} - Precio: ${{this.price}}</li>
@@ -151,10 +166,6 @@
     <p>No hay productos en este ticket.</p>
     {{/if}}
     <p><strong>Monto Total:</strong> ${{this.totalAmount}}</p>
-    <div class="ticket-actions">
-      <a href="/admin/users/edit/{{this._id}}">Editar</a>
-      <a href="/admin/users/delete/{{this._id}}">Eliminar</a>
-    </div>
-  </div>
+  </a>
   {{/each}}
 </div>

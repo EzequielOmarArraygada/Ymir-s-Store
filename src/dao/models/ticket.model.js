@@ -20,7 +20,12 @@ const ticketSchema = new mongoose.Schema({
     purchase_datetime: { type: Date, default: Date.now },
     purchaser: { type: Object },
     products: [productSchema],
-    totalAmount: { type: Number } 
+    totalAmount: { type: Number },
+    status: {
+        type: String,
+        enum: ['Sin Ver', 'En Revisión', 'Preparando', 'En Envío', 'Completado', 'Cancelado'],
+        default: 'Sin Ver'
+      } 
 });
 
 const Ticket = mongoose.model('Ticket', ticketSchema);

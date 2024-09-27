@@ -1,0 +1,197 @@
+<style>
+  body {
+    font-family: 'Arial', sans-serif;
+    background-color: #D9FFFF;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+  }
+
+  .navbarDash {
+    background-color: #fffefe;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-bottom: 3%;
+  }
+
+  .navbar-leftDash {
+    display: flex;
+    align-items: center;
+  }
+
+  .navbar-logoDash img {
+    width: 50px;
+    height: auto;
+    margin-right: 20px;
+  }
+
+  .navbar-itemDash {
+    margin-right: 15px;
+    text-decoration: none;
+    color: #333;
+    font-weight: bold;
+  }
+
+  .navbar-itemDash:last-child {
+    margin-right: 0;
+  }
+
+  .ticket-details-container {
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    max-width: 800px;
+    margin: 0 auto;
+  }
+
+  .ticket-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+
+  .ticket-header h2 {
+    margin: 0;
+    color: #333;
+  }
+
+  .ticket-details {
+    margin: 10px 0;
+    color: #555;
+  }
+
+  .ticket-details p {
+    margin: 5px 0;
+  }
+
+  .ticket-products {
+    list-style-type: none;
+    padding: 0;
+    margin: 10px 0;
+  }
+
+  .ticket-products li {
+    background-color: #f9f9f9;
+    padding: 10px;
+    margin-bottom: 5px;
+    border-radius: 5px;
+  }
+
+  .ticket-actions {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+  }
+
+  .ticket-actions button,
+  .ticket-actions a {
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    text-decoration: none;
+    font-weight: bold;
+  }
+
+  .btn-primary {
+    background-color: #007bff;
+    color: #fff;
+  }
+
+  .btn-secondary {
+    background-color: #6c757d;
+    color: #fff;
+  }
+
+  .btn-danger {
+    background-color: #dc3545;
+    color: #fff;
+  }
+
+  /* Estilos Responsivos */
+  @media (max-width: 768px) {
+    .ticket-details-container {
+      padding: 15px;
+    }
+
+    .ticket-header h2 {
+      font-size: 18px;
+    }
+  }
+</style>
+
+<div class="navbarDash">
+  <div class="navbar-leftDash">
+    <div class="navbar-logoDash">
+      <img src="/uploads/assets/conf.png" alt="Logo">
+    </div>
+    <a href="/admin" class="navbar-itemDash">Dashboard</a>
+    <a href="/admin/users?page=1" class="navbar-itemDash">Usuarios</a>
+    <a href="/admin/products?page=1" class="navbar-itemDash">Productos</a>
+    <a href="/admin/tickets" class="navbar-itemDash">Pedidos</a>
+  </div>
+</div>
+
+<div class="ticket-details-container">
+  <div class="ticket-header">
+    <h2>Detalles del Ticket</h2>
+    <a href="/admin/tickets" class="btn-secondary">Volver</a>
+  </div>
+
+  <div class="ticket-details">
+    <p><strong>ID del Ticket:</strong> {{ticket._id}}</p>
+    <p><strong>Comprador:</strong> {{ticket.purchaser}}</p>
+    <p><strong>Código:</strong> {{ticket.code}}</p>
+    <p><strong>Fecha de Compra:</strong> {{ticket.purchase_datetime}}</p>
+    <p><strong>Monto Total:</strong> ${{ticket.totalAmount}}</p>
+    <p><strong>Estado:</strong> {{ticket.status}}</p>
+  </div>
+
+  <h4>Productos:</h4>
+  {{#if ticket.products}}
+  <ul class="ticket-products">
+    {{#each ticket.products}}
+    <li>
+      <strong>{{this.title}}</strong> - Cantidad: {{this.quantity}} - Precio: ${{this.price}}
+    </li>
+    {{/each}}
+  </ul>
+  {{else}}
+  <p>No hay productos en este ticket.</p>
+  {{/if}}
+
+  <div class="ticket-actions">
+    <button class="btn-primary" onclick="updateTicketStatus('Preparando')">Preparar Pedido</button>
+    <button class="btn-danger" onclick="updateTicketStatus('Cancelado')">Cancelar Pedido</button>
+  </div>
+</div>
+
+<script>
+  function updateTicketStatus(status) {
+    const ticketId = "{{ticket._id}}"; // Obtener el ID del ticket
+    fetch(`/admin/tickets/updateStatus`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ tid: ticketId, status: status }),
+    })
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          alert('Estado actualizado con éxito');
+          location.reload(); // Recargar la página para ver el estado actualizado
+        } else {
+          alert('Hubo un error al actualizar el estado');
+        }
+      })
+      .catch(error => console.error('Error:', error));
+  }
+</script>

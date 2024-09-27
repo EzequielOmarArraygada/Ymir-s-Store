@@ -40,9 +40,13 @@ app.engine(
         json: function (context) {
           return JSON.stringify(context);
         },
+        ifEquals: function (arg1, arg2, options) {
+          return arg1 === arg2 ? options.fn(this) : options.inverse(this);
+        },
       },
     })
   );
+  
 app.use(addLogger)
 app.set('views', __dirname + '/views') 
 app.set('view engine', 'handlebars')
