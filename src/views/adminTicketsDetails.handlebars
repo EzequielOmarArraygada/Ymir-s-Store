@@ -125,6 +125,62 @@
       font-size: 18px;
     }
   }
+
+  .btn-status {
+  padding: 10px 15px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: bold;
+  color: #fff;
+  opacity: 0.6; /* Apagado por defecto */
+  transition: opacity 0.3s;
+}
+
+.btn-status.active {
+  opacity: 1; /* Encendido cuando está activo */
+}
+
+.btn-pendiente {
+  background-color: orange;
+}
+
+.btn-preparando {
+  background-color: yellow;
+  color: #333; /* Texto oscuro para mejor legibilidad */
+}
+
+.btn-completado {
+  background-color: green;
+}
+
+.btn-cancelado {
+  background-color: red;
+}
+
+.btn-apagado {
+  background-color: grey;
+}
+.btn-back {
+  background-color: #007bff; /* Color azul */
+  color: #fff; /* Color del texto */
+  padding: 10px 20px; /* Espaciado */
+  border: none; /* Sin borde */
+  border-radius: 5px; /* Esquinas redondeadas */
+  cursor: pointer; /* Cambiar el cursor al pasar el ratón */
+  font-weight: bold; /* Texto en negrita */
+  transition: background-color 0.3s, transform 0.2s; /* Animaciones suaves */
+  text-decoration: none;
+}
+
+.btn-back:hover {
+  background-color: #0056b3; /* Color más oscuro al pasar el ratón */
+  transform: translateY(-2px); /* Elevar ligeramente el botón */
+}
+
+.btn-back:active {
+  transform: translateY(0); /* Regresar a la posición normal al hacer clic */
+}
 </style>
 
 <div class="navbarDash">
@@ -142,12 +198,12 @@
 <div class="ticket-details-container">
   <div class="ticket-header">
     <h2>Detalles del Ticket</h2>
-    <a href="/admin/tickets" class="btn-secondary">Volver</a>
+    <a href="/admin/tickets" class="btn-back">Volver</a>
   </div>
 
   <div class="ticket-details">
     <p><strong>ID del Ticket:</strong> {{ticket._id}}</p>
-    <p><strong>Comprador:</strong> {{ticket.purchaser}}</p>
+    <p><strong>Comprador:</strong> {{ticket.purchaser.email}}</p>
     <p><strong>Código:</strong> {{ticket.code}}</p>
     <p><strong>Fecha de Compra:</strong> {{ticket.purchase_datetime}}</p>
     <p><strong>Monto Total:</strong> ${{ticket.totalAmount}}</p>
@@ -168,15 +224,17 @@
   {{/if}}
 
   <div class="ticket-actions">
-    <button class="btn-primary" onclick="updateTicketStatus('Preparando')">Preparar Pedido</button>
-    <button class="btn-danger" onclick="updateTicketStatus('Cancelado')">Cancelar Pedido</button>
+  <button class="btn-status btn-pendiente {{#ifEquals ticket.status 'Pendiente'}}active{{else}}btn-apagado{{/ifEquals}}" onclick="updateTicketStatus('Pendiente')">Pendiente</button>
+  <button class="btn-status btn-preparando {{#ifEquals ticket.status 'Preparando'}}active{{else}}btn-apagado{{/ifEquals}}" onclick="updateTicketStatus('Preparando')">Preparando</button>
+  <button class="btn-status btn-completado {{#ifEquals ticket.status 'Completado'}}active{{else}}btn-apagado{{/ifEquals}}" onclick="updateTicketStatus('Completado')">Completado</button>
+  <button class="btn-status btn-cancelado {{#ifEquals ticket.status 'Cancelado'}}active{{else}}btn-apagado{{/ifEquals}}" onclick="updateTicketStatus('Cancelado')">Cancelado</button>
   </div>
 </div>
 
 <script>
   function updateTicketStatus(status) {
     const ticketId = "{{ticket._id}}"; // Obtener el ID del ticket
-    fetch(`/admin/tickets/updateStatus`, {
+    fetch(`/admin/tickets/details/updateStatus`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

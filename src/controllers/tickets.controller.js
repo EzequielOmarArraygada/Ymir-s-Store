@@ -38,5 +38,21 @@ export class TicketController {
         }
     };
 
+    updateStatus = async (req, res) => {
+        try {
+          const { tid, status } = req.body;
+          const updatedTicket = await this.ticketsService.updateTicketStatus(tid, status);
+    
+          if (updatedTicket) {
+            res.json({ success: true, message: 'Estado del ticket actualizado con éxito' });
+          } else {
+            res.status(404).json({ success: false, message: 'Ticket no encontrado' });
+          }
+        } catch (error) {
+          console.error(`Error al actualizar el estado del ticket: ${error.message}`);
+          res.status(500).json({ success: false, message: 'Error al actualizar el estado del ticket' });
+        }
+      };
+
 } 
 

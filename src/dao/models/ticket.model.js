@@ -21,11 +21,11 @@ const ticketSchema = new mongoose.Schema({
     purchaser: { type: Object },
     products: [productSchema],
     totalAmount: { type: Number },
-    status: {
+    status: { 
         type: String,
-        enum: ['Sin Ver', 'En Revisión', 'Preparando', 'En Envío', 'Completado', 'Cancelado'],
-        default: 'Sin Ver'
-      } 
+        enum: ['Pendiente', 'Preparando', 'Completado', 'Cancelado'], // Enum con los estados permitidos
+        default: 'Pendiente',
+      },
 });
 
 const Ticket = mongoose.model('Ticket', ticketSchema);

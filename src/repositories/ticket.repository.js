@@ -23,4 +23,16 @@ export class TicketRepository {
         }
     }
 
+    async updateTicketStatus(tid, status) {
+        try {
+          return await Ticket.findByIdAndUpdate(
+            tid,
+            { status },
+            { new: true } // Retorna el ticket actualizado
+          );
+        } catch (error) {
+          throw new Error(`Error al actualizar el estado del ticket: ${error.message}`);
+        }
+      }
+
 }

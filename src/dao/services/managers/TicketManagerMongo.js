@@ -18,4 +18,16 @@ export class TicketManagerMongo {
         return await this.ticketRepository.getTicketById(tid);
     }
 
+    async updateTicketStatus(id, status) {
+        try {
+          const updatedTicket = await this.ticketRepository.updateTicketStatus(id, status);
+          if (!updatedTicket) {
+            throw new Error('No se pudo actualizar el estado del ticket');
+          }
+          return updatedTicket;
+        } catch (error) {
+          throw new Error(`Error al actualizar el estado del ticket: ${error.message}`);
+        }
+      }
+
 }

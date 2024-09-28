@@ -39,7 +39,7 @@ const {
 const {
     getTickets,
     updateStatus,
-    getTicketDetails
+    getTicketDetails,
 } = new TicketController
 
 DashboardRouter.get('/', passportCall('login', 'admin'), isAdmin, renderAdmin);
@@ -67,4 +67,7 @@ DashboardRouter.delete('/users/delete/:uid', passportCall('login', 'admin'), isA
 
 DashboardRouter.get('/tickets/details/:tid', passportCall('login', 'admin'), isAdmin, getTicketDetails);
 
+DashboardRouter.post('/tickets/details/updateStatus', passportCall('login', 'admin'), isAdmin, updateStatus);
+
 export default DashboardRouter;    
+
