@@ -90,7 +90,7 @@ UsersRouter.post('/login', postLogin);
  *       401:
  *         description: Usuario no autenticado
  */
-UsersRouter.get('/signout', passportCall('login', 'user'), getSignOut);
+UsersRouter.get('/signout', getSignOut);
 
 /**
  * @swagger

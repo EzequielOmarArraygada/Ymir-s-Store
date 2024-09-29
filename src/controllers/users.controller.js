@@ -77,15 +77,15 @@ export class UserController {
             return res.status(500).send({ status: 'error', message: 'Error interno del servidor.' });
         }
     }
+    
     getSignOut = async (req, res, next) => {
         try {
             req.logout((err) => {
                 if (err) {
                     return next(err);
                 }
-                res.redirect('/login');
+                res.clearCookie('coderCookieToken').redirect('/login');
             });
-            res.clearCookie('coderCookieToken').redirect('/login');
         } catch (error) {
             console.error(`Error al cerrar sesión: ${error.message}`);
             res.status(500).send({ status: 'error', message: 'Error al cerrar sesión.' });
