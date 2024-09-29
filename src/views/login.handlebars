@@ -62,12 +62,30 @@
             text-decoration: underline;
         }
     </style>
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const error = urlParams.get('error');
+        
+        if (error) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: error,
+                confirmButtonColor: '#faa3a3'
+            });
+        }
+
+    });
+        
+    
+</script>
 </head>
 <body>
     <div class="center">
         <div class="form">
             <h2>Iniciar Sesión</h2>
-            <form method="POST" action="/api/sessions/login">
+            <form id="loginForm" method="POST" action="/api/sessions/login">
                 <label for="email">Email:</label>
                 <input type="email" id="email" name="email" required>
                 <label for="password">Contraseña:</label>

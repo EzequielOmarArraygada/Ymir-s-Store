@@ -35,7 +35,7 @@ export class UserController {
             if (!user) {
                 req.logger.warn(`Intento de inicio de sesión con un usuario no existente: ${email}, ${req.method} en ${req.url} - ${new Date().toLocaleDateString()}`);
                 req.logger.debug('Enviando respuesta de error: usuario no existe');
-                return res.status(401).send({ status: 'error', message: 'El usuario no existe.' });
+                return res.redirect('/login?error=Email no registrado');
             }
     
             req.session.clientId = user._id;
@@ -48,7 +48,7 @@ export class UserController {
             if (!isValid) {
                 req.logger.warn(`Intento de inicio de sesión fallido para el usuario: ${email}, ${req.method} en ${req.url} - ${new Date().toLocaleDateString()}`);
                 req.logger.debug('Redirigiendo a /faillogin');
-                return res.status(401).redirect('/faillogin');
+                return res.redirect('/login?error=Contraseña incorrecta');
             }
     
             const tokenUser = {
