@@ -148,39 +148,11 @@
             border-radius: 4px;
         }
     </style>
-</head>
-<body>
-    <ul class="cart-items">
-        {{#each productsDetails}}
-        <li class="cart-item">
-            <div class="cart-item-details">
-                <h2>{{this.title}}</h2>
-                <p>Precio: ${{this.price}}</p>
-                <p>Cantidad: {{this.quantity}}</p>
-            </div>
-            <img src="{{this.thumbnail}}" alt="DetailImg" class="DetailImg">
-            <button class="remove-item" data-product-id="{{this._id}}">X</button>
-        </li>
-        {{/each}}
-    </ul>
-    <div>
-        <strong>Total:</strong> ${{totalPrice}}
-    </div>
-    <div class="checkout-buttons">
-        <button class="checkoutButton" id="empty-cart">Vaciar Carrito</button>
-        <button class="checkoutButton" id="checkoutButton">Finalizar Compra</button>
-    </div>
-    <div id="ticketModal" class="modal">
-        <div class="modal-content">
-            <span class="close">&times;</span>
-            <h2>¡Gracias por comprar con nosotros!</h2>
-            <p>Detalles de la compra:</p>
-            <ul id="ticketDetails"></ul>
-            <p>Total: <span id="ticketTotal"></span></p>
-            <h5>Recibirás un email a tu correo con los datos de la compra</h5>
-        </div>
-    </div>
-    <script>
+     <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        console.log('DOM cargado');
+
+        // Añadir el evento al botón de finalizar compra
         document.getElementById('checkoutButton').addEventListener('click', async function() {
             try {
                 const cartId = '{{cartId}}';
@@ -230,42 +202,103 @@
             }
         });
 
-        document.addEventListener('DOMContentLoaded', () => {
-            document.querySelectorAll('.remove-item').forEach(button => {
-                button.addEventListener('click', async (event) => {
-                    const productId = event.target.dataset.productId;
-                    const cartId = '{{cartId}}'; 
-                    try {
-                        const response = await fetch(`/api/carts/${cartId}/products/${productId}`, {
-                            method: 'DELETE'
-                        });
-                        if (response.ok) {
-                            location.reload(); 
-                        } else {
-                            console.error('Error al eliminar el artículo del carrito');
-                        }
-                    } catch (error) {
-                        console.error('Error al comunicarse con el servidor', error);
-                    }
-                });
-            });
-
-            document.getElementById('empty-cart').addEventListener('click', async () => {
+        // Añadir el evento para eliminar artículos
+        document.querySelectorAll('.remove-item').forEach(button => {
+            button.addEventListener('click', async (event) => {
+                const productId = event.target.dataset.productId;
                 const cartId = '{{cartId}}'; 
                 try {
-                    const response = await fetch(`/api/carts/${cartId}`, {
+                    const response = await fetch(`/api/carts/${cartId}/products/${productId}`, {
                         method: 'DELETE'
                     });
                     if (response.ok) {
                         location.reload(); 
                     } else {
-                        console.error('Error al vaciar el carrito');
+                        console.error('Error al eliminar el artículo del carrito');
                     }
                 } catch (error) {
                     console.error('Error al comunicarse con el servidor', error);
                 }
             });
         });
-    </script>
+
+        // Añadir el evento para vaciar el carrito
+        document.getElementById('empty-cart').addEventListener('click', async () => {
+            const cartId = '{{cartId}}'; 
+            console.log('Cart ID:', cartId);
+
+            try {
+                const response = await fetch(`/api/carts/${cartId}`, {
+                    method: 'DELETE'
+                });
+                if (response.ok) {
+                    location.reload(); 
+                } else {
+                    console.error('Error al vaciar el carrito');
+                }
+            } catch (error) {
+                console.error('Error al comunicarse con el servidor', error);
+            }
+        });
+
+        // Llamar a la función de actualización de conteo del carrito
+        const cartId = '{{cartId}}';
+        console.log('Cart ID:', cartId);
+
+        async function updateCartCount() {
+            console.log('Ejecutando updateCartCount');
+            try {
+                const response = await fetch(`/api/carts/${cartId}/count`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                });
+                if (response.ok) {
+                    const cart = await response.json();
+                    const cartCount = cart.cart.products.reduce((total, product) => total + product.quantity, 0);
+                    const cartCountGreaterThanZero = cartCount > 0;
+                    document.getElementById('cart-count').innerText = cartCount;
+                    document.getElementById('cart-count').style.display = cartCountGreaterThanZero ? 'inline-block' : 'none';
+                }
+            } catch (error) {
+                console.error('Error al obtener el conteo del carrito', error);
+            }
+        }
+        updateCartCount();
+    });
+</script>
+</head>
+<body>
+    <ul class="cart-items">
+        {{#each productsDetails}}
+        <li class="cart-item">
+            <div class="cart-item-details">
+                <h2>{{this.title}}</h2>
+                <p>Precio: ${{this.price}}</p>
+                <p>Cantidad: {{this.quantity}}</p>
+            </div>
+            <img src="{{this.thumbnail}}" alt="DetailImg" class="DetailImg">
+            <button class="remove-item" data-product-id="{{this._id}}">X</button>
+        </li>
+        {{/each}}
+    </ul>
+    <div>
+        <strong>Total:</strong> ${{totalPrice}}
+    </div>
+    <div class="checkout-buttons">
+        <button class="checkoutButton" id="empty-cart">Vaciar Carrito</button>
+        <button class="checkoutButton" id="checkoutButton">Finalizar Compra</button>
+    </div>
+    <div id="ticketModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>¡Gracias por comprar con nosotros!</h2>
+            <p>Detalles de la compra:</p>
+            <ul id="ticketDetails"></ul>
+            <p>Total: <span id="ticketTotal"></span></p>
+            <h5>Recibirás un email a tu correo con los datos de la compra</h5>
+        </div>
+    </div>
 </body>
 </html>

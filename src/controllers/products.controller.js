@@ -38,11 +38,13 @@ export class ProductController {
 
             const result = await this.productsService.getProducts(page, limit, sortOrder, category, status);
 
+            const availableProducts = result.docs.filter(product => product.stock > 0);
+
             result.prevLink = result.hasPrevPage ? `/products?page=${result.prevPage}` : '';
             result.nextLink = result.hasNextPage ? `/products?page=${result.nextPage}` : '';
             result.isValid = !(page <= 0 || page > result.totalPages);
 
-            res.render('products', { user: req.user, products: result.docs, cartId, ...result });
+            res.render('products', { user: req.user, products: availableProducts, cartId, ...result });
 
         } catch (error) {
             req.logger.error(
