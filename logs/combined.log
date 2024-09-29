@@ -1,27 +1,10 @@
-2024-06-15 15:46:55 [ERROR]: Error al procesar la compra para el carrito con ID 6618649fee1413a3837125be y usuario undefined: products validation failed: status: Cast to Boolean failed for value 'No disponible' (type string) at path 'status' because of 'CastError'
-2024-06-15 16:20:03 [ERROR]: Error al agregar el producto con ID 666de8dad3078e605d21ef65 al carrito con ID 6618649fee1413a3837125be: No se encontró el carrito con ID 6618649fee1413a3837125be
-2024-06-15 16:20:06 [ERROR]: Error al agregar el producto con ID 666de8dad3078e605d21ef64 al carrito con ID 6618649fee1413a3837125be: No se encontró el carrito con ID 6618649fee1413a3837125be
-2024-07-06 20:55:08 [ERROR]: Error al agregar el producto con ID 6689d3a82d21996c0ba2a211 al carrito con ID 6687076a23be523f1116c555: Cannot read properties of undefined (reading 'find')
-2024-07-06 20:55:38 [ERROR]: Error al agregar el producto con ID 666de8dad3078e605d21ef6a al carrito con ID 6687076a23be523f1116c555: Cannot read properties of undefined (reading 'find')
-2024-07-14 11:39:10 [ERROR]: Error al obtener el carrito con ID purchase: Cast to ObjectId failed for value "purchase" (type string) at path "_id" for model "carts"
-2024-07-14 23:47:04 [ERROR]: Error al obtener el carrito con ID 668c877277b7f2244a1bc3a7: read ECONNRESET
-2024-07-16 16:37:51 [ERROR]: Error al obtener el carrito con ID enro.jpg: Cast to ObjectId failed for value "enro.jpg" (type string) at path "_id" for model "carts"
-2024-07-16 16:37:51 [ERROR]: Error al obtener el carrito con ID sin_foto.jpg: Cast to ObjectId failed for value "sin_foto.jpg" (type string) at path "_id" for model "carts"
-2024-07-16 17:17:03 [ERROR]: Error al obtener el carrito con ID sin_foto.jpg: Cast to ObjectId failed for value "sin_foto.jpg" (type string) at path "_id" for model "carts"
-2024-07-28 13:06:14 [ERROR]: Error al obtener el carrito con ID count: Cast to ObjectId failed for value "count" (type string) at path "_id" for model "carts"
-2024-07-28 13:06:16 [ERROR]: Error al obtener el carrito con ID count: Cast to ObjectId failed for value "count" (type string) at path "_id" for model "carts"
-2024-07-28 13:06:42 [ERROR]: Error al obtener el carrito con ID count: Cast to ObjectId failed for value "count" (type string) at path "_id" for model "carts"
-2024-07-28 13:06:52 [ERROR]: Error al obtener el carrito con ID count: Cast to ObjectId failed for value "count" (type string) at path "_id" for model "carts"
-2024-07-28 13:06:54 [ERROR]: Error al obtener el carrito con ID count: Cast to ObjectId failed for value "count" (type string) at path "_id" for model "carts"
-2024-07-28 13:09:18 [ERROR]: Error al obtener el carrito con ID count: Cast to ObjectId failed for value "count" (type string) at path "_id" for model "carts"
-2024-07-28 13:09:21 [ERROR]: Error al obtener el carrito con ID count: Cast to ObjectId failed for value "count" (type string) at path "_id" for model "carts"
-2024-07-28 13:11:44 [ERROR]: Error al obtener el carrito con ID count: Cast to ObjectId failed for value "count" (type string) at path "_id" for model "carts"
-2024-07-28 13:11:46 [ERROR]: Error al obtener el carrito con ID count: Cast to ObjectId failed for value "count" (type string) at path "_id" for model "carts"
-2024-07-28 13:17:34 [ERROR]: Error al obtener el carrito con ID count: Cast to ObjectId failed for value "count" (type string) at path "_id" for model "carts"
-2024-07-28 13:17:36 [ERROR]: Error al obtener el carrito con ID count: Cast to ObjectId failed for value "count" (type string) at path "_id" for model "carts"
-2024-07-28 13:18:02 [ERROR]: Error al obtener el carrito con ID count: Cast to ObjectId failed for value "count" (type string) at path "_id" for model "carts"
-2024-07-28 13:18:11 [ERROR]: Error al obtener el carrito con ID count: Cast to ObjectId failed for value "count" (type string) at path "_id" for model "carts"
-2024-07-28 13:18:13 [ERROR]: Error al obtener el carrito con ID count: Cast to ObjectId failed for value "count" (type string) at path "_id" for model "carts"
-2024-07-28 17:10:19 [ERROR]: Error al eliminar el producto con ID 666de8dad3078e605d21ef62 del carrito con ID ID_DEL_CARRITO: Cast to ObjectId failed for value "ID_DEL_CARRITO" (type string) at path "_id" for model "carts"
-2024-09-21 21:42:53 [ERROR]: Error al obtener el carrito con ID count: Cast to ObjectId failed for value "count" (type string) at path "_id" for model "carts"
-2024-09-21 21:43:16 [ERROR]: Error al obtener el carrito con ID count: Cast to ObjectId failed for value "count" (type string) at path "_id" for model "carts"
+2024-09-29 13:38:21 [ERROR]: Error al obtener el carrito con ID count: Cast to ObjectId failed for value "count" (type string) at path "_id" for model "carts"
+2024-09-29 13:38:26 [ERROR]: Error al obtener el carrito con ID count: Cast to ObjectId failed for value "count" (type string) at path "_id" for model "carts"
+2024-09-29 13:38:44 [ERROR]: Error al obtener el carrito con ID count: Cast to ObjectId failed for value "count" (type string) at path "_id" for model "carts"
+2024-09-29 13:38:50 [ERROR]: Error al obtener el carrito con ID count: Cast to ObjectId failed for value "count" (type string) at path "_id" for model "carts"
+2024-09-29 13:38:52 [ERROR]: Error al obtener el carrito con ID count: Cast to ObjectId failed for value "count" (type string) at path "_id" for model "carts"
+2024-09-29 13:38:53 [ERROR]: Error al obtener el carrito con ID count: Cast to ObjectId failed for value "count" (type string) at path "_id" for model "carts"
+2024-09-29 13:38:56 [ERROR]: Error al obtener el carrito con ID count: Cast to ObjectId failed for value "count" (type string) at path "_id" for model "carts"
+2024-09-29 13:44:37 [ERROR]: Error al obtener el carrito con ID count: Cast to ObjectId failed for value "count" (type string) at path "_id" for model "carts"
+2024-09-29 13:44:39 [ERROR]: Error al obtener el carrito con ID count: Cast to ObjectId failed for value "count" (type string) at path "_id" for model "carts"
+2024-09-29 13:44:52 [ERROR]: Error al obtener el carrito con ID count: Cast to ObjectId failed for value "count" (type string) at path "_id" for model "carts"

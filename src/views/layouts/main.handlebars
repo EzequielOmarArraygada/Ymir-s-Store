@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang='en'>
+
 <head>
     <meta charset='UTF-8'>
     <meta name='viewport' content='width=device-width, initial-scale=1.0'>
@@ -7,100 +8,179 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
     <style>
-    body {
-        font-family: 'Arial', sans-serif;
-        margin: 0;
-        padding: 0;
-        display: flex;
-        flex-direction: column;
-        min-height: 100vh;
-        background-color: #f4f4f9;
-    }
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            background-color: #f4f4f9;
+        }
 
-    .navbar {
-        background-color: #fff; /* Cambiamos a blanco */
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 10px 20px;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        margin-bottom: 1%;
-    }
+        .navbar {
+            background-color: #fff;
+            /* Cambiamos a blanco */
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            margin-bottom: 1%;
+        }
 
-    .navbar-left, .navbar-right {
-        display: flex;
-        align-items: center;
-    }
+        .navbar-left,
+        .navbar-right {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 20px;
+        }
 
-    .navbar-logo img {
-        width: 50px; /* Ajusta el tamaño del logo según sea necesario */
-        height: auto;
-        margin-right: 20px;
-    }
+        .navbar-logo img {
+            width: 50px;
+            /* Ajusta el tamaño del logo según sea necesario */
+            height: auto;
+            margin-right: 20px;
+        }
 
-    .navbar-item {
-        margin-right: 15px;
-        text-decoration: none;
-        color: #333;
-        font-weight: bold;
-    }
+        .navbar-item {
+            margin-right: 15px;
+            text-decoration: none;
+            color: #333;
+            font-weight: bold;
+        }
 
-    .navbar-item:last-child {
-        margin-right: 0;
-    }
+        .navbar-item:last-child {
+            margin-right: 0;
+        }
 
-    .cart-icon {
-        font-size: 24px;
-        color: #333;
-        margin-left: auto;
-        cursor: pointer;
-        transition: transform 0.3s ease;
-        position: relative;
-        margin-right: 15px;
-    }
+        .cart-icon {
+            font-size: 24px;
+            color: #333;
+            margin-left: auto;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+            position: relative;
+            margin-right: 15px;
+        }
 
-    .cart-icon:hover {
-        transform: scale(1.1); 
-    }
+        #user-icon {
+            font-size: 24px;
+            color: #333;
+            cursor: pointer;
+            transition: transform 0.3s ease, color 0.3s ease;
+            margin-right: 70px;
+        }
 
-    #cart-count {
-        background-color: #ff6456;
-        color: #fff;
-        border-radius: 50%;
-        padding: 1px 6px;
-        font-size: 12px;
-        font-weight: 200;
-        position: absolute;
-        top: -10px;
-        right: -10px;
-    }
 
-    .footer {
-        background-color: #b9ffff;
-        text-align: center;
-        padding: 20px;
-        margin-top: 3%;
-        box-shadow: 0 -2px 4px rgba(0,0,0,0.1);
-    }
+        #user-icon:hover {
+            transform: scale(1.1);
+            color: #ff6456;
+            /* Color al pasar el cursor */
+        }
 
-    .social-icons {
-        margin-bottom: 10px;
-    }
+        #cart-count {
+            background-color: #ff6456;
+            color: #fff;
+            border-radius: 50%;
+            padding: 1px 6px;
+            font-size: 12px;
+            font-weight: 200;
+            position: absolute;
+            top: -10px;
+            right: -10px;
+        }
 
-    .social-icons a {
-        margin: 0 10px;
-        color: #333;
-        text-decoration: none;
-        transition: color 0.3s ease;
-    }
+        .footer {
+            background-color: #333;
+            color: #fff;
+            padding: 20px;
+            margin-top: 3%;
+            box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.1);
+        }
 
-    .social-icons a:hover {
-        color: #ff6456;
-    }
+        .footer p {
+            margin: 0;
+        }
+
+        .social-icons {
+            margin-bottom: 10px;
+        }
+
+        .social-icons a {
+            color: #fff;
+            margin: 0 10px;
+        }
+
+        .social-icons a:hover {
+            color: #ff6456;
+        }
+
+        .user-menu {
+            position: relative;
+            display: inline-block;
+        }
+
+        #user-icon {
+            font-size: 24px;
+            cursor: pointer;
+            color: #333;
+        }
+
+        #user-dropdown {
+            display: none;
+            position: absolute;
+            right: 0;
+            background-color: white;
+            box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
+            min-width: 150px;
+            z-index: 1;
+            text-align: center;
+            margin-right: 3%;
+        }
+
+        #user-dropdown a,
+        #user-dropdown button {
+            padding: 10px;
+            display: block;
+            text-decoration: none;
+            color: #333;
+            background-color: white;
+            border: none;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        #user-dropdown a:hover,
+        #user-dropdown button:hover {
+            background-color: #f4f4f9;
+        }
     </style>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const userIcon = document.getElementById('user-icon');
+            if (userIcon) {
+                userIcon.addEventListener('click', function () {
+                    const dropdown = document.getElementById('user-dropdown');
+                    dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
+                });
+            }
+
+            window.onclick = function (event) {
+                if (!event.target.matches('#user-icon')) {
+                    const dropdown = document.getElementById('user-dropdown');
+                    if (dropdown) {
+                        dropdown.style.display = 'none';
+                    }
+                }
+            };
+        });
+    </script>
 </head>
+
 <body>
     <div class="navbar">
         <div class="navbar-left">
@@ -114,13 +194,27 @@
             <a href="/" class="navbar-item">Proximamente</a>
         </div>
         <div class="navbar-right">
-            <a href="/api/sessions/signout" class="navbar-item">Desconectarse</a>
+            <div class="user-menu">
+                <i class="fa fa-user" id="user-icon"></i>
+                <div class="dropdown-content" id="user-dropdown">
+                    {{#if user}}
+                    <form action="/api/sessions/signout" method="GET">
+                        <button type="submit">Cerrar sesión</button>
+                    </form>
+                    {{else}}
+                    <a href="/login">Abrir sesión</a>
+                    {{/if}}
+                </div>
+            </div>
+            {{#if user}}
             <a id='goToCartButton' class="cart-icon">
                 <i class="fas fa-shopping-cart"></i>
-                <span id="cart-count" {{#if cartCountGreaterThanZero}}style="display: inline-block;"{{/if}}>
+                <span id="cart-count" {{#if cartCountGreaterThanZero}}style="display: inline-block;" {{/if}}>
                     {{cartCount}}
                 </span>
             </a>
+            {{/if}}
+
         </div>
     </div>
 
@@ -128,7 +222,8 @@
     <footer class="footer">
         <div class="social-icons">
             <a href="https://www.facebook.com/ataumababyshop/" target="_blank"><i class="fab fa-facebook-f"></i></a>
-            <a href="https://api.whatsapp.com/send?phone=541136509829" target="_blank"><i class="fab fa-whatsapp"></i></a>
+            <a href="https://api.whatsapp.com/send?phone=541136509829" target="_blank"><i
+                    class="fab fa-whatsapp"></i></a>
             <a href="https://www.instagram.com/ata.uma" target="_blank"><i class="fab fa-instagram"></i></a>
         </div>
         <div>
@@ -138,7 +233,8 @@
             <p>&copy; 2024 DTweb - Dante Terrenator Web. Todos los derechos reservados.</p>
         </div>
     </footer>
-<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
 </body>
+
 </html>
