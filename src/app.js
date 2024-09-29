@@ -94,40 +94,12 @@ app.use((req, res, next) => {
     }
 });
 
-
-app.get('/logout', (req, res, next) => {
-	req.logout((err) => {
-		if (err) {
-			return next(err);
-		}
-		res.redirect('/login');
-	});
-});
-
-app.get('/current', passportCall('login', 'admin'), (req, res) => {
-    if (req.isAuthenticated()) {
-        const userDTO = new UserDTO(req.user);
-        res.render('current', { user: userDTO });
-    } else {
-        res.redirect('/login');
-    }
-});
-
-
 app.get('/failregister', (req, res) => {
     req.logger.error(
         `Fallo en el registro!, ${req.method} en ${req.url} - ${new Date().toLocaleDateString()}`
     )
     res.status(400).send({ error: 'Fallo en el registro' })
 });
-
-app.get('/faillogin', (req, res) => {
-    req.logger.error(
-        `Login fallido!, ${req.method} en ${req.url} - ${new Date().toLocaleDateString()}`
-    )
-    res.status(400).send({ error: 'Fallo en el login' })
-});
-
 
 app.use(router);
 
