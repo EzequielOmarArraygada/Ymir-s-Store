@@ -27,6 +27,7 @@ export class CartController {
         try {
             const { cid } = req.params;
             const cart = await this.cartsService.getCartById(cid);
+            const user = req.user
             const productsDetails = [];
             let totalPrice = 0;
     
@@ -38,7 +39,7 @@ export class CartController {
                 const subtotal = productDetails.price * product.quantity;
                 totalPrice += subtotal;
             }
-            res.render('carts', { cart, productsDetails, totalPrice, cartId: cart._id });
+            res.render('carts', { cart, user, productsDetails, totalPrice, cartId: cart._id });
         } catch (error) {
             req.logger.error(
                 `Error al recuperar el carrito por ID: ${error.message}. Método: ${req.method}, URL: ${req.url} - ${new Date().toLocaleDateString()}`
