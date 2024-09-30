@@ -1,39 +1,53 @@
 import productModel from '../dao/models/product.model.js';
 
 export class ProductRepository {
-    constructor(){
+    constructor() {
         this.model = productModel;
     }
-    
-    async getProducts(page, limit, sortOrder, category, status) {
+
+    async getProducts(page, limit, sortOrder, category, status, filter) {
         try {
+            let query = { ...filter };
+            let sortOptions = {};
             const options = {
                 page: page || 1,
                 limit: limit || 10,
-                sort: sortOrder ? { price: sortOrder === 'asc' ? 1 : -1 } : null,
+                sort: sortOptions,
                 lean: true
             };
 
-            const query = category ? { category: category } : {};
-            const queryStatus = status ? { status: status } : {};
+           
 
-            return await this.model.paginate({ ...query, ...queryStatus }, options);
+            if (sortOrder) {
+                if (sortOrder === 'asc') sortOptions.price = 1; // Menor a mayor
+                if (sortOrder === 'desc') sortOptions.price = -1; // Mayor a menor
+            }
+
+            if (status) {
+                query.status = status;
+            }
+
+            if (status) {
+                query.status = status;
+            }
+
+            return await this.model.paginate(query, options);
         } catch (error) {
             console.error('Error al obtener los productos:', error);
             throw error;
         }
     }
 
-    async getProductById(pid){
+    async getProductById(pid) {
         try {
-            return await this.model.findById(pid).lean(); 
+            return await this.model.findById(pid).lean();
         } catch (error) {
             console.error(`Error al obtener el producto con ID ${pid}:`, error);
             throw error;
         }
     }
-    
-    async addProduct(newProduct){
+
+    async addProduct(newProduct) {
         try {
             return await this.model.create(newProduct);
         } catch (error) {
@@ -41,8 +55,8 @@ export class ProductRepository {
             throw error;
         }
     }
-    
-    async updateProduct(pid, updatedProduct){
+
+    async updateProduct(pid, updatedProduct) {
         try {
             return await this.model.findByIdAndUpdate(pid, updatedProduct, { new: true });
         } catch (error) {
@@ -50,8 +64,8 @@ export class ProductRepository {
             throw error;
         }
     }
-    
-    async deleteProduct(pid){
+
+    async deleteProduct(pid) {
         try {
             return await this.model.findByIdAndDelete(pid);
         } catch (error) {
@@ -69,5 +83,5 @@ export class ProductRepository {
             throw error;
         }
     }
-    
+
 }

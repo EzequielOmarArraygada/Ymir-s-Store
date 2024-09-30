@@ -5,9 +5,9 @@ export class ProductManagerMongo {
         this.repository = new ProductRepository();
     }
     
-    async getProducts(page, limit, sortOrder, category, status) {
-        return await this.repository.getProducts(page, limit, sortOrder, category, status);
-    }
+    async getProducts(page, limit, sortOrder, category, status, filter) {
+        return await this.repository.getProducts(page, limit, sortOrder, category, status, filter);
+    }  
     
     async getProduct(pid){
         return await this.repository.getProductById(pid);

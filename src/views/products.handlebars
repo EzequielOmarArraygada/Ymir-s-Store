@@ -1,255 +1,402 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lista de Productos</title>
     <style>
-
         @media (max-width: 768px) {
-    .product-details-card {
-        padding: 10px;
-    }
+            .product-details-card {
+                padding: 10px;
+            }
 
-    .product-info h1 {
-        font-size: 1.5rem;
-    }
+            .product-info h1 {
+                font-size: 1.5rem;
+            }
 
-    .addButton {
-        flex-direction: column; /* Cambiar la disposición a columna en pantallas pequeñas */
-    }
-}
-    body {
-        font-family: 'Arial', sans-serif;
-        line-height: 1.6;
-        background-color: #D9FFFF; 
-        padding: 20px;
-        display: flex;
-        flex-direction: column;
-        min-height: 100vh;
-    }
+            .addButton {
+                flex-direction: column;
+            }
+        }
 
-    h1 {
-        color: #333;
-        text-align: center;
-    }
+        body {
+            font-family: 'Arial', sans-serif;
+            line-height: 1.6;
+            background-color: #D9FFFF;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
 
-    .container {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 20px;
-        justify-content: center;
-        margin-top: 2%;
-    }
+        h1 {
+            color: #333;
+            text-align: center;
+        }
 
-    .card {
-        background-color: #FFFFCF; 
-        border-radius: 8px;
-        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-        width: 100%;
-        max-width: 300px;
-        padding: 20px;
-        text-align: center;
-        transition: transform 0.3s ease;
-        flex: 1 1 250px;
-    }
+        .container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+            margin-top: 2%;
+        }
 
-    .card:hover {
-        transform: translateY(-5px); 
-    }
+        .card {
+            background-color: #FFFFCF;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 300px;
+            padding: 20px;
+            text-align: center;
+            transition: transform 0.3s ease;
+            flex: 1 1 250px;
+        }
 
-    .card img {
-        max-width: 100%;
-        border-radius: 8px;
-        margin-bottom: 15px;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    }
+        .card:hover {
+            transform: translateY(-5px);
+        }
 
-    .card h2 {
-        color: #333;
-        font-size: clamp(1rem, 1.5vw, 1.5rem);
-        margin-bottom: 10px;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        text-decoration: none;
-    }
+        .card img {
+            max-width: 100%;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
 
-    .card p {
-        color: #666;
-        line-height: 1.4;
-    }
+        .card h2 {
+            color: #333;
+            font-size: clamp(1rem, 1.5vw, 1.5rem);
+            margin-bottom: 10px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            text-decoration: none;
+        }
 
-    .card a {
-        text-decoration: none;
-    }
+        .card p {
+            color: #666;
+            line-height: 1.4;
+        }
 
-    .quantityWrapper {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        gap: 10px;
-    }
+        .card a {
+            text-decoration: none;
+        }
 
-    .quantityButton {
-        background-color: #f5aeae; 
-        color: #333;
-        border: none;
-        padding: 5px 10px;
-        cursor: pointer;
-        border-radius: 4px;
-        transition: background-color 0.3s ease;
-    }
+        .quantityWrapper {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+        }
 
-    .quantityButton:hover {
-        background-color: #f8d0d0; 
-    }
+        .quantityButton {
+            background-color: #f5aeae;
+            color: #333;
+            border: none;
+            padding: 5px 10px;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: background-color 0.3s ease;
+        }
 
-    .quantityInput {
-        width: 25px;
-        text-align: center;
-        -moz-appearance: textfield; 
-    }
+        .quantityButton:hover {
+            background-color: #f8d0d0;
+        }
 
-    .quantityInput::-webkit-outer-spin-button,
-    .quantityInput::-webkit-inner-spin-button {
-        -webkit-appearance: none;
-        margin: 0;
-    }
+        .quantityInput {
+            width: 25px;
+            text-align: center;
+            -moz-appearance: textfield;
+        }
 
-    .addToCartButton {
-        background-color: #f5aeae; 
-        color: #333;
-        border: none;
-        padding: 8px 16px;
-        cursor: pointer;
-        border-radius: 4px;
-        transition: background-color 0.3s ease;
-        margin-top: 10px;
-    }
+        .quantityInput::-webkit-outer-spin-button,
+        .quantityInput::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
 
-    .addToCartButton:hover {
-        background-color: #f8d0d0; 
-    }
+        .addToCartButton {
+            background-color: #f5aeae;
+            color: #333;
+            border: none;
+            padding: 8px 16px;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: background-color 0.3s ease;
+            margin-top: 10px;
+        }
 
-    .carousel-item img {
-        width: 100%;
-        height: auto;
-        object-fit: cover;
-    }
+        .addToCartButton:hover {
+            background-color: #f8d0d0;
+        }
 
-    .carousel-container {
-        width: auto;
-        overflow: hidden;
-        border-radius: 16px; 
-        margin-bottom: 20px;
-    }
+        .carousel-item img {
+            width: 100%;
+            height: auto;
+            object-fit: cover;
+        }
 
-    .pagination {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        margin-top: 20px;
-    }
+        .carousel-container {
+            width: auto;
+            overflow: hidden;
+            border-radius: 16px;
+            margin-bottom: 20px;
+        }
 
-    .pagination a {
-        color: #333;
-        padding: 8px 16px;
-        text-decoration: none;
-        border: 1px solid #ccc;
-        margin: 0 5px;
-        margin-top: 1%;
-        border-radius: 4px;
-        transition: background-color 0.3s ease, color 0.3s ease;
-    }
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 20px;
+        }
 
-    .pagination a:hover {
-        background-color: #ff6456;
-        color: #fff;
-    }
-</style>
+        .pagination a {
+            color: #333;
+            padding: 8px 16px;
+            text-decoration: none;
+            border: 1px solid #ccc;
+            margin: 0 5px;
+            margin-top: 1%;
+            border-radius: 4px;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .pagination a:hover {
+            background-color: #ff6456;
+            color: #fff;
+        }
+
+        #toggleFilterButton {
+            background-color: #f8d0d0;
+            color: #fff;
+            padding: 10px 20px;
+            border-radius: 15px;
+            border: none;
+            cursor: pointer;
+            margin-bottom: 10px;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+            height: min-content;
+        }
+
+        #toggleFilterButton:hover {
+            background-color: #ff8573;
+            transform: translateY(-2px);
+        }
+
+        #filterMenu {
+            background-color: #fff;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            max-height: 0;
+            overflow: hidden;
+            opacity: 0;
+            transform: translateY(-10px);
+            transition: max-height 0.5s ease, opacity 0.5s ease, transform 0.5s ease;
+        }
+
+        #filterMenu.show {
+            max-height: 500px;
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+
+        /* Botones activos */
+        .filter-buttons button.active {
+            background-color: #ff6456;
+            color: #fff;
+            transform: scale(1.05);
+        }
+
+        .filter-buttons button {
+            background-color: #f0f0f0;
+            color: #333;
+            border: none;
+            padding: 8px 12px;
+            margin: 5px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+
+        .filter-buttons button:hover {
+            background-color: #e8e8e8;
+            transform: translateY(-2px);
+        }
+    </style>
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script>
-    function updateQuantity(id, change) {
-    const input = document.getElementById(`quantityInput-${id}`);
-    let currentValue = parseInt(input.value);  
+        function updateQuantity(id, change) {
+            const input = document.getElementById(`quantityInput-${id}`);
+            let currentValue = parseInt(input.value);
 
-    if (!isNaN(currentValue)) {  
-        currentValue += change;  
-        if (currentValue >= 1 && currentValue <= parseInt(input.max)) {
-            input.value = currentValue; 
+            if (!isNaN(currentValue)) {
+                currentValue += change;
+                if (currentValue >= 1 && currentValue <= parseInt(input.max)) {
+                    input.value = currentValue;
+                }
+            }
         }
-    }
-}
 
-    document.addEventListener('DOMContentLoaded', () => {
-        document.querySelectorAll('.quantityButton').forEach(button => {
-            button.addEventListener('click', () => {
-                const id = button.getAttribute('data-id');
-                const change = parseInt(button.getAttribute('data-change'));
-                updateQuantity(id, change);
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('.quantityButton').forEach(button => {
+                button.addEventListener('click', () => {
+                    const id = button.getAttribute('data-id');
+                    const change = parseInt(button.getAttribute('data-change'));
+                    updateQuantity(id, change);
+                });
             });
-        });
 
-        const cartId = '{{user.cart}}';
-        document.querySelectorAll('.addToCartButton').forEach(button => {
-            button.addEventListener('click', async () => {
-                const productId = button.getAttribute('data-productid');
-                const quantity = document.getElementById(`quantityInput-${productId}`).value;
+            const cartId = '{{user.cart}}';
+            document.querySelectorAll('.addToCartButton').forEach(button => {
+                button.addEventListener('click', async () => {
+                    const productId = button.getAttribute('data-productid');
+                    const quantity = document.getElementById(`quantityInput-${productId}`).value;
 
+                    try {
+                        const response = await fetch(`/api/carts/${cartId}/${productId}`, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({ quantity })
+                        });
+
+                        if (response.ok) {
+                            Swal.fire('', 'Producto agregado al carrito', 'success');
+                            updateCartCount();
+                        } else {
+                            Swal.fire('¡Error!', 'Error al agregar el producto', 'error');
+                        }
+                    } catch (error) {
+                        console.error('Error al agregar el producto', error);
+                        Swal.fire('Error interno', 'Error interno del servidor', 'error');
+                    }
+                });
+            });
+
+            async function updateCartCount() {
                 try {
-                    const response = await fetch(`/api/carts/${cartId}/${productId}`, {
-                        method: 'POST',
+                    const response = await fetch(`/api/carts/${cartId}/count`, {
+                        method: 'GET',
                         headers: {
                             'Content-Type': 'application/json'
                         },
-                        body: JSON.stringify({ quantity })
                     });
-
                     if (response.ok) {
-                        Swal.fire('', 'Producto agregado al carrito', 'success');
-                        updateCartCount(); 
-                    } else {
-                        Swal.fire('¡Error!', 'Error al agregar el producto', 'error');
+                        const cart = await response.json();
+                        const cartCount = cart.cart.products.reduce((total, product) => total + product.quantity, 0);
+                        const cartCountGreaterThanZero = cartCount > 0;
+                        document.getElementById('cart-count').innerText = cartCount;
+                        document.getElementById('cart-count').style.display = cartCountGreaterThanZero ? 'inline-block' : 'none';
                     }
                 } catch (error) {
-                    console.error('Error al agregar el producto', error);
-                    Swal.fire('Error interno', 'Error interno del servidor', 'error');
+                    console.error('Error al obtener el conteo del carrito', error);
+                }
+            }
+
+            document.getElementById('goToCartButton').addEventListener('click', () => {
+                const cartId = '{{user.cart}}';
+                window.location.href = `/api/carts/${cartId}`;
+            });
+
+            updateCartCount();
+
+            let filterMenuOpen = false; 
+            const toggleFilterButton = document.getElementById('toggleFilterButton');
+            const categoryButtons = document.querySelectorAll('#categoryButtons button');
+            const sortButtons = document.querySelectorAll('#sortButtons button');
+
+            toggleFilterButton.addEventListener('click', () => {
+                filterMenuOpen = !filterMenuOpen; 
+                if (filterMenuOpen) {
+                    filterMenu.classList.add('show');
+                    toggleFilterButton.textContent = 'Ocultar Filtros';
+                    filterMenu.style.display = 'block'; 
+                } else {
+                    filterMenu.classList.remove('show');
+                    toggleFilterButton.textContent = 'Mostrar Filtros';
+
+                    setTimeout(() => {
+                        filterMenu.style.display = 'none'; 
+                    }, 500); 
                 }
             });
-        });
+            function updateFilters(selectedCategory, selectedSort) {
+                let queryParams = new URLSearchParams(window.location.search);
 
-        async function updateCartCount() {
-    try {
-        const response = await fetch(`/api/carts/${cartId}/count`, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-        });
-        if (response.ok) {
-            const cart = await response.json();
-            const cartCount = cart.cart.products.reduce((total, product) => total + product.quantity, 0);
-            const cartCountGreaterThanZero = cartCount > 0;
-            document.getElementById('cart-count').innerText = cartCount;
-            document.getElementById('cart-count').style.display = cartCountGreaterThanZero ? 'inline-block' : 'none';
-        }
-    } catch (error) {
-        console.error('Error al obtener el conteo del carrito', error);
-    }
-}
+                if (selectedCategory !== undefined) {
+                    if (selectedCategory !== null) {
+                        queryParams.set('category', selectedCategory);
+                    } else {
+                        queryParams.delete('category');
+                    }
+                }
 
-        document.getElementById('goToCartButton').addEventListener('click', () => {
-            const cartId = '{{user.cart}}';
-            window.location.href = `/api/carts/${cartId}`;
-        });
+                if (selectedSort !== undefined) {
+                    if (selectedSort !== null) {
+                        queryParams.set('sort', selectedSort);
+                    } else {
+                        queryParams.delete('sort');
+                    }
+                }
 
-        updateCartCount();
-    });
+                window.location.search = queryParams.toString();
+            }
+
+
+            function setActiveButton(buttons, value, dataAttribute) {
+                buttons.forEach(button => {
+                    if (button.getAttribute(dataAttribute) === value) {
+                        button.classList.add('active');
+                    } else {
+                        button.classList.remove('active');
+                    }
+                });
+            }
+
+            const urlParams = new URLSearchParams(window.location.search);
+            const currentCategory = urlParams.get('category') || '';
+            const currentSort = urlParams.get('sort') || '';
+
+            setActiveButton(categoryButtons, currentCategory, 'data-category');
+            setActiveButton(sortButtons, currentSort, 'data-sort');
+
+            categoryButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const selectedCategory = button.getAttribute('data-category');
+                    setActiveButton(categoryButtons, selectedCategory, 'data-category');
+                    updateFilters(selectedCategory, undefined);
+                    filterMenuOpen = true;
+                    filterMenu.classList.add('show');
+                    toggleFilterButton.textContent = 'Ocultar Filtros';
+                    filterMenu.style.display = 'block'; 
+                });
+            });
+
+            sortButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const selectedSort = button.getAttribute('data-sort');
+                    setActiveButton(sortButtons, selectedSort, 'data-sort');
+                    updateFilters(undefined, selectedSort);
+                    // Asegurarse de que el menú se mantenga abierto al aplicar filtros
+                    filterMenuOpen = true;
+                    filterMenu.classList.add('show');
+                    toggleFilterButton.textContent = 'Ocultar Filtros';
+                    filterMenu.style.display = 'block'; // Asegurarse de que se muestre
+                });
+            });
+        });
     </script>
 </head>
+
 <body>
     <div id="productCarousel" class="carousel slide carousel-container" data-ride="carousel">
         <div class="carousel-inner">
@@ -275,24 +422,47 @@
             <span class="sr-only">Siguiente</span>
         </a>
     </div>
-    
-    <div class="container">
-    {{#each products}}
-    <div class="card">
-        <a href="/products/details/{{this._id}}">
-        <img src="{{thumbnail}}" alt="Imagen de producto">
-        <h2>{{title}}</h2>
-        <p>{{description}}</p>
-        <h3>$ {{price}}</h3>
-        </a>
-        <div class="quantityWrapper">
-            <button class="quantityButton" data-id="{{_id}}" data-change="-1">-</button>
-            <input id="quantityInput-{{_id}}" class="quantityInput" type="number" value="1" min="1" max="99">
-            <button class="quantityButton" data-id="{{_id}}" data-change="1">+</button>
+    <button id="toggleFilterButton">Mostrar Filtros</button>
+
+    <div id="filterMenu" class="filter-menu" style="display: none;">
+        <div class="filter-group">
+            <h3>Categorías</h3>
+            <div class="filter-buttons" id="categoryButtons">
+                <button data-category="">Todas</button>
+                <button data-category="Piratas">Piratas</button>
+                <button data-category="Halloween">Halloween</button>
+                <button data-category="Superhéroes">Superhéroes</button>
+                <button data-category="Fantástico">Fantástico</button>
+                <button data-category="Animales">Animales</button>
+            </div>
         </div>
-        <button class="addToCartButton" data-productid="{{_id}}">Añadir al carrito</button>
+        <div class="filter-group">
+            <h3>Ordenar por Precio</h3>
+            <div class="filter-buttons" id="sortButtons">
+                <button data-sort="">Sin Orden</button>
+                <button data-sort="asc">Menor a Mayor</button>
+                <button data-sort="desc">Mayor a Menor</button>
+            </div>
+        </div>
     </div>
-    {{/each}}
+
+    <div class="container">
+        {{#each products}}
+        <div class="card">
+            <a href="/products/details/{{this._id}}">
+                <img src="{{thumbnail}}" alt="Imagen de producto">
+                <h2>{{title}}</h2>
+                <p>{{description}}</p>
+                <h3>$ {{price}}</h3>
+            </a>
+            <div class="quantityWrapper">
+                <button class="quantityButton" data-id="{{_id}}" data-change="-1">-</button>
+                <input id="quantityInput-{{_id}}" class="quantityInput" type="number" value="1" min="1" max="99">
+                <button class="quantityButton" data-id="{{_id}}" data-change="1">+</button>
+            </div>
+            <button class="addToCartButton" data-productid="{{_id}}">Añadir al carrito</button>
+        </div>
+        {{/each}}
     </div>
 
     <div class="pagination">
@@ -304,4 +474,5 @@
         {{/if}}
     </div>
 </body>
+
 </html>

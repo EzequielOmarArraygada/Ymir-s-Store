@@ -17,7 +17,7 @@ export class ProductController {
     getLogin = (req, res) => {
         res.render('login');
     }
-
+  
     getSignup = (req, res) => {
         res.render('signup');
     }
@@ -28,31 +28,39 @@ export class ProductController {
             const limit = req.query.limit ? parseInt(req.query.limit) : 12;
             const sortOrder = req.query.sort ? req.query.sort : null;
             const category = req.query.category ? req.query.category : null;
+            const searchQuery = req.query.search ? req.query.search : null;
             const status = req.query.status ? req.query.status : null;
-
+    
             let cartId = null;
             if (req.isAuthenticated()) {
                 const user = req.user;
                 cartId = user.cart ? user.cart : null;
             }
-
-            const result = await this.productsService.getProducts(page, limit, sortOrder, category, status);
-
+    
+            // Lógica de filtrado
+            const filter = {};
+            if (category) filter.category = category;
+            if (status) filter.status = status;
+            if (searchQuery) filter.title = { $regex: searchQuery, $options: 'i' }; // Búsqueda por nombre
+    
+            // Obtener productos con los filtros y ordenación
+            const result = await this.productsService.getProducts(page, limit, sortOrder, category, status, filter);
+    
             const availableProducts = result.docs.filter(product => product.stock > 0);
-
+    
             result.prevLink = result.hasPrevPage ? `/products?page=${result.prevPage}` : '';
             result.nextLink = result.hasNextPage ? `/products?page=${result.nextPage}` : '';
             result.isValid = !(page <= 0 || page > result.totalPages);
-
+    
             res.render('products', { user: req.user, products: availableProducts, cartId, ...result });
-
+    
         } catch (error) {
             req.logger.error(
                 `Error al obtener los productos: ${error.message}. Método: ${req.method}, URL: ${req.url} - ${new Date().toLocaleDateString()}`
             );
             res.status(500).send({ error: 'Ocurrió un error al obtener los productos.' });
         }
-    }    
+    }
 
     getDashProducts = async (req, res) => {
         try {
