@@ -144,7 +144,7 @@
             min-width: 150px;
             z-index: 1;
             text-align: center;
-            margin-right: 3%;
+            margin-right: 2%;
         }
 
         #user-dropdown a,
@@ -201,18 +201,6 @@
             <a href="/" class="navbar-item">Proximamente</a>
         </div>
         <div class="navbar-right">
-            <div class="user-menu">
-                <i class="fa fa-user" id="user-icon"></i>
-                <div class="dropdown-content" id="user-dropdown">
-                    {{#if user}}
-                    <form action="/api/sessions/signout" method="GET">
-                        <button type="submit">Cerrar sesión</button>
-                    </form>
-                    {{else}}
-                    <a href="/login">Abrir sesión</a>
-                    {{/if}}
-                </div>
-            </div>
             {{#if user}}
             <a id='goToCartButton' class="cart-icon">
                 <i class="fas fa-shopping-cart"></i>
@@ -222,7 +210,19 @@
             </a>
             {{/if}}
 
+            <div class="user-menu"></div>
+            <i class="fa fa-user" id="user-icon"></i>
+            <div class="dropdown-content" id="user-dropdown">
+                {{#if user}}
+                <form action="/api/sessions/signout" method="GET">
+                    <button type="submit">Cerrar sesión</button>
+                </form>
+                {{else}}
+                <a href="/login">Abrir sesión</a>
+                {{/if}}
+            </div>
         </div>
+    </div>
     </div>
 
     {{{body}}}
