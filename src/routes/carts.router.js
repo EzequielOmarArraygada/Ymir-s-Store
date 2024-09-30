@@ -36,7 +36,7 @@ const {
  *       200:
  *         description: Lista de carritos obtenida exitosamente
  */
-cartRouter.get('/', getCarts);
+cartRouter.get('/', passportCall('login', 'user'), getCarts);
 
 
 /**
@@ -56,9 +56,9 @@ cartRouter.get('/', getCarts);
  *       200:
  *         description: Carrito obtenido exitosamente
  */
-cartRouter.get('/:cid', getCartById);
+cartRouter.get('/:cid', passportCall('login', 'user'), getCartById);
 
-cartRouter.get('/:cid/count', getCartByIdCount);
+cartRouter.get('/:cid/count', passportCall('login', 'user'), getCartByIdCount);
 
 
 /**
@@ -96,7 +96,7 @@ cartRouter.post('/', addCart);
  *       200:
  *         description: Producto agregado exitosamente
  */
-cartRouter.post('/:cid/:pid', addToCart);
+cartRouter.post('/:cid/:pid', passportCall('login', 'user'), addToCart);
 
 /**
  * @swagger
@@ -140,7 +140,7 @@ cartRouter.put('/:cid/products/:pid', updateProductQuantity);
  *       200:
  *         description: Carrito actualizado exitosamente
  */
-cartRouter.put('/:cid', updateCart);
+cartRouter.put('/:cid', passportCall('login', 'user'), updateCart);
 
 /**
  * @swagger
