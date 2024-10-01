@@ -1,181 +1,213 @@
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{product.title}} - Detalles del Producto</title>
-   <style>
-    body {
-        font-family: 'Arial', sans-serif;
-        line-height: 1.6;
-        background-color: #D9FFFF; 
-        padding: 20px;
-        display: flex;
-        flex-direction: column;
-        min-height: 100vh;
-    }
-.product-details-container {
-    display: flex;
-    flex-direction: column; /* Cambiar a columna para pantallas pequeñas */
-    align-items: center;
-    padding: 20px;
-}
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            line-height: 1.6;
+            background-color: #D9FFFF;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
 
-.product-details-card {
-    width: 100%;
-    max-width: 600px; /* Limitar el ancho máximo */
-    display: flex;
-    flex-direction: column; /* Cambiar a columna en pantallas pequeñas */
-    align-items: center;
-}
+        .product-details-container {
+            display: flex;
+            flex-direction: column;
+            /* Cambiar a columna para pantallas pequeñas */
+            align-items: center;
+            padding: 20px;
+        }
 
-.product-image-large {
-    width: 100%;
-    max-width: 400px; /* Ajustar ancho de la imagen */
-    height: auto;
-    margin: 0 auto 20px; /* Centrar y ajustar margen */
-}
+        .product-details-card {
+            width: 100%;
+            max-width: 600px;
+            /* Limitar el ancho máximo */
+            display: flex;
+            flex-direction: column;
+            /* Cambiar a columna en pantallas pequeñas */
+            align-items: center;
+        }
 
-.product-info h1 {
-    margin-top: 0;
-}
+        .product-image-large {
+            width: 100%;
+            max-width: 400px;
+            /* Ajustar ancho de la imagen */
+            height: auto;
+            margin: 0 auto 20px;
+            /* Centrar y ajustar margen */
+        }
 
-.product-info p {
-    margin: 5px 0;
-}
+        .product-info h1 {
+            margin-top: 0;
+        }
 
-.addToCartButton {
-        background-color: #f5aeae; 
-        color: #333;
-        border: none;
-        padding: 8px 16px;
-        cursor: pointer;
-        border-radius: 4px;
-        transition: background-color 0.3s ease;
-        margin-top: 10px;
-    }
-.addToCartButton:hover {
-        background-color: #f8d0d0; 
-    }
+        .product-info p {
+            margin: 5px 0;
+        }
 
-.addButton{
-    display: flex;
-        justify-content: center;
-        align-items: center;
-        gap: 10px;
-    }
+        .addToCartButton {
+            background-color: #f5aeae;
+            color: #333;
+            border: none;
+            padding: 8px 16px;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: background-color 0.3s ease;
+            margin-top: 10px;
+        }
 
-    .quantityWrapper {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        gap: 10px;
-    }
+        .addToCartButton:hover {
+            background-color: #f8d0d0;
+        }
 
-    .quantityButton {
-        background-color: #f5aeae; 
-        color: #333;
-        border: none;
-        padding: 5px 10px;
-        cursor: pointer;
-        border-radius: 4px;
-        transition: background-color 0.3s ease;
-    }
+        .addButton {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+        }
 
-    .quantityButton:hover {
-        background-color: #f8d0d0; 
-    }
+        .quantityWrapper {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+        }
 
-    .quantityInput {
-        width: 25px;
-        text-align: center;
-        -moz-appearance: textfield; 
-    }
+        .quantityButton {
+            background-color: #f5aeae;
+            color: #333;
+            border: none;
+            padding: 5px 10px;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: background-color 0.3s ease;
+        }
 
-    .quantityInput::-webkit-outer-spin-button,
-    .quantityInput::-webkit-inner-spin-button {
-        -webkit-appearance: none;
-        margin: 0;
-    }
+        .quantityButton:hover {
+            background-color: #f8d0d0;
+        }
+
+        .quantityInput {
+            width: 25px;
+            text-align: center;
+            -moz-appearance: textfield;
+        }
+
+        .quantityInput::-webkit-outer-spin-button,
+        .quantityInput::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
     </style>
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script>
-    function updateQuantity(id, change) {
-        const input = document.getElementById(`quantityInput-${id}`);
-        let currentValue = parseInt(input.value);
+        function updateQuantity(id, change) {
+            const input = document.getElementById(`quantityInput-${id}`);
+            let currentValue = parseInt(input.value);
 
-        if (!isNaN(currentValue)) {
-            currentValue += change;
-            if (currentValue >= 1 && currentValue <= parseInt(input.max)) {
-                input.value = currentValue;
+            if (!isNaN(currentValue)) {
+                currentValue += change;
+                if (currentValue >= 1 && currentValue <= parseInt(input.max)) {
+                    input.value = currentValue;
+                }
             }
         }
-    }
 
-    document.addEventListener('DOMContentLoaded', () => {
-        document.querySelectorAll('.quantityButton').forEach(button => {
-            button.addEventListener('click', () => {
-                const id = button.getAttribute('data-id');
-                const change = parseInt(button.getAttribute('data-change'));
-                updateQuantity(id, change);
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('.quantityButton').forEach(button => {
+                button.addEventListener('click', () => {
+                    const id = button.getAttribute('data-id');
+                    const change = parseInt(button.getAttribute('data-change'));
+                    updateQuantity(id, change);
+                });
             });
-        });
 
-        const cartId = '{{user.cart}}';
-        document.querySelectorAll('.addToCartButton').forEach(button => {
-            button.addEventListener('click', async () => {
-                const productId = button.getAttribute('data-productid');
-                const quantity = document.getElementById(`quantityInput-${productId}`).value;
+            const cartId = '{{user.cart}}';
+            document.querySelectorAll('.addToCartButton').forEach(button => {
+                button.addEventListener('click', async () => {
+                    const productId = button.getAttribute('data-productid');
+                    const quantity = document.getElementById(`quantityInput-${productId}`).value;
 
+                    if (cartId !== "") {
+                        try {
+                            const response = await fetch(`/api/carts/${cartId}/${productId}`, {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json'
+                                },
+                                body: JSON.stringify({ quantity })
+                            });
+
+
+                            if (response.ok) {
+                                Swal.fire('', 'Producto agregado al carrito', 'success');
+                                updateCartCount();
+                            } else {
+                                Swal.fire('¡Error!', 'Error al agregar el producto', 'error');
+                            }
+                        } catch (error) {
+                            console.error('Error al agregar el producto', error);
+                            Swal.fire('Error interno', 'Error interno del servidor', 'error');
+                        }
+                    }
+                    else {
+                        Swal.fire({
+                            title: 'No puedes comprar',
+                            text: 'Debes estar logueado para realizar compras.',
+                            icon: 'warning',
+                            showCancelButton: true,
+                            confirmButtonText: 'Loguear',
+                            cancelButtonText: 'Registrarse',
+                            footer: '<a href="/">Volver al shop</a>'
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                window.location.href = '/login'; // Redirige a la página de inicio de sesión
+                            } else if (result.isDismissed) {
+                                window.location.href = '/signup'; // Redirige a la página de registro
+                            }
+                        });
+                    }
+                });
+            });
+
+
+
+            async function updateCartCount() {
                 try {
-                    const response = await fetch(`/api/carts/${cartId}/${productId}`, {
-                        method: 'POST',
+                    const response = await fetch(`/api/carts/${cartId}/count`, {
+                        method: 'GET',
                         headers: {
                             'Content-Type': 'application/json'
                         },
-                        body: JSON.stringify({ quantity })
                     });
-
                     if (response.ok) {
-                        Swal.fire('', 'Producto agregado al carrito', 'success');
-                        updateCartCount();
-                    } else {
-                        Swal.fire('¡Error!', 'Error al agregar el producto', 'error');
+                        const cart = await response.json();
+                        const cartCount = cart.cart.products.reduce((total, product) => total + product.quantity, 0);
+                        document.getElementById('cart-count').innerText = cartCount;
+                        document.getElementById('cart-count').style.display = cartCount > 0 ? 'inline-block' : 'none';
                     }
                 } catch (error) {
-                    console.error('Error al agregar el producto', error);
-                    Swal.fire('Error interno', 'Error interno del servidor', 'error');
+                    console.error('Error al obtener el conteo del carrito', error);
                 }
-            });
-        });
-
-        async function updateCartCount() {
-            try {
-                const response = await fetch(`/api/carts/${cartId}/count`, {
-                    method: 'GET',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                });
-                if (response.ok) {
-                    const cart = await response.json();
-                    const cartCount = cart.cart.products.reduce((total, product) => total + product.quantity, 0);
-                    document.getElementById('cart-count').innerText = cartCount;
-                    document.getElementById('cart-count').style.display = cartCount > 0 ? 'inline-block' : 'none';
-                }
-            } catch (error) {
-                console.error('Error al obtener el conteo del carrito', error);
             }
-        }
+            if ((cartId !== "")) {
+                document.getElementById('goToCartButton').addEventListener('click', () => {
+                    const cartId = '{{user.cart}}';
+                    window.location.href = `/api/carts/${cartId}`;
+                });
 
-        document.getElementById('goToCartButton').addEventListener('click', () => {
-            const cartId = '{{user.cart}}';
-            window.location.href = `/api/carts/${cartId}`;
+                updateCartCount();
+            }
         });
-
-        updateCartCount();
-    });
     </script>
 </head>
+
 <body>
     <main class="product-details-container">
         <div class="product-details-card">
@@ -187,14 +219,16 @@
                 <p><strong>Categoria: </strong>{{product.category}}</p>
                 <div class="quantityWrapper">
                     <button class="quantityButton" data-id="{{product._id}}" data-change="-1">-</button>
-                    <input id="quantityInput-{{product._id}}" class="quantityInput" type="number" value="1" min="1" max="99">
+                    <input id="quantityInput-{{product._id}}" class="quantityInput" type="number" value="1" min="1"
+                        max="99">
                     <button class="quantityButton" data-id="{{product._id}}" data-change="1">+</button>
                 </div>
                 <div class="addButton">
-                <button class="addToCartButton" data-productid="{{product._id}}">Añadir al carrito</button>
+                    <button class="addToCartButton" data-productid="{{product._id}}">Añadir al carrito</button>
                 </div>
             </div>
         </div>
     </main>
 </body>
+
 </html>

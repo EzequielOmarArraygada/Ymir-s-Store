@@ -260,6 +260,7 @@
                     const productId = button.getAttribute('data-productid');
                     const quantity = document.getElementById(`quantityInput-${productId}`).value;
 
+            if(cartId !== ""){
                     try {
                         const response = await fetch(`/api/carts/${cartId}/${productId}`, {
                             method: 'POST',
@@ -268,6 +269,7 @@
                             },
                             body: JSON.stringify({ quantity })
                         });
+                        
 
                         if (response.ok) {
                             Swal.fire('', 'Producto agregado al carrito', 'success');
@@ -279,9 +281,26 @@
                         console.error('Error al agregar el producto', error);
                         Swal.fire('Error interno', 'Error interno del servidor', 'error');
                     }
+            }
+            else {
+            Swal.fire({
+                title: 'No puedes comprar',
+                text: 'Debes estar logueado para realizar compras.',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Loguear',
+                cancelButtonText: 'Registrarse',
+                footer: '<a href="/">Volver al shop</a>'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = '/login'; // Redirige a la página de inicio de sesión
+                } else if (result.isDismissed) {
+                    window.location.href = '/signup'; // Redirige a la página de registro
+                }
+            });
+        }
                 });
             });
-
             async function updateCartCount() {
                 try {
                     const response = await fetch(`/api/carts/${cartId}/count`, {
@@ -302,12 +321,14 @@
                 }
             }
 
+            if(cartId != ''){
             document.getElementById('goToCartButton').addEventListener('click', () => {
                 const cartId = '{{user.cart}}';
                 window.location.href = `/api/carts/${cartId}`;
             });
 
             updateCartCount();
+            }
 
             let filterMenuOpen = false; 
             const toggleFilterButton = document.getElementById('toggleFilterButton');
