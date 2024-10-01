@@ -40,32 +40,51 @@ const requireOwnershipOrAdmin = async (req, res, next) => {
 
 const passportCall = (strategy, role) => {
     return (req, res, next) => {
-        passport.authenticate(strategy, function (err, user, info) {
-            if (err) {
-                return next(err);
-            }
-            if (!user) {
-                return res.redirect('/login');
-            }
+        // Permitir acceso sin autenticación explícita a la ruta '/products' y '/products/:id' en métodos GET
+        if (req.path.startsWith('/products') && req.method === 'GET') {
+            // Intentar autenticar al usuario, pero sin forzar redirección si no está autenticado
+            passport.authenticate(strategy, { session: false }, (err, user, info) => {
+                if (err) {
+                    return next(err);
+                }
+                // Si el usuario está autenticado, asignarlo a req.user
+                if (user) {
+                    req.user = user;
+                }
+                // Continuar con la ruta permitiendo acceso, autenticado o no
+                return next();
+            })(req, res, next);
+        } else {
+            // Para el resto de las rutas, aplicar autenticación de forma normal
+            passport.authenticate(strategy, function (err, user, info) {
+                if (err) {
+                    return next(err);
+                }
+                if (!user) {
+                    return res.redirect('/login');
+                }
 
-            req.logger.info(
-                `Usuario autenticado: ${user.email}, ${req.method} en ${req.url} - ${new Date().toLocaleDateString()}`
-            );
-            req.logger.debug(
-                `Rol de usuario: ${user.role}. ${req.method} en ${req.url} - ${new Date().toLocaleDateString()}`
-            );
-
-            if (user.role !== role && user.role !== 'admin') {
-                req.logger.warning(
-                    `Acceso denegado. Rol de usuario incorrecto: ${user.role} se requiere: ${role}. ${req.method} en ${req.url} - ${new Date().toLocaleDateString()}`
+                req.logger.info(
+                    `Usuario autenticado: ${user.email}, ${req.method} en ${req.url} - ${new Date().toLocaleDateString()}`
                 );
-                return res.status(403).send({ error: `Acceso denegado. Rol de usuario incorrecto.` });
-            }
-            req.user = user;
-            next();
-        })(req, res, next);
+                req.logger.debug(
+                    `Rol de usuario: ${user.role}. ${req.method} en ${req.url} - ${new Date().toLocaleDateString()}`
+                );
+
+                if (user.role !== role && user.role !== 'admin') {
+                    req.logger.warning(
+                        `Acceso denegado. Rol de usuario incorrecto: ${user.role} se requiere: ${role}. ${req.method} en ${req.url} - ${new Date().toLocaleDateString()}`
+                    );
+                    return res.status(403).send({ error: `Acceso denegado. Rol de usuario incorrecto.` });
+                }
+                req.user = user;
+                next();
+            })(req, res, next);
+        }
     };
 };
+
+
 
 
 export default { createHash, isValidatePassword, passportCall, requirePremium, requireOwnershipOrAdmin };
