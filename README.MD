@@ -49,8 +49,7 @@ Testing: Pruebas unitarias y de integración usando Mocha y Chai.
 
 Estructura del Proyecto
 
-bash
-Copiar código
+
 ataUmaShop-main/
 ├── src/
 │   ├── config/                  # Configuraciones (Passport, logger, Swagger)
@@ -63,29 +62,23 @@ ataUmaShop-main/
 ├── uploads/                     # Almacenamiento de archivos (documentos y fotos)
 ├── package.json                 # Dependencias del proyecto
 ├── .gitignore                   # Archivos ignorados por git
+
 Instalación y Configuración
+
 Clona el repositorio:
 
-bash
-Copiar código
 git clone https://github.com/EzequielOmarArraygada/ataUmaShop.git
 Instala las dependencias:
 
-bash
-Copiar código
 npm install
 Configura las variables de entorno en un archivo .env (ejemplo proporcionado en .env.example).
 
 Inicia la aplicación:
 
-bash
-Copiar código
 npm start
 Pruebas
 Puedes ejecutar las pruebas unitarias e integrales con el siguiente comando:
 
-bash
-Copiar código
 npm test
 Contribución
 Si deseas contribuir a este proyecto, sigue los siguientes pasos:
@@ -95,6 +88,7 @@ Crea una nueva rama (git checkout -b feature/nueva-funcionalidad).
 Realiza los cambios necesarios y haz commit (git commit -m 'Agrega nueva funcionalidad').
 Sube los cambios a tu repositorio (git push origin feature/nueva-funcionalidad).
 Abre un Pull Request.
+
 Contacto
 
 Si tienes alguna pregunta o sugerencia, no dudes en contactarme en tr.ezequiel@gmail.com o a través de mi https://www.linkedin.com/in/ezequiel-arraygada.
