@@ -2,7 +2,6 @@ import { UserManagerMongo } from '../dao/services/managers/UserManagerMongo.js';
 import { ProductManagerMongo } from '../dao/services/managers/ProductManagerMongo.js';
 import jwt from 'jsonwebtoken';
 import utils from '../utils.js';
-import UserDTO from '../dao/dto/user.dto.js';
 import dotenv from 'dotenv';
 import User from '../dao/models/user.model.js';
 import path from 'path';

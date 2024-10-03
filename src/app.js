@@ -12,7 +12,6 @@ import initializePassport from './config/passport.config.js';
 import utils from './utils.js';
 import router from './routes/index.js';
 import dotenv from 'dotenv';
-import UserDTO from './dao/dto/user.dto.js';
 import { Server } from 'socket.io';
 import errorHandler from './middlewares/errors/index.js';
 import { addLogger } from './utils/logger.js';
