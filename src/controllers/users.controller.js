@@ -228,7 +228,7 @@ export class UserController {
         const { token } = req.query;
         try {
             const decoded = jwt.verify(token, process.env.JWT_SECRET);
-            res.render('resetPassword');
+            res.render('resetPassword', { token });
         } catch (error) {
             res.status(400).send('El enlace ha expirado');
         }
@@ -242,22 +242,23 @@ export class UserController {
             const user = await this.usersService.findById(decoded.userId);
     
             if (!user) {
-                return res.status(404).send('Usuario no encontrado');
+                return res.status(404).json({ success: false, message: 'Usuario no encontrado' });
             }
     
             if (await user.isPasswordSame(newPassword)) {
-                return res.status(400).send('La nueva contraseña no puede ser igual a la anterior');
+                return res.status(400).json({ success: false, message: 'La nueva contraseña no puede ser igual a la anterior' });
             }
     
             user.password = await user.hashPassword(newPassword);
             await user.save();
             
-            res.send('Contraseña actualizada');
+            return res.status(200).json({ success: true, message: 'Contraseña actualizada correctamente' });
         } catch (error) {
             console.error(`Error al restablecer la contraseña: ${error.message}`);
-            res.status(400).send('Error al restablecer la contraseña');
+            return res.status(400).json({ success: false, message: 'Error al restablecer la contraseña' });
         }
     }
+    
 
     isAdmin = async (req, res, next) => {
         if (req.user.role === 'admin') {

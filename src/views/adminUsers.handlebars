@@ -360,7 +360,6 @@
   async function resetPassword(event, userId) {
     event.preventDefault(); // Prevenir comportamiento predeterminado
     const { value: result } = await Swal.fire({
-      first_name: '¿Estás seguro?',
       text: "¡Se enviara un mail para resetear la contraseña!",
       icon: 'warning',
       showCancelButton: true,
