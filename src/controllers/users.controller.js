@@ -209,7 +209,7 @@ export class UserController {
     }
 
     requestPasswordReset = async (req, res) => {
-        let { email } = req.body;
+        const email  = req.user.email;
         try {
             const user = await this.usersService.findByEmail(email);
             if (!user) {
@@ -228,13 +228,7 @@ export class UserController {
         const { token } = req.query;
         try {
             const decoded = jwt.verify(token, process.env.JWT_SECRET);
-            res.send(`
-                <form action="/api/sessions/reset-password" method="POST">
-                    <input type="hidden" name="token" value="${token}" />
-                    <input type="password" name="newPassword" placeholder="Nueva Contraseña" required />
-                    <button type="submit">Restablecer Contraseña</button>
-                </form>
-            `);
+            res.render('resetPassword');
         } catch (error) {
             res.status(400).send('El enlace ha expirado');
         }
