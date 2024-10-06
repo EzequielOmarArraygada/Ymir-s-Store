@@ -176,35 +176,38 @@ export class ProductController {
     
 
     deleteProduct = async (req, res) => {
-        console.log("ID del producto a eliminar:", req.params.id);
         try {
             const { pid } = req.params;
             const product = await this.productsService.getProduct(pid);
-
+    
             if (!product) {
                 return res.status(404).send({ status: 'error', message: 'Producto no encontrado' });
             }
-
-            // Encuentra el usuario dueño del producto
-            const user = await this.productsService.findUserByProductId(pid);
-
-            await this.productsService.deleteProduct(pid);
-
-            // Enviar correo si el usuario es premium  
-            if (user && user.role === 'premium' || 'admin') {
+    
+            const user = req.user; // Usuario logueado (admin)
+    
+            // Permitir eliminación si el usuario es admin o dueño del producto
+            if (user.role === 'admin' || product.owner.toString() === user._id.toString()) {
+                await this.productsService.deleteProduct(pid);
+    
+                // Enviar correo al admin que eliminó el producto
                 await sendEmail({
                     to: user.email,
                     subject: 'Producto eliminado',
-                    text: `Tu producto con ID ${pid} ha sido eliminado.`
+                    text: `Has eliminado el producto con ID ${pid}.`
                 });
+    
                 req.logger.info(`Correo enviado a ${user.email} sobre la eliminación del producto ${pid}`);
+                
+                res.send({ status: 'success', message: 'Producto eliminado exitosamente' });
+            } else {
+                // En caso de que el usuario no sea admin ni dueño del producto
+                res.status(403).send({ status: 'error', message: 'No tienes permiso para eliminar este producto.' });
             }
-
-            res.send({ status: 'success', message: 'Producto eliminado exitosamente' });
         } catch (error) {
             req.logger.error(`Error al eliminar producto: ${error.message}, ${req.method} en ${req.url}`);
             res.status(500).send({ status: 'error', message: 'Error interno del servidor' });
         }
-    }
+    };
     
 }
