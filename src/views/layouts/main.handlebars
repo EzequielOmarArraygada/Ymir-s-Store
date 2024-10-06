@@ -20,50 +20,23 @@
 
         .navbar {
             background-color: #fff;
-            /* Cambiamos a blanco */
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
             padding: 10px 20px;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
             margin-bottom: 1%;
         }
 
-        .navbar-left,
-        .navbar-right {
-            display: flex;
-            align-items: center;
-            justify-content: flex-end;
-            gap: 20px;
-        }
-
-        .navbar-logo img {
-            margin-left: 10%;
-            width: 50px;
-            /* Ajusta el tamaño del logo según sea necesario */
-            height: auto;
-            margin-right: 5%;
-        }
-
-        .navbar-item {
-            margin-right: 15px;
-            text-decoration: none;
+        .navbar-nav .nav-link {
             color: #333;
             font-weight: bold;
-        }
-
-        .navbar-item:last-child {
-            margin-right: 0;
         }
 
         .cart-icon {
             font-size: 24px;
             color: #333;
-            margin-left: auto;
             cursor: pointer;
             transition: transform 0.3s ease;
             position: relative;
-            margin-right: 15px;
+            margin-right: 25px; /* Espacio adicional para separar el carrito */
         }
 
         #user-icon {
@@ -71,14 +44,12 @@
             color: #333;
             cursor: pointer;
             transition: transform 0.3s ease, color 0.3s ease;
-            margin-right: 40px;
+            margin-right: 15px; /* Ajustamos el margen */
         }
-
 
         #user-icon:hover {
             transform: scale(1.1);
             color: #ff6456;
-            /* Color al pasar el cursor */
         }
 
         #cart-count {
@@ -87,53 +58,13 @@
             border-radius: 50%;
             padding: 1px 6px;
             font-size: 12px;
-            font-weight: 200;
             position: absolute;
             top: -10px;
             right: -10px;
         }
 
-        .footer {
-            background-color: #333;
-            color: #fff;
-            padding: 20px;
-            margin-top: 3%;
-            box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.1);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-        }
-
-        .footer p {
-            margin: 5px 0;
-        }
-
-        .social-icons {
-            margin-bottom: 10px;
-            display: flex;
-            justify-content: center;
-        }
-
-        .social-icons a {
-            color: #fff;
-            margin: 0 10px;
-        }
-
-        .social-icons a:hover {
-            color: #ff6456;
-        }
-
         .user-menu {
             position: relative;
-            display: inline-block;
-        }
-
-        #user-icon {
-            font-size: 24px;
-            cursor: pointer;
-            color: #333;
         }
 
         #user-dropdown {
@@ -145,7 +76,6 @@
             min-width: 150px;
             z-index: 1;
             text-align: center;
-            margin-right: 2%;
         }
 
         #user-dropdown a,
@@ -164,7 +94,41 @@
         #user-dropdown button:hover {
             background-color: #f4f4f9;
         }
+
+        /* Centrar enlaces de navegación a la izquierda y carrito + user a la derecha en pantallas pequeñas */
+        .navbar-collapse {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .navbar-nav {
+            flex-direction: row;
+        }
+
+        .navbar-collapse .user-cart {
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        @media (max-width: 991px) {
+            .navbar-nav {
+                flex-direction: column;
+                text-align: left;
+            }
+
+            .navbar-collapse .user-cart {
+                justify-content: flex-start;
+                margin-top: 10px;
+            }
+
+            .cart-icon,
+            #user-icon {
+                margin-left: 0;
+                margin-right: 15px;
+            }
+        }
     </style>
+
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <script>
@@ -190,42 +154,58 @@
 </head>
 
 <body>
-    <div class="navbar">
-        <div class="navbar-left">
-            <div class="navbar-logo">
-                <!-- Incluimos el logo -->
-                <img src="/uploads/assets/logo.jpg" alt="Logo">
-            </div>
-            <a href="/" class="navbar-item">Inicio</a>
-            <a href="/products" class="navbar-item">Productos</a>
-        </div>
-        <div class="navbar-right">
-            {{#if user}}
-            <a id='goToCartButton' class="cart-icon">
-                <i class="fas fa-shopping-cart"></i>
-                <span id="cart-count" {{#if cartCountGreaterThanZero}}style="display: inline-block;" {{/if}}>
-                    {{cartCount}}
-                </span>
+    <nav class="navbar navbar-expand-lg">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">
+                <img src="/uploads/assets/logo.jpg" alt="Logo" width="50">
             </a>
-            {{/if}}
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
 
-            <div class="user-menu"></div>
-            <i class="fa fa-user" id="user-icon"></i>
-            <div class="dropdown-content" id="user-dropdown">
-                {{#if user}}
-                <a href="/api/sessions/profile/{{user._id}}">Perfil</a>
-                <form action="/api/sessions/signout" method="GET">
-                    <button type="submit">Cerrar sesión</button>
-                </form>
-                {{else}}
-                <a href="/login">Abrir sesión</a>
-                {{/if}}
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <!-- Enlaces a la izquierda -->
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/">Inicio</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/products">Productos</a>
+                    </li>
+                </ul>
+
+                <!-- Carrito y usuario a la derecha -->
+                <div class="user-cart">
+                    {{#if user}}
+                    <a id='goToCartButton' class="cart-icon">
+                        <i class="fas fa-shopping-cart"></i>
+                        <span id="cart-count" {{#if cartCountGreaterThanZero}}style="display: inline-block;" {{/if}}>
+                            {{cartCount}}
+                        </span>
+                    </a>
+                    {{/if}}
+
+                    <div class="user-menu">
+                        <i class="fa fa-user" id="user-icon"></i>
+                        <div class="dropdown-content" id="user-dropdown">
+                            {{#if user}}
+                            <a href="/api/sessions/profile/{{user._id}}">Perfil</a>
+                            <form action="/api/sessions/signout" method="GET">
+                                <button type="submit">Cerrar sesión</button>
+                            </form>
+                            {{else}}
+                            <a href="/login">Abrir sesión</a>
+                            {{/if}}
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
-    </div>
-    </div>
+    </nav>
 
     {{{body}}}
+
     <footer class="footer">
         <div class="social-icons">
             <a href="https://www.facebook.com/ataumababyshop/" target="_blank"><i class="fab fa-facebook-f"></i></a>
@@ -233,13 +213,10 @@
                     class="fab fa-whatsapp"></i></a>
             <a href="https://www.instagram.com/ata.uma" target="_blank"><i class="fab fa-instagram"></i></a>
         </div>
-        <div>
-            <p>Contacto: contacto@ecommerce.com | Tel: (123) 456-7890</p>
-        </div>
-        <div>
-            <p>&copy; 2024 DTweb - Dante Terrenator Web. Todos los derechos reservados.</p>
-        </div>
+        <p>Contacto: contacto@ecommerce.com | Tel: (123) 456-7890</p>
+        <p>&copy; 2024 DTweb - Dante Terrenator Web. Todos los derechos reservados.</p>
     </footer>
+
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
 </body>
