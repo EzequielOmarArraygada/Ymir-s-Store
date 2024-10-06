@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lista de Productos</title>
-    <style>
+     <style>
         @media (max-width: 768px) {
             .product-details-card {
                 padding: 10px;
@@ -23,7 +23,7 @@
         body {
             font-family: 'Arial', sans-serif;
             line-height: 1.6;
-            background-color: #D9FFFF;
+            background-color:  #E7E2D1; /* Fondo de página */
             padding: 20px;
             display: flex;
             flex-direction: column;
@@ -31,7 +31,7 @@
         }
 
         h1 {
-            color: #333;
+            color: #5B1F0F; /* Color del título */
             text-align: center;
         }
 
@@ -44,9 +44,10 @@
         }
 
         .card {
-            background-color: #FFFFCF;
+            background-color: #C2B7A0; /* Color de fondo de la tarjeta */
             border-radius: 8px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border: none;
             width: 100%;
             max-width: 300px;
             padding: 20px;
@@ -55,8 +56,16 @@
             flex: 1 1 250px;
         }
 
+        .card a {
+    text-decoration: none; /* Elimina el subrayado de los enlaces */
+    color: inherit; /* Hereda el color del elemento padre */
+    text-decoration-style: solid;
+
+}
+
         .card:hover {
             transform: translateY(-5px);
+            background-color: #934C1A; /* Color de fondo al pasar el mouse */
         }
 
         .card img {
@@ -67,7 +76,7 @@
         }
 
         .card h2 {
-            color: #333;
+            color: #0f0e0e; /* Color del título de la tarjeta */
             font-size: clamp(1rem, 1.5vw, 1.5rem);
             margin-bottom: 10px;
             white-space: nowrap;
@@ -77,12 +86,9 @@
         }
 
         .card p {
-            color: #666;
+            color: #f6efef; /* Color de la descripción */
             line-height: 1.4;
-        }
-
-        .card a {
-            text-decoration: none;
+             text-decoration: none;
         }
 
         .quantityWrapper {
@@ -93,8 +99,8 @@
         }
 
         .quantityButton {
-            background-color: #f5aeae;
-            color: #333;
+            background-color: #8B5B29; /* Color de fondo de los botones de cantidad */
+            color: #fff; /* Color del texto de los botones de cantidad */
             border: none;
             padding: 5px 10px;
             cursor: pointer;
@@ -103,7 +109,7 @@
         }
 
         .quantityButton:hover {
-            background-color: #f8d0d0;
+            background-color: #934C1A; /* Color de fondo al pasar el mouse */
         }
 
         .quantityInput {
@@ -119,8 +125,8 @@
         }
 
         .addToCartButton {
-            background-color: #f5aeae;
-            color: #333;
+            background-color: #8B5B29; /* Color de fondo del botón añadir al carrito */
+            color: #fff; /* Color del texto del botón añadir al carrito */
             border: none;
             padding: 8px 16px;
             cursor: pointer;
@@ -130,7 +136,7 @@
         }
 
         .addToCartButton:hover {
-            background-color: #f8d0d0;
+            background-color: #934C1A; /* Color de fondo al pasar el mouse */
         }
 
         .carousel-item img {
@@ -154,7 +160,7 @@
         }
 
         .pagination a {
-            color: #333;
+            color: #C8B400; /* Color de los enlaces de paginación */
             padding: 8px 16px;
             text-decoration: none;
             border: 1px solid #ccc;
@@ -165,12 +171,12 @@
         }
 
         .pagination a:hover {
-            background-color: #ff6456;
-            color: #fff;
+            background-color: #5B1F0F; /* Color de fondo al pasar el mouse */
+            color: #fff; /* Color del texto al pasar el mouse */
         }
 
         #toggleFilterButton {
-            background-color: #f8d0d0;
+            background-color: #8B5B29; /* Color del botón de filtros */
             color: #fff;
             padding: 10px 20px;
             border-radius: 15px;
@@ -182,7 +188,7 @@
         }
 
         #toggleFilterButton:hover {
-            background-color: #ff8573;
+            background-color: #934C1A; /* Color de fondo al pasar el mouse */
             transform: translateY(-2px);
         }
 
@@ -205,16 +211,15 @@
             transform: translateY(0);
         }
 
-
         /* Botones activos */
         .filter-buttons button.active {
-            background-color: #ff6456;
+            background-color: #5B1F0F; /* Color del botón activo */
             color: #fff;
             transform: scale(1.05);
         }
 
         .filter-buttons button {
-            background-color: #f0f0f0;
+            background-color: #f0f0f0; /* Color de fondo de los botones de filtro */
             color: #333;
             border: none;
             padding: 8px 12px;
@@ -225,7 +230,7 @@
         }
 
         .filter-buttons button:hover {
-            background-color: #e8e8e8;
+            background-color: #e8e8e8; /* Color de fondo al pasar el mouse */
             transform: translateY(-2px);
         }
     </style>

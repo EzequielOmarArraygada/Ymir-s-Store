@@ -9,27 +9,24 @@
     min-height: 100vh;
   }
 
-  /* Tabla estilizada */
-  .table {
-    background-color: white;
-    border-radius: 10px;
-    overflow: hidden;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    width: 100%;
-    /* Para asegurar que la tabla ocupe todo el ancho */
+  .table-container {
+    overflow-x: auto;
+    /* Permite que la tabla se desplace horizontalmente en pantallas pequeñas */
   }
 
-  th,
-  td {
+  .table {
+    width: 100%;
+    border-collapse: collapse;
+    white-space: nowrap;
+}
+
+ th, td {
     padding: 12px;
     text-align: center;
-    /* Centrado horizontal */
     border-bottom: 1px solid #ddd;
     vertical-align: middle;
-    /* Centrado vertical */
     height: 60px;
-    /* Altura mínima para centrar mejor el contenido */
-  }
+}
 
   th {
     background-color: #fff;
@@ -139,7 +136,6 @@
 
   .navbarDash {
     background-color: #fffefe;
-    /* Cambiamos a blanco */
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -242,6 +238,27 @@
   .btn-secondary:hover {
     background-color: #bbb;
   }
+  @media (max-width: 768px) {
+    th, td {
+        padding: 8px;
+        font-size: 12px;  /* Reducir tamaño de fuente en pantallas pequeñas */
+        height: auto;  /* Ajustar altura de las celdas */
+    }
+
+    .table-container {
+        overflow-x: auto;  /* Permitir scroll horizontal */
+    }
+
+    .table {
+        white-space: nowrap;  /* Evitar que el texto se desborde */
+        display: block;  /* Para manejar mejor el scroll horizontal */
+    }
+
+    .navbarDash {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}
 </style>
 
 <script>
@@ -419,10 +436,11 @@
 <button class="btn btn-success btn-add" data-bs-toggle="modal" data-bs-target="#addUserModal">Agregar nuevo
   usuario</button>
 
-<!-- Tabla de users -->
+
+<div class="table-container">
 <table class="table table-striped">
   <thead>
-    <tr>
+    <tr>  
       <th>ID</th>
       <th>Nombre</th>
       <th>Apellido</th>
@@ -452,6 +470,7 @@
     </tr>
     {{/each}}
 </table>
+</div>
 
 <!-- Modal de edición de user (fuera del bucle) -->
 <div class="modal fade" id="editUserModal" tabindex="-1" aria-labelledby="editUserModalLabel" aria-hidden="true">
