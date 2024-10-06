@@ -213,6 +213,7 @@
             <i class="fa fa-user" id="user-icon"></i>
             <div class="dropdown-content" id="user-dropdown">
                 {{#if user}}
+                <a href="/api/sessions/profile/{{user._id}}">Perfil</a>
                 <form action="/api/sessions/signout" method="GET">
                     <button type="submit">Cerrar sesión</button>
                 </form>

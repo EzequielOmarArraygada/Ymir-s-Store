@@ -17,6 +17,8 @@ const {
     requestPasswordReset,
     getPasswordReset,
     postPasswordReset,
+    getProfile,
+    updateUser
 } = new UserController();
 
 /**
@@ -273,8 +275,12 @@ UsersRouter.post('/password-reset-request', passportCall('login', 'user'), reque
  *         description: Error interno del servidor
  */
 
-UsersRouter.post('/password-reset', postPasswordReset);
+UsersRouter.post('/password-reset', passportCall('login', 'user'), postPasswordReset);
 
-UsersRouter.get('/reset-password', getPasswordReset);
+UsersRouter.get('/reset-password', passportCall('login', 'user'), getPasswordReset);
+
+UsersRouter.get('/profile/:uid', passportCall('login', 'user'), getProfile)
+
+UsersRouter.put('/update/:uid', passportCall('login', 'user'), updateUser)
 
 export default UsersRouter;

@@ -334,4 +334,15 @@ export class UserController {
              res.status(500).send({ status: 'error', message: 'Error interno del servidor' });
          }
      }
+
+     getProfile = async (req, res) => {
+        try {
+            const { uid } = req.params;
+            const user = await this.usersService.findById(uid);
+            res.render('userProfile', { user });
+        } catch (error) {
+            req.logger.error(`Error al obtener el usuario: ${error.message}`);
+            res.status(500).send({ error: 'Ocurrió un error al obtener los usuarios.' });
+        }
+}
 }
