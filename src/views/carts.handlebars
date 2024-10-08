@@ -1,83 +1,141 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Carrito de Compras</title>
     <style>
         body {
-        font-family: 'Arial', sans-serif;
-        line-height: 1.6;
-        background-color: #E7E2D1; 
-        padding: 20px;
-        display: flex;
-        flex-direction: column;
-        min-height: 100vh;
-    }
+            font-family: 'Arial', sans-serif;
+            line-height: 1.6;
+            background-color: #E7E2D1;
+            padding: 20px;
+            display: flex;
+        }
+
         h1 {
             color: #333;
             text-align: center;
         }
+
+        .cart-container {
+            max-width: 900px;
+            /* Controla el ancho máximo del contenedor */
+            margin: 0 auto;
+        }
+
         .cart-items {
             list-style-type: none;
             padding: 0;
             margin: 0;
         }
+
         .cart-item {
             background-color: #C2B7A0;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            padding: 10px;
-            margin-bottom: 15px;
+            border-radius: 12px;
+            /* Mayor curvatura para una apariencia más suave */
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+            /* Sombra más notable */
+            padding: 20px;
+            margin-bottom: 20px;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            flex-wrap: wrap;
         }
+
         .cart-item-details {
             flex-grow: 1;
+            margin-right: 10px;
         }
-        .DetailImg{
-            width: 100px;
-            margin-right: 200px;
+
+        .DetailImg {
+            width: 120px;
+            /* Tamaño más grande para la imagen */
+            height: auto;
+            border-radius: 8px;
+            /* Añade un borde redondeado a la imagen */
+            margin-right: 20px;
         }
+
         .cart-item h2 {
             color: #333;
-            font-size: 1.2em;
+            font-size: 1.4em;
             margin-bottom: 5px;
         }
+
         .cart-item p {
             color: #666;
             margin-bottom: 5px;
         }
+
         .checkout-buttons {
             display: flex;
             justify-content: center;
-            gap: 10px;
-            margin-top: 20px;
+            gap: 20px;
+            /* Mayor espacio entre los botones */
+            margin-top: 30px;
         }
+
         .checkoutButton {
             background-color: #000000;
             color: #ffffff;
             border: none;
-            padding: 12px 24px;
+            padding: 12px 28px;
+            /* Botones más grandes */
             cursor: pointer;
-            border-radius: 4px;
+            border-radius: 6px;
             transition: background-color 0.3s ease;
+            font-size: 1.1em;
+            /* Aumenta el tamaño de la fuente */
         }
+
         .checkoutButton:hover {
             background-color: #FFF0CF;
+            color: #333;
+            /* Cambia el color del texto al hacer hover */
         }
+
         .remove-item {
             background-color: #4e0202;
-            color: #070707;
+            color: #ffffff;
             border: none;
+            padding: 10px;
             cursor: pointer;
-            border-radius: 4px;
+            border-radius: 6px;
             transition: background-color 0.3s ease;
         }
+
         .remove-item:hover {
             background-color: #654604;
         }
+
+        @media (max-width: 600px) {
+            .cart-container {
+                width: 100%;
+            }
+
+            .DetailImg {
+                width: 80px;
+                margin-right: 15px;
+            }
+
+            .cart-item {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .cart-item-details {
+                margin-bottom: 10px;
+                margin-right: 0;
+            }
+
+            .remove-item {
+                align-self: flex-end;
+            }
+        }
+
         .modal {
             display: none;
             position: fixed;
@@ -91,6 +149,7 @@
             padding-top: 60px;
             transition: opacity 0.3s ease;
         }
+
         .modal-content {
             background-color: #D9FFFF;
             margin: auto;
@@ -104,10 +163,19 @@
             text-align: center;
             animation: modalShow 0.5s ease-out;
         }
+
         @keyframes modalShow {
-            from { transform: translateY(-50px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
+            from {
+                transform: translateY(-50px);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
         }
+
         .close {
             color: #aaa;
             font-size: 28px;
@@ -118,29 +186,35 @@
             cursor: pointer;
             transition: color 0.3s ease;
         }
+
         .close:hover,
         .close:focus {
             color: #333;
             text-decoration: none;
         }
+
         .modal-content h2 {
             color: #333;
             margin-bottom: 15px;
         }
+
         .modal-content p {
             color: #666;
         }
+
         .modal-content ul {
             list-style-type: none;
             padding: 0;
             text-align: left;
         }
+
         .modal-content ul li {
             margin-bottom: 10px;
             color: #333;
             display: flex;
             align-items: center;
         }
+
         .modal-content ul li img {
             width: 40px;
             height: 40px;
@@ -148,148 +222,152 @@
             border-radius: 4px;
         }
     </style>
-     <script>
-    document.addEventListener('DOMContentLoaded', () => {
-        console.log('DOM cargado');
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('DOM cargado');
 
-        // Añadir el evento al botón de finalizar compra
-        document.getElementById('checkoutButton').addEventListener('click', async function() {
-            try {
-                const cartId = '{{cartId}}';
+            // Añadir el evento al botón de finalizar compra
+            document.getElementById('checkoutButton').addEventListener('click', async function () {
+                try {
+                    const cartId = '{{cartId}}';
 
-                const response = await fetch(`/api/carts/${cartId}`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
+                    const response = await fetch(`/api/carts/${cartId}`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
+                    });
+
+                    const data = await response.json();
+
+                    if (response.ok) {
+                        const modal = document.getElementById('ticketModal');
+                        modal.style.display = 'block';
+
+                        const ticketDetails = document.getElementById('ticketDetails');
+                        ticketDetails.innerHTML = '';
+                        data.ticket.products.forEach(product => {
+                            const li = document.createElement('li');
+                            const img = document.createElement('img');
+                            img.src = `${product.thumbnail}`;
+                            img.alt = product.title;
+                            li.appendChild(img);
+                            li.appendChild(document.createTextNode(`${product.quantity} x ${product.title} - $${product.price}`));
+                            ticketDetails.appendChild(li);
+                        });
+
+                        const ticketTotal = document.getElementById('ticketTotal');
+                        ticketTotal.textContent = `$${data.ticket.totalAmount}`;
+
+                        const closeBtn = document.querySelector('.close');
+                        closeBtn.addEventListener('click', function () {
+                            modal.style.display = 'none';
+                            window.location.href = `/api/carts/${cartId}`;
+                        });
+
+                    } else {
+                        console.error('Error al procesar la compra:', data.error);
+                        Swal.fire('', 'Error al procesar la compra', 'error');
                     }
-                });
 
-                const data = await response.json();
-
-                if (response.ok) {
-                    const modal = document.getElementById('ticketModal');
-                    modal.style.display = 'block';
-
-                    const ticketDetails = document.getElementById('ticketDetails');
-                    ticketDetails.innerHTML = '';
-                    data.ticket.products.forEach(product => {
-                        const li = document.createElement('li');
-                        const img = document.createElement('img');
-                        img.src = `${product.thumbnail}`;
-                        img.alt = product.title;
-                        li.appendChild(img);
-                        li.appendChild(document.createTextNode(`${product.quantity} x ${product.title} - $${product.price}`));
-                        ticketDetails.appendChild(li);
-                    });
-
-                    const ticketTotal = document.getElementById('ticketTotal');
-                    ticketTotal.textContent = `$${data.ticket.totalAmount}`;
-
-                    const closeBtn = document.querySelector('.close');
-                    closeBtn.addEventListener('click', function() {
-                        modal.style.display = 'none';
-                        window.location.href = `/api/carts/${cartId}`;
-                    });
-
-                } else {
-                    console.error('Error al procesar la compra:', data.error);
+                } catch (error) {
+                    console.error('Error al procesar la compra:', error);
                     Swal.fire('', 'Error al procesar la compra', 'error');
                 }
+            });
 
-            } catch (error) {
-                console.error('Error al procesar la compra:', error);
-                Swal.fire('', 'Error al procesar la compra', 'error');
-            }
-        });
+            // Añadir el evento para eliminar artículos
+            document.querySelectorAll('.remove-item').forEach(button => {
+                button.addEventListener('click', async (event) => {
+                    const productId = event.target.dataset.productId;
+                    const cartId = '{{cartId}}';
+                    try {
+                        const response = await fetch(`/api/carts/${cartId}/products/${productId}`, {
+                            method: 'DELETE'
+                        });
+                        if (response.ok) {
+                            location.reload();
+                        } else {
+                            console.error('Error al eliminar el artículo del carrito');
+                        }
+                    } catch (error) {
+                        console.error('Error al comunicarse con el servidor', error);
+                    }
+                });
+            });
 
-        // Añadir el evento para eliminar artículos
-        document.querySelectorAll('.remove-item').forEach(button => {
-            button.addEventListener('click', async (event) => {
-                const productId = event.target.dataset.productId;
-                const cartId = '{{cartId}}'; 
+            // Añadir el evento para vaciar el carrito
+            document.getElementById('empty-cart').addEventListener('click', async () => {
+                const cartId = '{{cartId}}';
+                console.log('Cart ID:', cartId);
+
                 try {
-                    const response = await fetch(`/api/carts/${cartId}/products/${productId}`, {
+                    const response = await fetch(`/api/carts/${cartId}`, {
                         method: 'DELETE'
                     });
                     if (response.ok) {
-                        location.reload(); 
+                        location.reload();
                     } else {
-                        console.error('Error al eliminar el artículo del carrito');
+                        console.error('Error al vaciar el carrito');
                     }
                 } catch (error) {
                     console.error('Error al comunicarse con el servidor', error);
                 }
             });
-        });
 
-        // Añadir el evento para vaciar el carrito
-        document.getElementById('empty-cart').addEventListener('click', async () => {
-            const cartId = '{{cartId}}'; 
+            // Llamar a la función de actualización de conteo del carrito
+            const cartId = '{{cartId}}';
             console.log('Cart ID:', cartId);
 
-            try {
-                const response = await fetch(`/api/carts/${cartId}`, {
-                    method: 'DELETE'
-                });
-                if (response.ok) {
-                    location.reload(); 
-                } else {
-                    console.error('Error al vaciar el carrito');
+            async function updateCartCount() {
+                console.log('Ejecutando updateCartCount');
+                try {
+                    const response = await fetch(`/api/carts/${cartId}/count`, {
+                        method: 'GET',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                    });
+                    if (response.ok) {
+                        const cart = await response.json();
+                        const cartCount = cart.cart.products.reduce((total, product) => total + product.quantity, 0);
+                        const cartCountGreaterThanZero = cartCount > 0;
+                        document.getElementById('cart-count').innerText = cartCount;
+                        document.getElementById('cart-count').style.display = cartCountGreaterThanZero ? 'inline-block' : 'none';
+                    }
+                } catch (error) {
+                    console.error('Error al obtener el conteo del carrito', error);
                 }
-            } catch (error) {
-                console.error('Error al comunicarse con el servidor', error);
             }
+            updateCartCount();
         });
-
-        // Llamar a la función de actualización de conteo del carrito
-        const cartId = '{{cartId}}';
-        console.log('Cart ID:', cartId);
-
-        async function updateCartCount() {
-            console.log('Ejecutando updateCartCount');
-            try {
-                const response = await fetch(`/api/carts/${cartId}/count`, {
-                    method: 'GET',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                });
-                if (response.ok) {
-                    const cart = await response.json();
-                    const cartCount = cart.cart.products.reduce((total, product) => total + product.quantity, 0);
-                    const cartCountGreaterThanZero = cartCount > 0;
-                    document.getElementById('cart-count').innerText = cartCount;
-                    document.getElementById('cart-count').style.display = cartCountGreaterThanZero ? 'inline-block' : 'none';
-                }
-            } catch (error) {
-                console.error('Error al obtener el conteo del carrito', error);
-            }
-        }
-        updateCartCount();
-    });
-</script>
+    </script>
 </head>
+
 <body>
-    <ul class="cart-items">
-        {{#each productsDetails}}
-        <li class="cart-item">
-            <div class="cart-item-details">
-                <h2>{{this.title}}</h2>
-                <p>Precio: ${{this.price}}</p>
-                <p>Cantidad: {{this.quantity}}</p>
-            </div>
-            <img src="{{this.thumbnail}}" alt="DetailImg" class="DetailImg">
-            <button class="remove-item" data-product-id="{{this._id}}">X</button>
-        </li>
-        {{/each}}
-    </ul>
-    <div>
-        <strong>Total:</strong> ${{totalPrice}}
+    <div class="cart-container">
+        <ul class="cart-items">
+            {{#each productsDetails}}
+            <li class="cart-item">
+                <div class="cart-item-details">
+                    <h2>{{this.title}}</h2>
+                    <p>Precio: ${{this.price}}</p>
+                    <p>Cantidad: {{this.quantity}}</p>
+                </div>
+                <img src="{{this.thumbnail}}" alt="DetailImg" class="DetailImg">
+                <button class="remove-item" data-product-id="{{this._id}}">X</button>
+            </li>
+            {{/each}}
+        </ul>
+        <div>
+            <strong>Total:</strong> ${{totalPrice}}
+        </div>
+        <div class="checkout-buttons">
+            <button class="checkoutButton" id="empty-cart">Vaciar Carrito</button>
+            <button class="checkoutButton" id="checkoutButton">Finalizar Compra</button>
+        </div>
     </div>
-    <div class="checkout-buttons">
-        <button class="checkoutButton" id="empty-cart">Vaciar Carrito</button>
-        <button class="checkoutButton" id="checkoutButton">Finalizar Compra</button>
-    </div>
+
     <div id="ticketModal" class="modal">
         <div class="modal-content">
             <span class="close">&times;</span>
@@ -301,4 +379,5 @@
         </div>
     </div>
 </body>
+
 </html>
