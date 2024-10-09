@@ -259,7 +259,6 @@
         }
     </style>
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script>
         function updateQuantity(id, change) {
             const input = document.getElementById(`quantityInput-${id}`);
@@ -447,7 +446,7 @@
 </head>
 
 <body>
-    <div id="productCarousel" class="carousel slide carousel-container" data-ride="carousel">
+    <div id="productCarousel" class="carousel slide carousel-container">
         <div class="carousel-inner">
             <div class="carousel-item active">
                 <img src="/uploads/assets/banner1.jpg" class="d-block w-100" alt="Imagen 1">
@@ -462,15 +461,16 @@
                 <img src="/uploads/assets/banner4.jpg" class="d-block w-100" alt="Imagen 4">
             </div>
         </div>
-        <a class="carousel-control-prev" href="#productCarousel" role="button" data-slide="prev">
+        <button class="carousel-control-prev" type="button" data-bs-target="#productCarousel" data-bs-slide="prev">
             <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-            <span class="sr-only">Anterior</span>
-        </a>
-        <a class="carousel-control-next" href="#productCarousel" role="button" data-slide="next">
+            <span class="visually-hidden">Anterior</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#productCarousel" data-bs-slide="next">
             <span class="carousel-control-next-icon" aria-hidden="true"></span>
-            <span class="sr-only">Siguiente</span>
-        </a>
+            <span class="visually-hidden">Siguiente</span>
+        </button>
     </div>
+    
     <button id="toggleFilterButton">Mostrar Filtros</button>
 
     <div id="filterMenu" class="filter-menu" style="display: none;">
