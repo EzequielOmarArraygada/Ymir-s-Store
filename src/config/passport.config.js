@@ -13,6 +13,16 @@ const ExtractJwt = jwt.ExtractJwt;
 
 const u = new UserManagerMongo();
 
+const validateEmail = (email) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+};
+
+const validatePassword = (password) => {
+    const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{6,}$/;
+    return passwordRegex.test(password);
+};
+
 const initializePassport = () => {
 
     const cookieExtractor = (req) => {
@@ -27,24 +37,24 @@ const initializePassport = () => {
         { passReqToCallback: true, usernameField: 'email' },
         async (req, email, password, done) => {
             const { first_name, last_name, age } = req.body;
+            email = email.toLowerCase();
 
             if (!first_name || !last_name || !age) {
-                const err = new CustomError(
-                    'Error al crear el usuario',
-                    generateErrorInfo({ first_name, last_name, age }),
-                    'Error al crear el usuario',
-                    EError.INVALID_TYPES_ERROR
-                );
-                return done(err);
+                return done(null, false, { message: 'Todos los campos son obligatorios' });
+            }
+
+            if (!validateEmail(email)) {
+                return done(null, false, { message: 'El email no es válido' });
+            }
+
+            if (!validatePassword(password)) {
+                return done(null, false, { message: 'La contraseña debe tener al menos 6 caracteres, incluir una letra y un número' });
             }
 
             try {
                 let user = await u.findByEmail(email);
                 if (user) {
-                    req.logger.fatal(
-                        `Usuario existente!, ${req.method} en ${req.url} - ${new Date().toLocaleDateString()}`
-                    );
-                    return done(null, false, { message: 'Usuario ya existe' });
+                    return done(null, false, { message: 'El usuario ya existe' });
                 }
 
                 const newUser = {
@@ -59,7 +69,6 @@ const initializePassport = () => {
                 return done(null, result);
 
             } catch (error) {
-                req.logger.error(`Error al registrar usuario: ${error.message}`);
                 return done(error);
             }
         }
