@@ -48,7 +48,7 @@ const {
  *         description: Error en el registro
  */
 UsersRouter.post('/signup', passport.authenticate('signup', { 
-    failureRedirect: '/failregister', 
+    failureRedirect: '/login?error=Error en el registro', 
     failureMessage: true 
 }), postSignup);
 
