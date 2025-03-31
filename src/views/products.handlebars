@@ -328,6 +328,7 @@
                     }
                 });
             });
+
             async function updateCartCount() {
                 try {
                     const response = await fetch(`/api/carts/${cartId}/count`, {
@@ -377,17 +378,19 @@
                     }, 500);
                 }
             });
-            function updateFilters(selectedCategory, selectedSort) {
+
+            function updateFilters(selectedCategories, selectedSort) {
                 let queryParams = new URLSearchParams(window.location.search);
 
-                if (selectedCategory !== undefined) {
-                    if (selectedCategory !== null) {
-                        queryParams.set('category', selectedCategory);
-                    } else {
-                        queryParams.delete('category');
-                    }
-                }
+                // Elimina categorías previas
+                queryParams.delete('category');
 
+                // Agrega cada categoría seleccionada como parámetro en la URL
+                selectedCategories.forEach(category => {
+                    queryParams.append('category', category);
+                });
+
+                // Si hay ordenamiento, lo agrega o lo elimina si no hay
                 if (selectedSort !== undefined) {
                     if (selectedSort !== null) {
                         queryParams.set('sort', selectedSort);
@@ -396,7 +399,11 @@
                     }
                 }
 
-                window.location.search = queryParams.toString();
+                // Actualiza la URL sin recargar la página
+                window.history.replaceState({}, '', '?' + queryParams.toString());
+
+                // Opcional: recargar la página para aplicar los filtros
+                window.location.reload();
             }
 
 
@@ -416,12 +423,19 @@
 
             setActiveButton(categoryButtons, currentCategory, 'data-category');
             setActiveButton(sortButtons, currentSort, 'data-sort');
+const selectedCategories = new Set(urlParams.getAll('category'));
 
             categoryButtons.forEach(button => {
                 button.addEventListener('click', () => {
-                    const selectedCategory = button.getAttribute('data-category');
-                    setActiveButton(categoryButtons, selectedCategory, 'data-category');
-                    updateFilters(selectedCategory, undefined);
+                    const category = button.getAttribute('data-category');
+                    if (selectedCategories.has(category)) {
+            selectedCategories.delete(category);
+            button.classList.remove('active');
+        } else {
+            selectedCategories.add(category);
+            button.classList.add('active');
+        }
+        updateFilters([...selectedCategories], urlParams.get('sort'));
                     filterMenuOpen = true;
                     filterMenu.classList.add('show');
                     toggleFilterButton.textContent = 'Ocultar Filtros';
@@ -433,7 +447,7 @@
                 button.addEventListener('click', () => {
                     const selectedSort = button.getAttribute('data-sort');
                     setActiveButton(sortButtons, selectedSort, 'data-sort');
-                    updateFilters(undefined, selectedSort);
+                    updateFilters([...selectedCategories], selectedSort); // Mantiene las categorías seleccionadas
                     // Asegurarse de que el menú se mantenga abierto al aplicar filtros
                     filterMenuOpen = true;
                     filterMenu.classList.add('show');
@@ -470,7 +484,7 @@
             <span class="visually-hidden">Siguiente</span>
         </button>
     </div>
-    
+
     <button id="toggleFilterButton">Mostrar Filtros</button>
 
     <div id="filterMenu" class="filter-menu" style="display: none;">
