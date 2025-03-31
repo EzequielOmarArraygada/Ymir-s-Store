@@ -421,19 +421,19 @@
             categoryButtons.forEach(button => {
                 button.addEventListener('click', () => {
                     const category = button.getAttribute('data-category');
-                    if (selectedCategories.has(category)) {
-                        selectedCategories.delete(category);
-                    } else {
+                    if (category === "") {
+                        selectedCategories.clear();
                         selectedCategories.add(category);
+                    } else {
+                        selectedCategories.delete("");
+                        if (selectedCategories.has(category)) {
+                            selectedCategories.delete(category);
+                        } else {
+                            selectedCategories.add(category);
+                        }
                     }
-                    updateFilters([...selectedCategories], currentSort);
-                });
-            });
 
-            sortButtons.forEach(button => {
-                button.addEventListener('click', () => {
-                    const selectedSort = button.getAttribute('data-sort');
-                    updateFilters([...selectedCategories], selectedSort);
+                    updateFilters([...selectedCategories], currentSort);
                 });
             });
         });
