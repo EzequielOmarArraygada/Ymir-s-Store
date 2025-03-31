@@ -372,7 +372,6 @@
                 } else {
                     filterMenu.classList.remove('show');
                     toggleFilterButton.textContent = 'Mostrar Filtros';
-
                     setTimeout(() => {
                         filterMenu.style.display = 'none';
                     }, 500);
@@ -381,35 +380,35 @@
 
             function updateFilters(selectedCategories, selectedSort) {
                 let queryParams = new URLSearchParams(window.location.search);
-
-                // Elimina categorías previas
                 queryParams.delete('category');
-
-                // Agrega cada categoría seleccionada como parámetro en la URL
                 selectedCategories.forEach(category => {
                     queryParams.append('category', category);
                 });
-
-                // Si hay ordenamiento, lo agrega o lo elimina si no hay
-                if (selectedSort !== undefined) {
-                    if (selectedSort !== null) {
-                        queryParams.set('sort', selectedSort);
-                    } else {
-                        queryParams.delete('sort');
-                    }
+                if (selectedSort) {
+                    queryParams.set('sort', selectedSort);
+                } else {
+                    queryParams.delete('sort');
                 }
-
-                // Actualiza la URL sin recargar la página
                 window.history.replaceState({}, '', '?' + queryParams.toString());
-
-                // Opcional: recargar la página para aplicar los filtros
                 window.location.reload();
             }
 
+            const urlParams = new URLSearchParams(window.location.search);
+            const selectedCategories = new Set(urlParams.getAll('category'));
+            const currentSort = urlParams.get('sort') || '';
 
-            function setActiveButton(buttons, value, dataAttribute) {
-                buttons.forEach(button => {
-                    if (button.getAttribute(dataAttribute) === value) {
+            function updateActiveButtons() {
+                categoryButtons.forEach(button => {
+                    const category = button.getAttribute('data-category');
+                    if (selectedCategories.has(category)) {
+                        button.classList.add('active');
+                    } else {
+                        button.classList.remove('active');
+                    }
+                });
+
+                sortButtons.forEach(button => {
+                    if (button.getAttribute('data-sort') === currentSort) {
                         button.classList.add('active');
                     } else {
                         button.classList.remove('active');
@@ -417,45 +416,28 @@
                 });
             }
 
-            const urlParams = new URLSearchParams(window.location.search);
-            const currentCategory = urlParams.get('category') || '';
-            const currentSort = urlParams.get('sort') || '';
-
-            setActiveButton(categoryButtons, currentCategory, 'data-category');
-            setActiveButton(sortButtons, currentSort, 'data-sort');
-const selectedCategories = new Set(urlParams.getAll('category'));
+            updateActiveButtons();
 
             categoryButtons.forEach(button => {
                 button.addEventListener('click', () => {
                     const category = button.getAttribute('data-category');
                     if (selectedCategories.has(category)) {
-            selectedCategories.delete(category);
-            button.classList.remove('active');
-        } else {
-            selectedCategories.add(category);
-            button.classList.add('active');
-        }
-        updateFilters([...selectedCategories], urlParams.get('sort'));
-                    filterMenuOpen = true;
-                    filterMenu.classList.add('show');
-                    toggleFilterButton.textContent = 'Ocultar Filtros';
-                    filterMenu.style.display = 'block';
+                        selectedCategories.delete(category);
+                    } else {
+                        selectedCategories.add(category);
+                    }
+                    updateFilters([...selectedCategories], currentSort);
                 });
             });
 
             sortButtons.forEach(button => {
                 button.addEventListener('click', () => {
                     const selectedSort = button.getAttribute('data-sort');
-                    setActiveButton(sortButtons, selectedSort, 'data-sort');
-                    updateFilters([...selectedCategories], selectedSort); // Mantiene las categorías seleccionadas
-                    // Asegurarse de que el menú se mantenga abierto al aplicar filtros
-                    filterMenuOpen = true;
-                    filterMenu.classList.add('show');
-                    toggleFilterButton.textContent = 'Ocultar Filtros';
-                    filterMenu.style.display = 'block'; // Asegurarse de que se muestre
+                    updateFilters([...selectedCategories], selectedSort);
                 });
             });
         });
+
     </script>
 </head>
 
