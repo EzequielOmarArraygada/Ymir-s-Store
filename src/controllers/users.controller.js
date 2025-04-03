@@ -29,7 +29,8 @@ export class UserController {
     postLogin = async (req, res) => {
         const { email, password } = req.body;
         try {
-            let user = await this.usersService.findByEmail(email);
+            const normalizedEmail = email.toLowerCase(); // Convertimos el email a minúsculas
+            let user = await this.usersService.findByEmail(normalizedEmail);
     
             if (!user) {
                 req.logger.warn(`Intento de inicio de sesión con un usuario no existente: ${email}, ${req.method} en ${req.url} - ${new Date().toLocaleDateString()}`);
@@ -68,7 +69,6 @@ export class UserController {
             });
     
             req.logger.debug('Redirigiendo a /');
-            // Redirigir al usuario a la raíz
             return res.redirect('/');
         } catch (error) {
             req.logger.error(`Error al procesar el inicio de sesión: ${error.message}, ${req.method} en ${req.url} - ${new Date().toLocaleDateString()}`);
@@ -76,7 +76,8 @@ export class UserController {
             return res.status(500).send({ status: 'error', message: 'Error interno del servidor.' });
         }
     }
-    
+
+
     getSignOut = async (req, res, next) => {
         try {
             req.logout((err) => {
