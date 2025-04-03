@@ -1,6 +1,6 @@
-ataUmaShop
+YmirShop
 
-ataUmaShop es una aplicación web de comercio electrónico desarrollada con una arquitectura Full Stack,
+YmirShop es una aplicación web de comercio electrónico desarrollada con una arquitectura Full Stack,
 que ofrece una experiencia completa de navegación de productos y compras para los usuarios. La tienda 
 está diseñada para que los usuarios puedan explorar productos sin necesidad de iniciar sesión, aunque 
 es necesario estar registrado para realizar compras.
@@ -50,7 +50,7 @@ Testing: Pruebas unitarias y de integración usando Mocha y Chai.
 Estructura del Proyecto
 
 
-ataUmaShop-main/
+YmirShop-main/
 ├── src/
 │   ├── config/                  # Configuraciones (Passport, logger, Swagger)
 │   ├── controllers/             # Controladores (productos, carritos, sesiones, etc.)
@@ -67,7 +67,7 @@ Instalación y Configuración
 
 Clona el repositorio:
 
-git clone https://github.com/EzequielOmarArraygada/ataUmaShop.git
+git clone https://github.com/EzequielOmarArraygada/YmirShop.git
 Instala las dependencias:
 
 npm install
