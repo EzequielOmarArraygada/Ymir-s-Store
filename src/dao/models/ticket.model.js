@@ -23,7 +23,7 @@ const ticketSchema = new mongoose.Schema({
     totalAmount: { type: Number },
     status: { 
         type: String,
-        enum: ['Pendiente', 'Preparando', 'Completado', 'Cancelado'], // Enum con los estados permitidos
+        enum: ['Pendiente', 'Aprobado', 'Preparando', 'Completado', 'Cancelado'],
         default: 'Pendiente',
       },
 });

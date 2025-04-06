@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>¡Ups... algo salió mal!</title>  
+  <style>
+    body {
+      font-family: 'Georgia', serif;
+      background-color: #E7E2D1;
+      margin: 0;
+      padding: 0;
+      color: #5B1F0F;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 50px auto;
+      background-color: #C2B7A0;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+      text-align: center;
+    }
+
+    h1 {
+      margin-top: 0;
+      color: #5B1F0F;
+    }
+
+    p {
+      font-size: 18px;
+      margin-bottom: 20px;
+    }
+
+    img {
+      max-width: 100%;
+      height: auto;
+      margin: 20px 0;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    .back-button {
+      display: inline-block;
+      margin-top: 20px;
+      padding: 12px 24px;
+      background-color: #8B5B29;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      text-decoration: none;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    .back-button:hover {
+      background-color: #5B1F0F;
+    }
+
+    @media (max-width: 600px) {
+      .container {
+        margin: 20px;
+        padding: 20px;
+      }
+
+      p {
+        font-size: 16px;
+      }
+
+      h1 {
+        font-size: 24px;
+      }
+
+      .back-button {
+        font-size: 14px;
+        padding: 10px 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>¡Ups... algo salió mal!</h1>
+    <p>Tu pago fue rechazado. Intenta comprar nuevamente y verifica tus datos de compra.</p>
+    <img src="/uploads/assets/paymentFailure.png" alt="Pago rechazado">
+    <a href="/products" class="back-button">Volver a la tienda</a>
+  </div>
+</body>
+</html>

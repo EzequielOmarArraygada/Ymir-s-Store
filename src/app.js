@@ -17,10 +17,13 @@ import errorHandler from './middlewares/errors/index.js';
 import { addLogger } from './utils/logger.js';
 import swaggerConfig from './config/swagger.js';
 import { engine } from 'express-handlebars';
+import morgan from 'morgan'
+import mercadopago from 'mercadopago';
 
 dotenv.config();
 
 const { passportCall } = utils;
+
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
@@ -52,6 +55,7 @@ app.set('view engine', 'handlebars')
 app.use(express.static(__dirname + '/views'))
 app.use(express.static(path.join(__dirname, 'public')))
 app.use('/uploads', express.static('uploads'));
+app.use(morgan('dev'))
 
 app.use(express.json());
 app.use(cookieParser())
@@ -82,6 +86,10 @@ app.use(session({
     saveUninitialized: false
 }));
 
+mercadopago.configure({
+    access_token: process.env.MP_ACCESS_TOKEN
+  });
+  
 initializePassport();
 app.use(passport.initialize());
 app.use(passport.session());

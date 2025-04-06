@@ -3,6 +3,17 @@ import { CartManagerMongo } from '../dao/services/managers/CartManagerMongo.js';
 import { UserRepository } from '../repositories/user.repository.js';
 import Ticket from '../dao/models/ticket.model.js';
 import { sendMailCompra } from '../services/mailing.js'
+import mercadopago from 'mercadopago';
+import dotenv from "dotenv"
+
+
+dotenv.config();
+
+const generateTicketCode = () => {
+    const timestamp = Date.now();
+    const randomNum = Math.floor(Math.random() * 1000000);
+    return `${timestamp}-${randomNum}`; // ✅ CORREGIDO: uso de backticks
+  };
 
 export class CartController {
     constructor(){
@@ -172,93 +183,153 @@ export class CartController {
         }
     }
 
-    checkout = async (req, res) => {
+
+
+    
+    createOrder = async (req, res) => {
         try {
-            const { cid } = req.params
+          const { cid } = req.params;
+          const cart = await this.cartsService.getCartById(cid);
+      
+          if (!cart || cart.products.length === 0) {
+            return res.status(400).json({ message: 'El carrito está vacío' });
+          }
+      
+          const preferenceItems = [];
+          for (const product of cart.products) {
+            const productDetails = await this.productsService.getProduct(product.productId);
+            preferenceItems.push({
+              title: productDetails.title,
+              unit_price: productDetails.price,
+              currency_id: "ARS",
+              quantity: product.quantity,
+            });
+          }
+      
+          const preference = {
+            items: preferenceItems,
+            back_urls: {
+              success: "http://localhost:8080/api/carts/success",
+              failure: "http://localhost:8080/api/carts/paymentFailure",
+              pending: "http://localhost:8080/api/carts/paymentPending"
+            },
+            external_reference: JSON.stringify({ cid, uid: req.user._id }),
+            auto_return: "approved",
+          };
+      
+          const response = await mercadopago.preferences.create(preference);
+          return res.status(200).json({
+            message: "Orden creada con éxito",
+            init_point: response.body.init_point
+          });
+        } catch (error) {
+          console.error('Error al crear la orden:', error);
+          return res.status(500).json({ message: 'Error interno del servidor', error });
+        }
+    };
+
+    handlePaymentSuccess = async (req, res) => {
+        console.log("✅ Entró en handlePaymentSuccess");
+        console.log("Query de éxito:", req.query);
+        try {
+            const { payment_id } = req.query;
+    
+            // Obtener detalles del pago desde MercadoPago
+            const paymentResponse = await mercadopago.payment.get(payment_id);
+            const paymentStatus = paymentResponse.body.status;
+    
+            if (paymentStatus !== "approved") {
+                return res.render('pending', { message: "El pago aún no fue aprobado", paymentStatus });
+            }
+    
+            // Extraer el carrito y usuario del campo external_reference
+            const externalReference = JSON.parse(paymentResponse.body.external_reference);
+            const { cid, uid } = externalReference;
+    
+            // Obtener el carrito y validaciones
             const cart = await this.cartsService.getCartById(cid);
+            if (!cart || cart.products.length === 0) {
+                return res.status(400).render('failure', { message: 'El carrito está vacío o no existe.' });
+            }
+    
+            const comprador = await this.userService.findById(uid);
+            const code = generateTicketCode();
             const productsDetails = [];
             const productsTicket = [];
             let totalAmount = 0;
-
-            function generateRandomCode(length) {
-                const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-                let result = '';
-                for (let i = 0; i < length; i++) {
-                    result += characters.charAt(Math.floor(Math.random() * characters.length));
-                }
-                return result;
-            }
-            
-            function generateTicketCode() {
-                const timestamp = Date.now().toString();
-                const randomNum = generateRandomCode(6); 
-                return `${timestamp}-${randomNum}`;
-            }
-
     
-            if (!cart || cart.products.length === 0) {
-                return res.status(400).json({ message: 'Cart is empty' });
-            }
-    
-            // Generar el ticket
-            let uid = req.user._id;
-            const comprador = await this.userService.findById(uid);
-            const code = generateTicketCode();
-
+            // Procesar productos: calcular total, actualizar stock
             for (const product of cart.products) {
                 const productDetails = await this.productsService.getProduct(product.productId);
-                const productWithQuantity = { ...productDetails, quantity: product.quantity }; 
-                productsDetails.push(productWithQuantity);
     
-                const subtotal = productDetails.price * product.quantity;
-                totalAmount += subtotal;
-
-                productsTicket.push({ ...productDetails, quantity: product.quantity, productId: product.productId }); 
-
-                
+                if (productDetails.stock < product.quantity) {
+                    return res.render('failure', {
+                        message: `El producto ${productDetails.title} no tiene suficiente stock.`
+                    });
+                }
+    
+                productsDetails.push({ ...productDetails, quantity: product.quantity });
+                productsTicket.push({ ...productDetails, quantity: product.quantity, productId: product.productId });
+                totalAmount += productDetails.price * product.quantity;
+    
                 await this.productsService.updateProduct(product.productId, {
                     stock: productDetails.stock - product.quantity
                 });
             }
+    
+            // Generar ticket
 
-            
-
+            const translatedStatus = {
+                approved: "Aprobado",
+                pending: "Pendiente",
+                cancelled: "Cancelado"
+              }[paymentStatus] || "Pendiente";
+              
             const ticket = new Ticket({
-                code: code,
+                code,
                 purchaser: comprador,
                 products: productsTicket,
-                totalAmount: totalAmount,
+                totalAmount,
+                status: translatedStatus,
                 purchase_datetime: new Date()
             });
-    
             await ticket.save();
     
+            // Vaciar el carrito
             cart.products = [];
             await cart.save();
-
-            sendMailCompra(comprador.email, ticket)
     
-            return res.status(200).json({ message: 'Purchase successful', ticket });
-            
+            // Enviar correo de confirmación
+            await sendMailCompra(comprador.email, ticket);
+    
+            // Redirigir a productos con mensaje
+            return res.redirect(`/api/carts/paymentSuccess/${ticket._id}`);
+    
         } catch (error) {
-            console.error('Error al procesar la compra:', error);
-            req.logger.error(`Error al procesar la compra: ${error.message}. Método: ${req.method}, URL: ${req.url} - ${new Date().toLocaleDateString()}`);
-            return res.status(500).json({ message: 'Server error', error });
+            console.error('Error en handlePaymentSuccess:', error);
+            req.logger.error(
+                `Error en handlePaymentSuccess: ${error.message}. Método: ${req.method}, URL: ${req.url} - ${new Date().toLocaleDateString()}`
+            );
+            return res.status(500).render('failure', { message: "Ocurrió un error al procesar el pago." });
+        }
+    };
+
+    paymentSuccess = async (req, res) => {
+        try {
+            const { tid } = req.params;
+            const ticket = await Ticket.findById(tid).populate("purchaser");
+    
+            if (!ticket) {
+                return res.status(404).render("failure", { message: "No se encontró el ticket con ese ID." });
+            }
+    
+            res.render("paymentSuccess", { ticket });
+        } catch (error) {
+            console.error("Error al cargar la vista de éxito:", error);
+            res.status(500).send("Error al mostrar el resumen del pago");
         }
     };
     
-    getPurchase = async (req, res) => {
-        try {
-            const { cid } = req.params;
-            res.json({ message: `¡Compra exitosa para el carrito ${cid}!` });
-        } catch (error){
-            req.logger.error(
-                `Error en la confirmación de la compra: ${error.message}. Método: ${req.method}, URL: ${req.url} - ${new Date().toLocaleDateString()}`
-            );
-            res.status(500).send({ error: 'Ocurrió un error en la confirmación de la compra.' });
-        }
-    }
-
     getUserCartId = async (req, res) => {
         try {
             const userId = req.user._id;
