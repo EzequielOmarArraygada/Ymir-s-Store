@@ -19,6 +19,7 @@ const {
     createOrder,
     handlePaymentSuccess,
     paymentSuccess,
+    handleWebhook
 } = new CartController();
 
 
@@ -33,10 +34,12 @@ cartRouter.get('/paymentFailure', (req, res) => {
     return res.render('paymentFailure', { message: "El pago no se pudo completar, por favor intente nuevamente." });
 });
 cartRouter.get('/paymentPending', (req, res) => {
-    return res.render('pending', { message: "El pago está pendiente de confirmación." });
+    return res.render('paymentPending', { message: "El pago está pendiente de confirmación." });
 });
 
 cartRouter.get('/paymentSuccess/:tid', passportCall('login', 'user'), paymentSuccess);
+
+cartRouter.post('/webhook', handleWebhook);
 
 cartRouter.get('/', passportCall('login', 'user'), getCarts);
 

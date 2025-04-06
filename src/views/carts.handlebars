@@ -276,7 +276,6 @@
       // Añadir el evento para vaciar el carrito
       document.getElementById('empty-cart').addEventListener('click', async () => {
         const cartId = '{{cartId}}';
-        console.log('Cart ID:', cartId);
 
         try {
           const response = await fetch(`/api/carts/${cartId}`, {
@@ -294,7 +293,6 @@
 
       // Actualización del conteo del carrito
       const cartId = '{{cartId}}';
-      console.log('Cart ID:', cartId);
 
       async function updateCartCount() {
         console.log('Ejecutando updateCartCount');
