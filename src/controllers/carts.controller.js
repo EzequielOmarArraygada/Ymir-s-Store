@@ -232,7 +232,7 @@ export class CartController {
                     pending: "http://localhost:8080/api/carts/paymentPending"
                 },
                 external_reference: JSON.stringify({ ticketId: savedTicket._id, compradorId: comprador.id }),
-                notification_url: "https://a230-2802-8010-a711-5600-7824-fea6-42b0-a4a4.ngrok-free.app/api/carts/webhook",
+                notification_url: "https://cc8a-2802-8010-a711-5600-c45-9a06-d0e2-7c17.ngrok-free.app/api/carts/webhook",
                 auto_return: "approved",
             };
 
@@ -360,7 +360,7 @@ export class CartController {
                 return res.status(404).send("Ticket no encontrado");
             }
     
-            if (ticket.status !== "Aprobado" && paymentInfo.status === "approved") {
+            if (ticket.status !== "Aprobado" && payment.body.status === "approved") {
                 const cart = await this.cartsService.getCartById(ticket.purchaser.cart);
                 if (cart && cart.products.length > 0) {
                     let totalAmount = 0;
