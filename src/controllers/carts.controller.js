@@ -2,6 +2,7 @@ import { ProductManagerMongo } from '../dao/services/managers/ProductManagerMong
 import { CartManagerMongo } from '../dao/services/managers/CartManagerMongo.js';
 import { UserRepository } from '../repositories/user.repository.js';
 import Ticket from '../dao/models/ticket.model.js';
+import productModel from '../dao/models/product.model.js'
 import { TicketManagerMongo } from '../dao/services/managers/TicketManagerMongo.js'
 import { sendMailCompra } from '../services/mailing.js'
 import mercadopago from 'mercadopago';
@@ -232,7 +233,7 @@ export class CartController {
                     pending: "http://localhost:8080/api/carts/paymentPending"
                 },
                 external_reference: JSON.stringify({ ticketId: savedTicket._id, compradorId: comprador.id }),
-                notification_url: "https://cc8a-2802-8010-a711-5600-c45-9a06-d0e2-7c17.ngrok-free.app/api/carts/webhook",
+                notification_url: "https://aa2b-2802-8010-a711-5600-c45-9a06-d0e2-7c17.ngrok-free.app/api/carts/webhook",
                 auto_return: "approved",
             };
 
@@ -337,69 +338,79 @@ export class CartController {
         }
     };
 
-    // En tu CartController o donde manejes los pagos
     handleWebhook = async (req, res) => {
         try {
-            const paymentId = req.query.id;
-            const payment = await mercadopago.payment.findById(paymentId);
-            const externalRefRaw = payment.body.external_reference;
+            const topic = req.query.topic;
+            const resourceId = req.query.id;
     
-            if (!externalRefRaw) {
-                console.warn("⚠️ external_reference no presente en el pago");
-                return res.status(400).send("Falta external_reference");
-            }
+            if (topic === "payment") {
+                const payment = await mercadopago.payment.findById(resourceId);
+                const externalRefRaw = payment.body.external_reference;
     
-            const externalRef = JSON.parse(externalRefRaw);
-            const ticketId = externalRef.ticketId;
-            const compradorId = externalRef.compradorId;
-    
-            const comprador = await this.userService.findById(compradorId);
-            const ticket = await Ticket.findById(ticketId).populate("purchaser");
-    
-            if (!ticket) {
-                return res.status(404).send("Ticket no encontrado");
-            }
-    
-            if (ticket.status !== "Aprobado" && payment.body.status === "approved") {
-                const cart = await this.cartsService.getCartById(ticket.purchaser.cart);
-                if (cart && cart.products.length > 0) {
-                    let totalAmount = 0;
-                    const purchasedProducts = [];
-
-                    for (const item of cart.products) {
-                        const product = await this.productsService.getProduct(item.productId);
-
-                        if (product.stock >= item.quantity) {
-                            product.stock -= item.quantity;
-                            await product.save();
-
-                            purchasedProducts.push({
-                                product: product._id,
-                                quantity: item.quantity,
-                            });
-
-                            totalAmount += product.price * item.quantity;
-                        }
-                    }
-
-                    ticket.products = purchasedProducts;
-                    ticket.totalAmount = totalAmount;
-                    ticket.status = "Aprobado";
-                    ticket.purchase_datetime = new Date();
-
-                    await ticket.save();
+                if (!externalRefRaw) {
+                    console.warn("⚠️ external_reference no presente en el pago");
+                    return res.status(400).send("Falta external_reference");
                 }
-
-                // Enviar mail
-                await sendMailCompra(user.email, ticket);
-        }
-
-        if (cart) {
-            cart.products = [];
-            await cart.save();
-        }
     
-            return res.status(200).send("Webhook procesado con éxito");
+                const externalRef = JSON.parse(externalRefRaw);
+                const ticketId = externalRef.ticketId;
+                const compradorId = externalRef.compradorId;
+    
+                const comprador = await this.userService.findById(compradorId);
+                const ticket = await Ticket.findById(ticketId).populate("purchaser");
+    
+                if (!ticket) {
+                    return res.status(404).send("Ticket no encontrado");
+                }
+    
+                let cart = null;
+    
+                if (ticket.status !== "Aprobado" && payment.body.status === "approved") {
+                    cart = await this.cartsService.getCartById(ticket.purchaser.cart);
+    
+                    if (cart && cart.products.length > 0) {
+                        let totalAmount = 0;
+                        const purchasedProducts = [];
+    
+                        for (const item of cart.products) {
+                            const rawProduct = await this.productsService.getProduct(item.productId);
+                            const product = productModel.hydrate(rawProduct);
+                                
+                            if (product.stock >= item.quantity) {
+                                product.stock -= item.quantity;
+                                await product.save();
+    
+                                purchasedProducts.push({
+                                    product: product._id,
+                                    quantity: item.quantity,
+                                });
+    
+                                totalAmount += product.price * item.quantity;
+                            }
+                        }
+    
+                        ticket.products = purchasedProducts;
+                        ticket.totalAmount = totalAmount;
+                        ticket.status = "Aprobado";
+                        ticket.purchase_datetime = new Date();
+    
+                        await ticket.save();
+    
+                        // Enviar mail
+                        await sendMailCompra(comprador.email, ticket);
+                    }
+                }
+    
+                if (cart) {
+                    cart.products = [];
+                    await cart.save();
+                }
+    
+                return res.status(200).send("Webhook procesado con éxito");
+            }
+    
+            // Si el topic no es "payment", ignoramos
+            return res.status(200).send("Topic no manejado");
         } catch (error) {
             console.error("❌ Error en webhook:", error);
             return res.status(500).send("Error al procesar el webhook");
