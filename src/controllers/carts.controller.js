@@ -216,7 +216,7 @@ export class CartController {
             const emptyTicket = new Ticket({
                 code,
                 purchaser: comprador,
-                products: preferenceItems,
+                products: productsDetails,
                 totalAmount: totalAmount,
                 status: "Pendiente",
                 purchase_datetime: new Date()
