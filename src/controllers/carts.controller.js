@@ -233,7 +233,7 @@ export class CartController {
                     pending: "http://localhost:8080/api/carts/paymentPending"
                 },
                 external_reference: JSON.stringify({ ticketId: savedTicket._id, compradorId: comprador.id }),
-                notification_url: "https://aa2b-2802-8010-a711-5600-c45-9a06-d0e2-7c17.ngrok-free.app/api/carts/webhook",
+                notification_url: "https://2b58-2802-8010-a711-5600-9df4-ec33-a21-d9bb.ngrok-free.app/api/carts/webhook",
                 auto_return: "approved",
             };
 
@@ -275,7 +275,15 @@ export class CartController {
                 }
             }
     
-            let ticket = ticketId ? await Ticket.findById(ticketId).populate("purchaser") : null;
+            let ticket =  null;
+            if (ticketId) {
+                ticket = await Ticket.findById(ticketId).populate("purchaser");
+            }
+            
+            if (!ticket) {
+                req.logger.error(`Ticket no encontrado o inválido. ticketId: ${ticketId}`);
+                return res.status(404).json({ error: 'Ticket no encontrado o inválido' });
+            }
             let user = await this.userService.findById(compradorId);
             const cart = await this.cartsService.getCartById(user.cart._id);
     
@@ -370,26 +378,20 @@ export class CartController {
     
                     if (cart && cart.products.length > 0) {
                         let totalAmount = 0;
-                        const purchasedProducts = [];
     
-                        for (const item of cart.products) {
-                            const rawProduct = await this.productsService.getProduct(item.productId);
+                        for (const item of ticket.products) {
+                            const rawProduct = await this.productsService.getProduct(item._id);
                             const product = productModel.hydrate(rawProduct);
                                 
                             if (product.stock >= item.quantity) {
                                 product.stock -= item.quantity;
                                 await product.save();
-    
-                                purchasedProducts.push({
-                                    product: product._id,
-                                    quantity: item.quantity,
-                                });
-    
+                                
                                 totalAmount += product.price * item.quantity;
                             }
                         }
     
-                        ticket.products = purchasedProducts;
+                        ticket.products = ticket.products;
                         ticket.totalAmount = totalAmount;
                         ticket.status = "Aprobado";
                         ticket.purchase_datetime = new Date();
