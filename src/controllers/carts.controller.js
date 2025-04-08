@@ -4,7 +4,7 @@ import { UserRepository } from '../repositories/user.repository.js';
 import Ticket from '../dao/models/ticket.model.js';
 import productModel from '../dao/models/product.model.js'
 import { TicketManagerMongo } from '../dao/services/managers/TicketManagerMongo.js'
-import { sendMailCompra } from '../services/mailing.js'
+import { sendCompraAprobada } from '../services/mailing.js'
 import mercadopago from 'mercadopago';
 import dotenv from "dotenv"
 
@@ -314,7 +314,7 @@ export class CartController {
                     }
     
                     // Enviar mail
-                    await sendMailCompra(user.email, ticket);
+                    await sendCompraAprobada(user.email, ticket);
             }
     
             if (cart) {
@@ -399,7 +399,7 @@ export class CartController {
                         await ticket.save();
     
                         // Enviar mail
-                        await sendMailCompra(comprador.email, ticket);
+                        await sendCompraAprobada(comprador.email, ticket);
                     }
                 }
     

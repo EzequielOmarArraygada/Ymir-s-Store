@@ -4,7 +4,7 @@ import nodemailer from 'nodemailer';
 const transporter = nodemailer.createTransport({
     service: config.mailing.SERVICE,
     auth: {
-        user: config.mailing.USER, 
+        user: config.mailing.USER,
         pass: config.mailing.PASSWORD
     }
 });
@@ -27,63 +27,69 @@ export function sendPasswordResetEmail(email, token) {
     });
 }
 
-export function sendMailCompra(email, ticket) {
-    const mailCompra = {
+export function sendCompraAprobada(email, ticket) {
+    const mailOptions = {
         from: config.mailing.USER,
         to: email,
-        subject: '¡Gracias por comprar con nosotros!',
+        subject: '🛡️ ¡Compra Aprobada! Gracias por confiar en nosotros',
         html: `
-            <h1>¡Gracias por tu compra, ${ticket.purchaser.first_name} ${ticket.purchaser.last_name}!</h1>
-                <p>Hemos recibido tu pedido con el código <strong>${ticket.code}</strong> el día ${new Date(ticket.purchase_datetime).toLocaleString()}.</p>
-                
-                <h2>Detalles del Comprador:</h2>
+        <div style="font-family: 'Arial', sans-serif; background-color: #E7E2D1; padding: 20px; color: #5B1F0F;">
+            <div style="max-width: 700px; margin: auto; background-color: #C2B7A0; border-radius: 12px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); padding: 30px;">
+            <div style="text-align: center; margin-top: 30px;">
+                <img src="https://res.cloudinary.com/dsvo0wjue/image/upload/v1744145650/banner2_gm9jzu.jpg" alt="Banner" style="width: 100%; max-width: 100%; height: auto; border-radius: 8px;" />
+            </div>
+                <h1 style="text-align: center; color: #5B1F0F;">¡Gracias por tu compra, ${ticket.purchaser.first_name}!</h1>
+              
+                <p>Hemos recibido y aprobado tu pedido con el código <strong>${ticket.code}</strong> el <strong>${new Date(ticket.purchase_datetime).toLocaleString()}</strong>.</p>
+
+                <h2>🧍 Datos del Comprador:</h2>
                 <ul>
                     <li><strong>Nombre:</strong> ${ticket.purchaser.first_name} ${ticket.purchaser.last_name}</li>
                     <li><strong>Email:</strong> ${ticket.purchaser.email}</li>
-                    <li><strong>Edad:</strong> ${ticket.purchaser.age}</li>
-                    <li><strong>Rol:</strong> ${ticket.purchaser.role}</li>
                 </ul>
 
-
-            <h2>Productos Comprados:</h2>
-            <table border="1" cellpadding="10" cellspacing="0">
-                <thead>
-                    <tr>
-                        <th>Título</th>
-                        <th>Descripción</th>
-                        <th>Código</th>
-                        <th>Precio</th>
-                        <th>Cantidad</th>
-                        <th>Subtotal</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    ${ticket.products.map(product => `
-                        <tr>
-                            <td>${product.title}</td>
-                            <td>${product.description}</td>
-                            <td>${product.code}</td>
-                            <td>${product.price}</td>
-                            <td>${product.quantity}</td>
-                            <td>${product.price * product.quantity}</td>
+                <h2>🛒 Productos:</h2>
+                <table style="width: 100%; border-collapse: collapse;">
+                    <thead>
+                        <tr style="background-color: #8B5B29; color: white;">
+                            <th style="padding: 10px; border: 1px solid #ddd;">Producto</th>
+                            <th style="padding: 10px; border: 1px solid #ddd;">Precio</th>
+                            <th style="padding: 10px; border: 1px solid #ddd;">Cantidad</th>
+                            <th style="padding: 10px; border: 1px solid #ddd;">Subtotal</th>
                         </tr>
-                    `).join('')}
-                </tbody>
-            </table>
-            
-            <h2>Total a Pagar: $${ticket.totalAmount}</h2>
-            
-            <p>¡Gracias por confiar en nosotros! Esperamos verte pronto.</p>
+                    </thead>
+                    <tbody>
+                        ${ticket.products.map(p => `
+                            <tr style="background-color: #E7E2D1;">
+                                <td style="padding: 10px; border: 1px solid #ddd;">${p.title}</td>
+                                <td style="padding: 10px; border: 1px solid #ddd;">$${p.price}</td>
+                                <td style="padding: 10px; border: 1px solid #ddd;">${p.quantity}</td>
+                                <td style="padding: 10px; border: 1px solid #ddd;">$${p.price * p.quantity}</td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+
+                <h2 style="text-align: right;">💰 Total: $${ticket.totalAmount.toFixed(2)}</h2>
+
+                <p style="margin-top: 20px;">⚔️ Gracias por confiar en nuestro comercio medieval. ¡Esperamos verte pronto!</p>
+                <div style="text-align: center; margin-top: 30px;">
+                    <img src="https://res.cloudinary.com/dsvo0wjue/image/upload/v1744145651/logoMail_bkhkmd.png" alt="Logo medieval" width="150" />
+                </div>
+            </div>
+        </div>
         `
     };
-    transporter.sendMail(mailCompra, (error, info) => {
+
+    transporter.sendMail(mailOptions, (error, info) => {
         if (error) {
-            console.log(error);
+            console.log('Error al enviar correo de compra aprobada:', error);
         } else {
-            console.log('Correo enviado: ' + info.response);
+            console.log('Correo de compra aprobada enviado:', info.response);
         }
     });
 }
+
 
 
 
