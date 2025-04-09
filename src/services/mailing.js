@@ -38,7 +38,7 @@ export function sendCompraAprobada(email, ticket) {
             <div style="text-align: center; margin-top: 30px;">
                 <img src="https://res.cloudinary.com/dsvo0wjue/image/upload/v1744145650/banner2_gm9jzu.jpg" alt="Banner" style="width: 100%; max-width: 100%; height: auto; border-radius: 8px;" />
             </div>
-                <h1 style="text-align: center; color: #5B1F0F;">¡Gracias por tu compra ${ticket.purchaser.first_name}!</h1>
+                <h1 style="text-align: center; color: #5B1F0F;">¡${ticket.purchaser.first_name}, gracias por tu compra!</h1>
               
                 <p>Hemos recibido y aprobado tu pedido con el código <strong>${ticket.code}</strong> el <strong>${new Date(ticket.purchase_datetime).toLocaleString()}</strong>.</p>
 
@@ -102,11 +102,11 @@ export function sendCompraPendiente(email, ticket) {
             <div style="text-align: center; margin-top: 30px;">
                 <img src="https://res.cloudinary.com/dsvo0wjue/image/upload/v1744145650/banner2_gm9jzu.jpg" alt="Banner" style="width: 100%; max-width: 100%; height: auto; border-radius: 8px;" />
             </div>
-                <h1 style="text-align: center; color: #5B1F0F;">¡Gracias por tu compra, ${ticket.purchaser.first_name}!</h1>
+                <h1 style="text-align: center; color: #5B1F0F;">¡${ticket.purchaser.first_name}, gracias por tu compra!</h1>
               
                 <p>Hemos recibido tu pedido co el coodigo <strong>${ticket.code}, el pago esta pendiente.</strong></p>
                 
-                <p>Cuando se termine de procesar el pago recibiras una notificación por correo</p>
+                <p><strong>Cuando se termine de procesar el pago recibiras una notificación por correo</strong></p>
 
                 <h2>🧍 Tus datos:</h2>
                 <ul>
@@ -167,7 +167,7 @@ export function sendCompraCancelada(email, ticket) {
             <div style="text-align: center; margin-top: 30px;">
                 <img src="https://res.cloudinary.com/dsvo0wjue/image/upload/v1744145650/banner2_gm9jzu.jpg" alt="Banner" style="width: 100%; max-width: 100%; height: auto; border-radius: 8px;" />
             </div>
-                <h1 style="text-align: center; color: #5B1F0F;">Tu pago fue rechazado ❌, ${ticket.purchaser.first_name}!</h1>
+                <h1 style="text-align: center; color: #5B1F0F;">${ticket.purchaser.first_name}, tu pago fue rechazado ❌, ${ticket.purchaser.first_name}!</h1>
               
                 <p>Tuvimos un problema al recibir el pago del pedido <strong>${ticket.code}</strong></p>
                 <p>Por favor intenta comprar nuevamente</p>
