@@ -225,6 +225,7 @@
 
   <div class="ticket-actions">
   <button class="btn-status btn-pendiente {{#ifEquals ticket.status 'Pendiente'}}active{{else}}btn-apagado{{/ifEquals}}" onclick="updateTicketStatus('Pendiente')">Pendiente</button>
+    <button class="btn-status btn-pendiente {{#ifEquals ticket.status 'Pendiente'}}active{{else}}btn-apagado{{/ifEquals}}" onclick="updateTicketStatus('Pendiente')">Aprobado</button>
   <button class="btn-status btn-preparando {{#ifEquals ticket.status 'Preparando'}}active{{else}}btn-apagado{{/ifEquals}}" onclick="updateTicketStatus('Preparando')">Preparando</button>
   <button class="btn-status btn-completado {{#ifEquals ticket.status 'Completado'}}active{{else}}btn-apagado{{/ifEquals}}" onclick="updateTicketStatus('Completado')">Completado</button>
   <button class="btn-status btn-cancelado {{#ifEquals ticket.status 'Cancelado'}}active{{else}}btn-apagado{{/ifEquals}}" onclick="updateTicketStatus('Cancelado')">Cancelado</button>

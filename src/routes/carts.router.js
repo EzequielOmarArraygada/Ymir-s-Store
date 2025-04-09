@@ -19,7 +19,11 @@ const {
     createOrder,
     handlePaymentSuccess,
     paymentSuccess,
-    handleWebhook
+    handleWebhook,
+    paymentPending,
+    paymentFailure,
+    handlePaymentPending,
+    handlePaymentFailure,
 } = new CartController();
 
 
@@ -30,12 +34,13 @@ cartRouter.get('/createOrder/:cid', passportCall('login', 'user'), createOrder);
 
 cartRouter.get('/success', handlePaymentSuccess);
 
-cartRouter.get('/paymentFailure', (req, res) => {
-    return res.render('paymentFailure', { message: "El pago no se pudo completar, por favor intente nuevamente." });
-});
-cartRouter.get('/paymentPending', (req, res) => {
-    return res.render('paymentPending', { message: "El pago está pendiente de confirmación." });
-});
+cartRouter.get('/pending', handlePaymentPending);
+
+cartRouter.get('/failure', handlePaymentFailure);
+
+cartRouter.get('/paymentFailure/:tid', passportCall('login', 'user'), paymentFailure);
+
+cartRouter.get('/paymentPending/:tid', passportCall('login', 'user'), paymentPending);
 
 cartRouter.get('/paymentSuccess/:tid', passportCall('login', 'user'), paymentSuccess);
 
@@ -58,9 +63,5 @@ cartRouter.put('/:cid', passportCall('login', 'user'), updateCart);
 cartRouter.delete('/:cid/products/:pid', deleteProduct);
 
 cartRouter.delete('/:cid', deleteAllProducts);
-
-
-
-
 
 export default cartRouter;

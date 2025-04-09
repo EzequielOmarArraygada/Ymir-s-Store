@@ -17,3 +17,7 @@
 2025-04-04 21:12:28 [ERROR]: Error al obtener el carrito con ID success: Cast to ObjectId failed for value "success" (type string) at path "_id" for model "carts"
 2025-04-05 13:38:50 [ERROR]: Error al obtener el carrito con ID success: Cast to ObjectId failed for value "success" (type string) at path "_id" for model "carts"
 2025-04-06 17:39:54 [ERROR]: Error al obtener el carrito con ID paymentSuccess: Cast to ObjectId failed for value "paymentSuccess" (type string) at path "_id" for model "carts"
+2025-04-08 19:42:31 [ERROR]: Error al obtener el carrito con ID paymentPending: Cast to ObjectId failed for value "paymentPending" (type string) at path "_id" for model "carts"
+2025-04-08 19:47:58 [ERROR]: Error al obtener el carrito con ID paymentPending: Cast to ObjectId failed for value "paymentPending" (type string) at path "_id" for model "carts"
+2025-04-08 19:52:13 [ERROR]: Error al obtener el carrito con ID paymentPending: Cast to ObjectId failed for value "paymentPending" (type string) at path "_id" for model "carts"
+2025-04-09 14:36:38 [ERROR]: Error al eliminar el producto con ID 6702f08a4a6441b7fe5f589d del carrito con ID 67f1bd53ef213f675d86a92d: No se encontró el producto con ID 6702f08a4a6441b7fe5f589d en el carrito
