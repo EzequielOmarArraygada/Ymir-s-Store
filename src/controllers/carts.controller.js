@@ -7,6 +7,7 @@ import { TicketManagerMongo } from '../dao/services/managers/TicketManagerMongo.
 import { sendCompraAprobada, sendCompraPendiente, sendCompraCancelada } from '../services/mailing.js'
 import mercadopago from 'mercadopago';
 import dotenv from "dotenv"
+import axios from 'axios';
 
 
 dotenv.config();
@@ -15,6 +16,25 @@ const generateTicketCode = () => {
     const timestamp = Date.now();
     const randomNum = Math.floor(Math.random() * 1000000);
     return `${timestamp}-${randomNum}`; // ✅ CORREGIDO: uso de backticks
+};
+
+const obtenerNombreEmisor = async (issuerId, paymentMethodId) => {
+    try {
+        const response = await axios.get('https://api.mercadopago.com/v1/payment_methods/card_issuers', {
+            params: {
+                payment_method_id: paymentMethodId
+            },
+            headers: {
+                Authorization: `Bearer ${process.env.MERCADOPAGO_ACCESS_TOKEN}`
+            }
+        });
+
+        const issuer = response.data.find(i => i.id === parseInt(issuerId));
+        return issuer ? issuer.name : "Desconocido";
+    } catch (err) {
+        console.error("⚠️ Error al consultar nombre del emisor:", err.message);
+        return "Desconocido";
+    }
 };
 
 export class CartController {
@@ -219,7 +239,8 @@ export class CartController {
                 products: productsDetails,
                 totalAmount: totalAmount,
                 status: "Pendiente",
-                purchase_datetime: new Date()
+                purchase_datetime: new Date(),
+                paymentInf: {}
             });
 
             const savedTicket = await emptyTicket.save();
@@ -254,9 +275,31 @@ export class CartController {
             const paymentId = req.query.payment_id;
             const payment = await mercadopago.payment.findById(paymentId);
             const paymentInfo = payment.body;
+            const metodoPago = paymentInfo.payment_type_id;
+            const fechaPago = paymentInfo.date_approved;
+            let ultimosDigitos = null;
+            let cuotas = null;
+            let emisor = null;
             let ticketId = null;
             let compradorId = null;
-    
+            console.log("🔎 PaymentInfo:", JSON.stringify(paymentInfo, null, 2));
+
+                if (paymentInfo.card) {
+                    ultimosDigitos = paymentInfo.card.last_four_digits || null;
+                    cuotas = paymentInfo.installments || null;
+                    emisor = paymentInfo.card?.issuer?.name || null;
+                    if (!emisor || emisor === '') {
+                        const issuerId = paymentInfo.card?.issuer?.id;
+                        const metodo = paymentInfo.payment_method_id;
+                        if (issuerId && metodo) {
+                            emisor = await obtenerNombreEmisor(issuerId, metodo);
+                        } else {
+                            emisor = "Desconocido";
+                        }}                 
+                } else {
+                    console.warn("⚠️ El objeto 'card' no está presente en el pago.");
+                }
+
             if (paymentInfo.external_reference) {
                 try {
                     const parsedRef = JSON.parse(paymentInfo.external_reference);
@@ -274,54 +317,61 @@ export class CartController {
                     console.warn("No se pudo parsear external_reference:", err);
                 }
             }
-    
-            let ticket =  null;
+
+            let ticket = null;
             if (ticketId) {
                 ticket = await Ticket.findById(ticketId).populate("purchaser");
             }
-            
+
             if (!ticket) {
                 req.logger.error(`Ticket no encontrado o inválido. ticketId: ${ticketId}`);
                 return res.status(404).json({ error: 'Ticket no encontrado o inválido' });
             }
             let user = await this.userService.findById(compradorId);
             const cart = await this.cartsService.getCartById(user.cart._id);
-    
-            
-                if (ticket.status !== "Aprobado" && paymentInfo.status === "approved") {
-                    const cart = await this.cartsService.getCartById(ticket.purchaser.cart);
-                    const productsDetails = [];
-                    if (cart && cart.products.length > 0) {
-                        for (const product of cart.products) {
-                            const productDetails = await this.productsService.getProduct(product.productId);
-                
-                            if (productDetails.stock < product.quantity) {
-                                return res.render('failure', {
-                                    message: `El producto ${productDetails.title} no tiene suficiente stock.`
-                                });
-                            }
-                
-                            productsDetails.push({ ...productDetails, quantity: product.quantity });
-                            await this.productsService.updateProduct(product.productId, {
-                                stock: productDetails.stock - product.quantity
+
+
+            if (ticket.status !== "Aprobado" && paymentInfo.status === "approved") {
+                const cart = await this.cartsService.getCartById(ticket.purchaser.cart);
+                const productsDetails = [];
+                if (cart && cart.products.length > 0) {
+                    for (const product of cart.products) {
+                        const productDetails = await this.productsService.getProduct(product.productId);
+
+                        if (productDetails.stock < product.quantity) {
+                            return res.render('failure', {
+                                message: `El producto ${productDetails.title} no tiene suficiente stock.`
                             });
                         }
-    
-                        ticket.status = "Aprobado";
-                        ticket.purchase_datetime = new Date(); //QUIZA AGREGAR A TICKET DATE DE APROBADO
-    
-                        await ticket.save();
+
+                        productsDetails.push({ ...productDetails, quantity: product.quantity });
+                        await this.productsService.updateProduct(product.productId, {
+                            stock: productDetails.stock - product.quantity
+                        });
                     }
-    
-                    // Enviar mail
-                    await sendCompraAprobada(user.email, ticket);
+
+                    ticket.paymentInf = {
+                        method: metodoPago,
+                        paymentDate: fechaPago,
+                        card: {
+                            lastFourDigits: ultimosDigitos,
+                            installments: cuotas,
+                            issuerName: emisor
+                        }
+                    };
+                    ticket.status = "Aprobado";
+                    await ticket.save();
+                }
+
+                // Enviar mail
+                await sendCompraAprobada(user.email, ticket);
             }
-    
+
             if (cart) {
                 cart.products = [];
                 await cart.save();
             }
-    
+
             return res.redirect(`/api/carts/paymentSuccess/${ticket._id}`);
         } catch (error) {
             console.error("Error en handlePaymentSuccess:", error);
@@ -334,9 +384,15 @@ export class CartController {
             const paymentId = req.query.payment_id;
             const payment = await mercadopago.payment.findById(paymentId);
             const paymentInfo = payment.body;
+            const metodoPago = paymentInfo.payment_type_id;
+            const fechaPago = paymentInfo.date_approved;
+            const ultimosDigitos = paymentInfo.card?.last_four_digits;
+            const cuotas = paymentInfo.installments;
+            const emisor = paymentInfo.card?.issuer?.name;
             let ticketId = null;
             let compradorId = null;
-    
+            
+
             if (paymentInfo.external_reference) {
                 try {
                     const parsedRef = JSON.parse(paymentInfo.external_reference);
@@ -354,31 +410,64 @@ export class CartController {
                     console.warn("No se pudo parsear external_reference:", err);
                 }
             }
-    
-            let ticket =  null;
+
+            let ticket = null;
             if (ticketId) {
                 ticket = await Ticket.findById(ticketId).populate("purchaser");
             }
-            
+
             if (!ticket) {
                 req.logger.error(`Ticket no encontrado o inválido. ticketId: ${ticketId}`);
                 return res.status(404).json({ error: 'Ticket no encontrado o inválido' });
             }
-            let user = await this.userService.findById(compradorId);   
+            let user = await this.userService.findById(compradorId);
+            const cart = await this.cartsService.getCartById(user.cart._id);
+            const productsDetails = [];
+
+            if (cart && cart.products.length > 0) {
+                for (const product of cart.products) {
+                    const productDetails = await this.productsService.getProduct(product.productId);
+
+                    if (productDetails.stock < product.quantity) {
+                        return res.render('failure', {
+                            message: `El producto ${productDetails.title} no tiene suficiente stock.`
+                        });
+                    }
+
+                    productsDetails.push({ ...productDetails, quantity: product.quantity });
+                    await this.productsService.updateProduct(product.productId, {
+                        stock: productDetails.stock - product.quantity
+                    });
+                }
+
+                ticket.paymentInf = {
+                    method: metodoPago,
+                    paymentDate: fechaPago,
+                    card: {
+                        lastFourDigits: ultimosDigitos,
+                        installments: cuotas,
+                        issuerName: emisor
+                    }
+                };
+                await ticket.save();
+            }
+
+            // Enviar mail
+            await sendCompraPendiente(user.email, ticket);
+
 
             if (cart) {
                 cart.products = [];
                 await cart.save();
             }
-    
-            await sendCompraPendiente(user.email, ticket);
+
             return res.redirect(`/api/carts/paymentPending/${ticket._id}`);
         } catch (error) {
             console.error("Error en handlePaymentPending:", error);
             return res.status(500).json({ message: "Error al procesar el pago", error });
         }
     };
-    
+
     handlePaymentFailure = async (req, res) => {
         try {
             const paymentId = req.query.payment_id;
@@ -386,7 +475,7 @@ export class CartController {
             const paymentInfo = payment.body;
             let ticketId = null;
             let compradorId = null;
-    
+
             if (paymentInfo.external_reference) {
                 try {
                     const parsedRef = JSON.parse(paymentInfo.external_reference);
@@ -404,19 +493,19 @@ export class CartController {
                     console.warn("No se pudo parsear external_reference:", err);
                 }
             }
-    
-            let ticket =  null;
+
+            let ticket = null;
             if (ticketId) {
                 ticket = await Ticket.findById(ticketId).populate("purchaser");
-                ticket.status = "Cancelado"; 
+                ticket.status = "Cancelado";
                 await ticket.save();
             }
-            
+
             if (!ticket) {
                 req.logger.error(`Ticket no encontrado o inválido. ticketId: ${ticketId}`);
                 return res.status(404).json({ error: 'Ticket no encontrado o inválido' });
             }
-            let user = await this.userService.findById(compradorId);    
+            let user = await this.userService.findById(compradorId);
             await sendCompraCancelada(user.email, ticket);
             return res.redirect(`/api/carts/paymentFailure/${ticketId}`);
         } catch (error) {
@@ -477,54 +566,83 @@ export class CartController {
         try {
             const topic = req.query.topic;
             const resourceId = req.query.id;
-    
+
             if (topic === "payment") {
                 const payment = await mercadopago.payment.findById(resourceId);
                 const externalRefRaw = payment.body.external_reference;
-    
+
                 if (!externalRefRaw) {
                     console.warn("⚠️ external_reference no presente en el pago");
                     return res.status(400).send("Falta external_reference");
                 }
-    
+
                 const externalRef = JSON.parse(externalRefRaw);
                 const ticketId = externalRef.ticketId;
                 const compradorId = externalRef.compradorId;
-    
+                const paymentInfo = payment.body;
+                const metodoPago = paymentInfo.payment_type_id;
+                const fechaPago = paymentInfo.date_approved;
+                let ultimosDigitos = null;
+                let cuotas = null;
+                let emisor = null;
+                console.log("🔎 PaymentInfo:", JSON.stringify(paymentInfo, null, 2));
+
+                if (paymentInfo.card) {
+                    ultimosDigitos = paymentInfo.card.last_four_digits || null;
+                    cuotas = paymentInfo.installments || null;
+                    emisor = paymentInfo.card?.issuer?.name || null;
+                    if (!emisor || emisor === '') {
+                        const issuerId = paymentInfo.card?.issuer?.id;
+                        const metodo = paymentInfo.payment_method_id;
+                        if (issuerId && metodo) {
+                            emisor = await obtenerNombreEmisor(issuerId, metodo);
+                        } else {
+                            emisor = "Desconocido";
+                        }}                 
+                } else {
+                    console.warn("⚠️ El objeto 'card' no está presente en el pago.");
+                }
+
                 const comprador = await this.userService.findById(compradorId);
                 const ticket = await Ticket.findById(ticketId).populate("purchaser");
-    
+
                 if (!ticket) {
                     return res.status(404).send("Ticket no encontrado");
                 }
-    
+
                 let cart = null;
-    
+
                 if (ticket.status !== "Aprobado" && payment.body.status === "approved") {
                     cart = await this.cartsService.getCartById(ticket.purchaser.cart);
-    
+
                     if (cart && cart.products.length > 0) {
                         let totalAmount = 0;
-    
+
                         for (const item of ticket.products) {
                             const rawProduct = await this.productsService.getProduct(item._id);
                             const product = productModel.hydrate(rawProduct);
-                                
+
                             if (product.stock >= item.quantity) {
                                 product.stock -= item.quantity;
                                 await product.save();
-                                
+
                                 totalAmount += product.price * item.quantity;
                             }
                         }
-    
+
                         ticket.products = ticket.products;
                         ticket.totalAmount = totalAmount;
                         ticket.status = "Aprobado";
-                        ticket.purchase_datetime = new Date();
-    
+                        ticket.paymentInf = {
+                            method: metodoPago,
+                            paymentDate: fechaPago,
+                            card: {
+                                lastFourDigits: ultimosDigitos,
+                                installments: cuotas,
+                                issuerName: emisor
+                            }}
                         await ticket.save();
-    
+
                         // Enviar mail
                         await sendCompraAprobada(comprador.email, ticket);
 
@@ -534,45 +652,51 @@ export class CartController {
                         }
                     }
                 }
-    
+
                 if (ticket.status !== "Cancelado" && payment.body.status === "failure") {
                     cart = await this.cartsService.getCartById(ticket.purchaser.cart);
-    
+
                     if (cart && cart.products.length > 0) {
                         let totalAmount = 0;
-    
+
                         for (const item of ticket.products) {
                             const rawProduct = await this.productsService.getProduct(item._id);
                             const product = productModel.hydrate(rawProduct);
-                                
+
                             if (product.stock >= item.quantity) {
                                 product.stock -= item.quantity;
                                 await product.save();
-                                
+
                                 totalAmount += product.price * item.quantity;
                             }
                         }
-    
+
                         ticket.products = ticket.products;
                         ticket.totalAmount = totalAmount;
                         ticket.status = "Cancelado";
-                        ticket.purchase_datetime = new Date();
-    
+                        ticket.paymentInf = {
+                            method: metodoPago,
+                            paymentDate: fechaPago,
+                            card: {
+                                lastFourDigits: ultimosDigitos,
+                                installments: cuotas,
+                                issuerName: emisor
+                            }}
                         await ticket.save();
-    
+
                         // Enviar mail
                         await sendCompraCancelada(comprador.email, ticket);
-                        
+
                         if (cart) {
                             cart.products = [];
                             await cart.save();
                         }
                     }
                 }
-    
+
                 return res.status(200).send("Webhook procesado con éxito");
             }
-    
+
             // Si el topic no es "payment", ignoramos
             return res.status(200).send("Topic no manejado");
         } catch (error) {
@@ -580,7 +704,7 @@ export class CartController {
             return res.status(500).send("Error al procesar el webhook");
         }
     };
-    
+
 
 
 

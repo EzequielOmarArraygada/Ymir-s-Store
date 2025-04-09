@@ -26,6 +26,15 @@ const ticketSchema = new mongoose.Schema({
         enum: ['Pendiente', 'Aprobado', 'Preparando', 'Completado', 'Cancelado'],
         default: 'Pendiente',
       },
+      paymentInf: {
+        method: { type: String }, 
+        paymentDate: { type: Date }, 
+        card: {
+          lastFourDigits: { type: String },
+          installments: { type: Number },
+          issuerName: { type: String },
+        }
+      },
 });
 
 const Ticket = mongoose.model('Ticket', ticketSchema);
