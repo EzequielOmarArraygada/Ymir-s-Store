@@ -265,7 +265,6 @@ export class CartController {
             let metodo = null;
             let ticketId = null;
             let compradorId = null;
-            console.log("🔎 PaymentInfo:", JSON.stringify(paymentInfo, null, 2));
 
                 if (paymentInfo.card) {
                     ultimosDigitos = paymentInfo.card.last_four_digits || null;
@@ -366,7 +365,6 @@ export class CartController {
             let metodo = null;
             let ticketId = null;
             let compradorId = null;
-            console.log("🔎 PaymentInfo:", JSON.stringify(paymentInfo, null, 2));
 
                 if (paymentInfo.card) {
                     ultimosDigitos = paymentInfo.card.last_four_digits || null;
@@ -472,7 +470,6 @@ export class CartController {
             let ultimosDigitos = null;
             let cuotas = null;
             let metodo = null;
-            console.log("🔎 PaymentInfo:", JSON.stringify(paymentInfo, null, 2));
 
                 if (paymentInfo.card) {
                     ultimosDigitos = paymentInfo.card.last_four_digits || null;
@@ -610,7 +607,6 @@ export class CartController {
                 let ultimosDigitos = null;
                 let cuotas = null;
                 let metodo = null;
-                console.log("🔎 PaymentInfo:", JSON.stringify(paymentInfo, null, 2));
 
                 if (paymentInfo.card) {
                     ultimosDigitos = paymentInfo.card.last_four_digits || null;
