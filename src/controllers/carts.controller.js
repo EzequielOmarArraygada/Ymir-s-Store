@@ -232,9 +232,9 @@ export class CartController {
             const preference = {
                 items: preferenceItems,
                 back_urls: {
-                    success: "http://localhost:8080/api/carts/success",
-                    failure: "http://localhost:8080/api/carts/failure",
-                    pending: "http://localhost:8080/api/carts/pending"
+                    success: "ymir.up.railway.app/api/carts/success",
+                    failure: "ymir.up.railway.app/api/carts/failure",
+                    pending: "ymir.up.railway.app/api/carts/pending"
                 },
                 external_reference: JSON.stringify({ ticketId: savedTicket._id, compradorId: comprador.id }),
                 notification_url: "ymir.up.railway.app/api/carts/webhook",
