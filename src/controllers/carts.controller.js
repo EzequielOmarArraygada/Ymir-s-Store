@@ -237,7 +237,7 @@ export class CartController {
                     pending: "http://localhost:8080/api/carts/pending"
                 },
                 external_reference: JSON.stringify({ ticketId: savedTicket._id, compradorId: comprador.id }),
-                notification_url: "https://8a9e-2802-8010-a700-5200-818d-b900-f9f6-f561.ngrok-free.app/api/carts/webhook",
+                notification_url: "ymir.up.railway.app/api/carts/webhook",
                 auto_return: "approved",
             };
 
