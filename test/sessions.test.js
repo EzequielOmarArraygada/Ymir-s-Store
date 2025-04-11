@@ -3,7 +3,7 @@ import supertest from "supertest";
 import app from "../src/app.js"
 
 const expect = chai.expect;
-const requester = supertest("http://localhost:8080");
+const requester = supertest("http://ymir.up.railway.app");
 
 function generateRandomEmail() {
   const chars = 'abcdefghijklmnopqrstuvwxyz1234567890';

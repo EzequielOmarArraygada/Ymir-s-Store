@@ -43,7 +43,7 @@ export class ViewsController {
     const params = req.query;
     const user = req.user;
     const urlParams = new URLSearchParams(params);
-    const url = `http://localhost:8080/api/products?${urlParams.toString()}`;
+    const url = `http://ymir.up.railway.app/api/products?${urlParams.toString()}`;
 
     fetch(url)
       .then((response) => response.json())
@@ -74,7 +74,7 @@ export class ViewsController {
       return res.redirect('/login');
     }
     const cid = req.params.cid;
-    fetch(`http://localhost:8080/api/carts/${cid}`)
+    fetch(`http://ymir.up.railway.app/api/carts/${cid}`)
       .then((response) => response.json())
       .then((data) => {
         if (data.success) {
