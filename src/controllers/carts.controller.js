@@ -7,7 +7,6 @@ import { TicketManagerMongo } from '../dao/services/managers/TicketManagerMongo.
 import { sendCompraAprobada, sendCompraPendiente, sendCompraCancelada } from '../services/mailing.js'
 import mercadopago from 'mercadopago';
 import dotenv from "dotenv"
-import axios from 'axios';
 
 
 dotenv.config();
@@ -18,24 +17,8 @@ const generateTicketCode = () => {
     return `${timestamp}-${randomNum}`; // ✅ CORREGIDO: uso de backticks
 };
 
-const obtenerNombreEmisor = async (issuerId, paymentMethodId) => {
-    try {
-        const response = await axios.get('https://api.mercadopago.com/v1/payment_methods/card_issuers', {
-            params: {
-                payment_method_id: paymentMethodId
-            },
-            headers: {
-                Authorization: `Bearer ${process.env.MERCADOPAGO_ACCESS_TOKEN}`
-            }
-        });
 
-        const issuer = response.data.find(i => i.id === parseInt(issuerId));
-        return issuer ? issuer.name : "Desconocido";
-    } catch (err) {
-        console.error("⚠️ Error al consultar nombre del emisor:", err.message);
-        return "Desconocido";
-    }
-};
+const capitalizeFirst = (str) => str.charAt(0).toUpperCase() + str.slice(1);
 
 export class CartController {
     constructor() {
@@ -254,7 +237,7 @@ export class CartController {
                     pending: "http://localhost:8080/api/carts/pending"
                 },
                 external_reference: JSON.stringify({ ticketId: savedTicket._id, compradorId: comprador.id }),
-                notification_url: "https://82b3-2802-8010-a711-5600-f546-f990-7b1d-2b52.ngrok-free.app/api/carts/webhook",
+                notification_url: "https://393c-2802-8010-a700-5200-818d-b900-f9f6-f561.ngrok-free.app/api/carts/webhook",
                 auto_return: "approved",
             };
 
@@ -279,7 +262,7 @@ export class CartController {
             const fechaPago = paymentInfo.date_approved;
             let ultimosDigitos = null;
             let cuotas = null;
-            let emisor = null;
+            let metodo = null;
             let ticketId = null;
             let compradorId = null;
             console.log("🔎 PaymentInfo:", JSON.stringify(paymentInfo, null, 2));
@@ -287,15 +270,7 @@ export class CartController {
                 if (paymentInfo.card) {
                     ultimosDigitos = paymentInfo.card.last_four_digits || null;
                     cuotas = paymentInfo.installments || null;
-                    emisor = paymentInfo.card?.issuer?.name || null;
-                    if (!emisor || emisor === '') {
-                        const issuerId = paymentInfo.card?.issuer?.id;
-                        const metodo = paymentInfo.payment_method_id;
-                        if (issuerId && metodo) {
-                            emisor = await obtenerNombreEmisor(issuerId, metodo);
-                        } else {
-                            emisor = "Desconocido";
-                        }}                 
+                    metodo = capitalizeFirst(paymentInfo.payment_method_id);
                 } else {
                     console.warn("⚠️ El objeto 'card' no está presente en el pago.");
                 }
@@ -356,7 +331,7 @@ export class CartController {
                         card: {
                             lastFourDigits: ultimosDigitos,
                             installments: cuotas,
-                            issuerName: emisor
+                            issuerName: metodo
                         }
                     };
                     ticket.status = "Aprobado";
@@ -386,12 +361,30 @@ export class CartController {
             const paymentInfo = payment.body;
             const metodoPago = paymentInfo.payment_type_id;
             const fechaPago = paymentInfo.date_approved;
-            const ultimosDigitos = paymentInfo.card?.last_four_digits;
-            const cuotas = paymentInfo.installments;
-            const emisor = paymentInfo.card?.issuer?.name;
+            let ultimosDigitos = null;
+            let cuotas = null;
+            let metodo = null;
             let ticketId = null;
             let compradorId = null;
-            
+            console.log("🔎 PaymentInfo:", JSON.stringify(paymentInfo, null, 2));
+
+                if (paymentInfo.card) {
+                    ultimosDigitos = paymentInfo.card.last_four_digits || null;
+                    cuotas = paymentInfo.installments || null;
+                    metodo = capitalizeFirst(paymentInfo.payment_method_id);
+                } else {
+                    console.warn("⚠️ El objeto 'card' no está presente en el pago.");
+                }
+
+            if (paymentInfo.external_reference) {
+                try {
+                    const parsedRef = JSON.parse(paymentInfo.external_reference);
+                    ticketId = parsedRef.ticketId;
+                } catch (err) {
+                    console.warn("No se pudo parsear external_reference:", err);
+                }
+            }
+
 
             if (paymentInfo.external_reference) {
                 try {
@@ -422,39 +415,38 @@ export class CartController {
             }
             let user = await this.userService.findById(compradorId);
             const cart = await this.cartsService.getCartById(user.cart._id);
-            const productsDetails = [];
 
-            if (cart && cart.products.length > 0) {
-                for (const product of cart.products) {
-                    const productDetails = await this.productsService.getProduct(product.productId);
+                const productsDetails = [];
+                if (cart && cart.products.length > 0) {
+                    for (const product of cart.products) {
+                        const productDetails = await this.productsService.getProduct(product.productId);
 
-                    if (productDetails.stock < product.quantity) {
-                        return res.render('failure', {
-                            message: `El producto ${productDetails.title} no tiene suficiente stock.`
+                        if (productDetails.stock < product.quantity) {
+                            return res.render('failure', {
+                                message: `El producto ${productDetails.title} no tiene suficiente stock.`
+                            });
+                        }
+
+                        productsDetails.push({ ...productDetails, quantity: product.quantity });
+                        await this.productsService.updateProduct(product.productId, {
+                            stock: productDetails.stock - product.quantity
                         });
                     }
 
-                    productsDetails.push({ ...productDetails, quantity: product.quantity });
-                    await this.productsService.updateProduct(product.productId, {
-                        stock: productDetails.stock - product.quantity
-                    });
-                }
+                    ticket.paymentInf = {
+                        method: metodoPago,
+                        paymentDate: fechaPago,
+                        card: {
+                            lastFourDigits: ultimosDigitos,
+                            installments: cuotas,
+                            issuerName: metodo
+                        }
+                    };
+                    await ticket.save()
 
-                ticket.paymentInf = {
-                    method: metodoPago,
-                    paymentDate: fechaPago,
-                    card: {
-                        lastFourDigits: ultimosDigitos,
-                        installments: cuotas,
-                        issuerName: emisor
-                    }
-                };
-                await ticket.save();
+                // Enviar mail
+                await sendCompraPendiente(user.email, ticket);
             }
-
-            // Enviar mail
-            await sendCompraPendiente(user.email, ticket);
-
 
             if (cart) {
                 cart.products = [];
@@ -473,8 +465,32 @@ export class CartController {
             const paymentId = req.query.payment_id;
             const payment = await mercadopago.payment.findById(paymentId);
             const paymentInfo = payment.body;
+            const metodoPago = paymentInfo.payment_type_id;
+            const fechaPago = paymentInfo.date_approved;
             let ticketId = null;
             let compradorId = null;
+            let ultimosDigitos = null;
+            let cuotas = null;
+            let metodo = null;
+            console.log("🔎 PaymentInfo:", JSON.stringify(paymentInfo, null, 2));
+
+                if (paymentInfo.card) {
+                    ultimosDigitos = paymentInfo.card.last_four_digits || null;
+                    cuotas = paymentInfo.installments || null;
+                    metodo = capitalizeFirst(paymentInfo.payment_method_id);
+                } else {
+                    console.warn("⚠️ El objeto 'card' no está presente en el pago.");
+                }
+
+            if (paymentInfo.external_reference) {
+                try {
+                    const parsedRef = JSON.parse(paymentInfo.external_reference);
+                    ticketId = parsedRef.ticketId;
+                } catch (err) {
+                    console.warn("No se pudo parsear external_reference:", err);
+                }
+            }
+
 
             if (paymentInfo.external_reference) {
                 try {
@@ -498,6 +514,15 @@ export class CartController {
             if (ticketId) {
                 ticket = await Ticket.findById(ticketId).populate("purchaser");
                 ticket.status = "Cancelado";
+                ticket.paymentInf = {
+                    method: metodoPago,
+                    paymentDate: fechaPago,
+                    card: {
+                        lastFourDigits: ultimosDigitos,
+                        installments: cuotas,
+                        issuerName: metodo
+                    }
+                };
                 await ticket.save();
             }
 
@@ -584,21 +609,13 @@ export class CartController {
                 const fechaPago = paymentInfo.date_approved;
                 let ultimosDigitos = null;
                 let cuotas = null;
-                let emisor = null;
+                let emetodo = null;
                 console.log("🔎 PaymentInfo:", JSON.stringify(paymentInfo, null, 2));
 
                 if (paymentInfo.card) {
                     ultimosDigitos = paymentInfo.card.last_four_digits || null;
                     cuotas = paymentInfo.installments || null;
-                    emisor = paymentInfo.card?.issuer?.name || null;
-                    if (!emisor || emisor === '') {
-                        const issuerId = paymentInfo.card?.issuer?.id;
-                        const metodo = paymentInfo.payment_method_id;
-                        if (issuerId && metodo) {
-                            emisor = await obtenerNombreEmisor(issuerId, metodo);
-                        } else {
-                            emisor = "Desconocido";
-                        }}                 
+                    metodo = capitalizeFirst(paymentInfo.payment_method_id);
                 } else {
                     console.warn("⚠️ El objeto 'card' no está presente en el pago.");
                 }
@@ -639,7 +656,7 @@ export class CartController {
                             card: {
                                 lastFourDigits: ultimosDigitos,
                                 installments: cuotas,
-                                issuerName: emisor
+                                issuerName: metodo
                             }}
                         await ticket.save();
 
