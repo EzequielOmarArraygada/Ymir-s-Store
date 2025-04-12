@@ -115,11 +115,18 @@
       <p><strong>Total:</strong> ${{ticket.totalAmount}}</p>
 
       <h3>Productos:</h3>
-      <ul>
+      <div
+        style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-top: 15px;">
         {{#each ticket.products}}
-        <li>{{this.title}} - Cantidad: {{this.quantity}}</li>
+        <div
+          style="background-color: #E7E2D1; border-radius: 10px; padding: 15px; box-shadow: 0 2px 6px rgba(0,0,0,0.15); text-align: center;">
+          <img src="{{this.thumbnail}}" alt="{{this.title}}"
+            style="width: 100%; max-height: 150px; object-fit: cover; border-radius: 8px; margin-bottom: 10px;">
+          <p style="margin: 0;"><strong>{{this.title}}</strong></p>
+          <p style="margin: 5px 0;">Cantidad: {{this.quantity}}</p>
+        </div>
         {{/each}}
-      </ul>
+      </div>
 
       <!-- Botón que siempre se ve -->
       <div>
