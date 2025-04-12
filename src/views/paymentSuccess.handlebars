@@ -89,6 +89,14 @@
       }
     }
   </style>
+  
+<script>
+  function togglePaymentDetails() {
+    const details = document.getElementById('paymentDetails');
+    details.style.display = details.style.display === 'none' ? 'block' : 'none';
+  }
+</script>
+
 </head>
 <body>
   <div class="container">
@@ -97,24 +105,46 @@
     <p>Tu pago fue procesado exitosamente. A continuación, los detalles de la compra:</p>
 
     {{#if ticket}}
-      <div>
-        <p><strong>Número de pedido:</strong> {{ticket.code}}</p>
-        <p><strong>Tu correo:</strong> {{ticket.purchaser.email}}</p>
-        <p><strong>Fecha:</strong> {{ticket.purchase_datetime}}</p>
-        <p><strong>Total:</strong> ${{ticket.totalAmount}}</p>
+  <div>
+    <p><strong>Número de pedido:</strong> {{ticket.code}}</p>
+    <p><strong>Tu correo:</strong> {{ticket.purchaser.email}}</p>
+    <p><strong>Fecha:</strong> {{ticket.purchase_datetime}}</p>
+    <p><strong>Total:</strong> ${{ticket.totalAmount}}</p>
 
-        <h3>Productos:</h3>
-        <ul>
-          {{#each ticket.products}}
-            <li>{{this.title}} - Cantidad: {{this.quantity}}</li>
-          {{/each}}
-        </ul>
+    <h3>Productos:</h3>
+    <ul>
+      {{#each ticket.products}}
+        <li>{{this.title}} - Cantidad: {{this.quantity}}</li>
+      {{/each}}
+    </ul>
+
+    <!-- Botón que siempre se ve -->
+    <div>
+      <button onclick="togglePaymentDetails()" class="back-button" style="margin-top: 20px;">
+        ▼ Ver detalles de pago
+      </button>
+
+      <!-- Contenedor oculto con detalles -->
+      <div id="paymentDetails" style="display: none; margin-top: 15px; background-color: #E7E2D1; padding: 15px; border-radius: 10px;">
+        {{#if ticket.paymentInf}}
+          <p><strong>Método de pago:</strong> {{ticket.paymentInf.method}}</p>
+          <p><strong>Fecha de pago:</strong> {{ticket.paymentInf.paymentDate}}</p>
+          {{#if ticket.paymentInf.card}}
+            <p><strong>Últimos 4 dígitos:</strong> {{ticket.paymentInf.card.lastFourDigits}}</p>
+            <p><strong>Cuotas:</strong> {{ticket.paymentInf.card.installments}}</p>
+            <p><strong>Emisor:</strong> {{ticket.paymentInf.card.issuerName}}</p>
+          {{/if}}
+        {{else}}
+          <p>No se encontraron datos de pago.</p>
+        {{/if}}
       </div>
-    {{else}}
-      <p>No se pudo encontrar el detalle del ticket.</p>
-    {{/if}}
-
-    <a href="/products" class="back-button">Volver a la tienda</a>
+    </div>
   </div>
+{{else}}
+  <p>No se recibió ningún ticket.</p>
+{{/if}}
+
+<a href="/products" class="back-button">Volver a la tienda</a>
+
 </body>
 </html>
