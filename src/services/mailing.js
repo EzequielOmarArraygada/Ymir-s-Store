@@ -1,6 +1,6 @@
 import config from '../config/config.js';
 import nodemailer from 'nodemailer';
-import { formatDate } from '../utils/utils.js'
+import { formatDate} from '../utils/utils.js'
 
 const transporter = nodemailer.createTransport({
     service: config.mailing.SERVICE,
@@ -23,13 +23,8 @@ export function sendPasswordResetEmail(email, token) {
                     <img src="https://res.cloudinary.com/dsvo0wjue/image/upload/v1744145650/banner2_gm9jzu.jpg" alt="Banner medieval" style="width: 100%; border-radius: 8px;" />
                     <h2 style="margin-top: 20px;">¿Olvidaste tu contraseña?</h2>
                     <p>No te preocupes, puedes restablecerla haciendo clic en el siguiente botón:</p>
-<a
-  href="{{resetLink}}"
-  target="_blank"
-  style="background-color:#5B1F0F;color:white;padding:10px 20px;text-decoration:none;border-radius:5px;display:inline-block;"
->
-  Restablecer contraseña
-</a>                </div>
+                    <a href="${resetLink}" style="display: inline-block; margin-top: 20px; background-color: #5B1F0F; color: white; padding: 12px 20px; border-radius: 6px; text-decoration: none;">Restablecer contraseña</a>
+                </div>
                 <p style="margin-top: 30px;">⚔️ Este enlace expirará en unos minutos. Si no solicitaste este cambio, ignora este mensaje.</p>
                 <div style="text-align: center; margin-top: 30px;">
                     <img src="https://res.cloudinary.com/dsvo0wjue/image/upload/v1744145651/logoMail_bkhkmd.png" alt="Logo medieval" width="120" />
@@ -104,17 +99,17 @@ export function sendCompraAprobada(email, ticket) {
             <ul>
                 <li><strong>Método:</strong> ${metodoPago[ticket.paymentInf?.method] || 'Desconocido'}</li>
                 ${ticket.paymentInf?.card?.lastFourDigits
-                ? `<li><strong>Tarjeta:</strong> ${ticket.paymentInf.card.issuerName} terminada en ${ticket.paymentInf.card.lastFourDigits}</li>`
-                : ''
-            }
+                    ? `<li><strong>Tarjeta:</strong> ${ticket.paymentInf.card.issuerName} terminada en ${ticket.paymentInf.card.lastFourDigits}</li>`
+                    : ''
+                }
                 ${ticket.paymentInf?.card?.installments
-                ? `<li><strong>Cuotas:</strong> ${ticket.paymentInf.card.installments}</li>`
-                : ''
-            }
+                    ? `<li><strong>Cuotas:</strong> ${ticket.paymentInf.card.installments}</li>`
+                    : ''
+                }
                 ${ticket.paymentInf?.paymentDate
-                ? `<li><strong>Fecha:</strong> ${formatDate(ticket.purchase_datetime)}</li>`
-                : ''
-            }
+                    ? `<li><strong>Fecha:</strong> ${formatDate(ticket.purchase_datetime)}</li>`
+                    : ''
+                }
             </ul>
 
                 <p style="margin-top: 20px;">⚔️ Gracias por confiar en nuestro comercio medieval. ¡Esperamos volver a verte pronto!</p>
@@ -194,17 +189,17 @@ export function sendCompraPendiente(email, ticket) {
             <ul>
                 <li><strong>Método:</strong> ${metodoPago[ticket.paymentInf?.method] || 'Desconocido'}</li>
                 ${ticket.paymentInf?.card?.lastFourDigits
-                ? `<li><strong>Tarjeta:</strong> ${ticket.paymentInf.card.issuerName} terminada en ${ticket.paymentInf.card.lastFourDigits}</li>`
-                : ''
-            }
+                    ? `<li><strong>Tarjeta:</strong> ${ticket.paymentInf.card.issuerName} terminada en ${ticket.paymentInf.card.lastFourDigits}</li>`
+                    : ''
+                }
                 ${ticket.paymentInf?.card?.installments
-                ? `<li><strong>Cuotas:</strong> ${ticket.paymentInf.card.installments}</li>`
-                : ''
-            }
+                    ? `<li><strong>Cuotas:</strong> ${ticket.paymentInf.card.installments}</li>`
+                    : ''
+                }
                 ${ticket.paymentInf?.paymentDate
-                ? `<li><strong>Fecha:</strong> ${formatDate(ticket.purchase_datetime)}</li>`
-                : ''
-            }
+                    ? `<li><strong>Fecha:</strong> ${formatDate(ticket.purchase_datetime)}</li>`
+                    : ''
+                }
             </ul>
 
                 <p style="margin-top: 20px;">⚔️ Gracias por confiar en nuestro comercio medieval.</p>
@@ -284,17 +279,17 @@ export function sendCompraCancelada(email, ticket) {
             <ul>
                 <li><strong>Método:</strong> ${metodoPago[ticket.paymentInf?.method] || 'Desconocido'}</li>
                 ${ticket.paymentInf?.card?.lastFourDigits
-                ? `<li><strong>Tarjeta:</strong> ${ticket.paymentInf.card.issuerName} terminada en ${ticket.paymentInf.card.lastFourDigits}</li>`
-                : ''
-            }
+                    ? `<li><strong>Tarjeta:</strong> ${ticket.paymentInf.card.issuerName} terminada en ${ticket.paymentInf.card.lastFourDigits}</li>`
+                    : ''
+                }
                 ${ticket.paymentInf?.card?.installments
-                ? `<li><strong>Cuotas:</strong> ${ticket.paymentInf.card.installments}</li>`
-                : ''
-            }
+                    ? `<li><strong>Cuotas:</strong> ${ticket.paymentInf.card.installments}</li>`
+                    : ''
+                }
                 ${ticket.paymentInf?.paymentDate
-                ? `<li><strong>Fecha:</strong> ${formatDate(ticket.purchase_datetime)}</li>`
-                : ''
-            }
+                    ? `<li><strong>Fecha:</strong> ${formatDate(ticket.purchase_datetime)}</li>`
+                    : ''
+                }
             </ul>
 
                 <p style="margin-top: 20px;">⚔️ Gracias por confiar en nuestro comercio medieval.</p>
