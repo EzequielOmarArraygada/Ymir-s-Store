@@ -540,17 +540,16 @@ export class CartController {
         try {
             const { tid } = req.params;
             let ticket = null;
+            const paymentId = req.query.payment_id;
+            const payment = await mercadopago.payment.findById(paymentId);
+            const paymentInfo = payment.body;
+            const fechaPago = paymentInfo.date_approved;
             if (tid) {
                 ticket = await Ticket.findById(tid).populate("purchaser");
-                ticket.purchase_datetime = formatDate(purchase_datetime)
+                const dataTimeF = formatDate(ticket.purchase_datetime)
+                ticket.purchase_datetime = dataTimeF
                 ticket.paymentInf = {
-                    method: metodoPago,
                     paymentDate: formatDate(fechaPago),
-                    card: {
-                        lastFourDigits: ultimosDigitos,
-                        installments: cuotas,
-                        issuerName: metodo
-                    }
                 };
                 await ticket.save();
             }
