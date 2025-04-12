@@ -17,8 +17,31 @@ const generateTicketCode = () => {
     return `${timestamp}-${randomNum}`; // ✅ CORREGIDO: uso de backticks
 };
 
+const getFriendlyPaymentMethod = (paymentMethodId) => {
+    const paymentMethodNames = {
+        visa: "Visa Crédito",
+        debvisa: "Visa Débito",
+        master: "MasterCard Crédito",
+        debmaster: "MasterCard Débito",
+        amex: "American Express",
+        naranja: "Naranja",
+        cabal: "Cabal",
+        mercadopago_cc: "Tarjeta MercadoPago",
+        account_money: "Dinero en cuenta MP",
+        rapipago: "Rapipago",
+        pagofacil: "Pago Fácil",
+        bank_transfer: "Transferencia Bancaria",
+        atm: "Cajero Automático",
+        paypal: "PayPal",
+        bitcoins: "Bitcoin",
+        pix: "PIX",
+    };
 
-const capitalizeFirst = (str) => str.charAt(0).toUpperCase() + str.slice(1);
+    return paymentMethodNames[paymentMethodId] || paymentMethodId; 
+};
+
+
+
 
 export class CartController {
     constructor() {
@@ -269,7 +292,7 @@ export class CartController {
                 if (paymentInfo.card) {
                     ultimosDigitos = paymentInfo.card.last_four_digits || null;
                     cuotas = paymentInfo.installments || null;
-                    metodo = capitalizeFirst(paymentInfo.payment_method_id);
+                    metodo = getFriendlyPaymentMethod(paymentInfo.payment_method_id);
                 } else {
                     console.warn("⚠️ El objeto 'card' no está presente en el pago.");
                 }
@@ -369,7 +392,7 @@ export class CartController {
                 if (paymentInfo.card) {
                     ultimosDigitos = paymentInfo.card.last_four_digits || null;
                     cuotas = paymentInfo.installments || null;
-                    metodo = capitalizeFirst(paymentInfo.payment_method_id);
+                    metodo = getFriendlyPaymentMethod(paymentInfo.payment_method_id);
                 } else {
                     console.warn("⚠️ El objeto 'card' no está presente en el pago.");
                 }
@@ -474,7 +497,7 @@ export class CartController {
                 if (paymentInfo.card) {
                     ultimosDigitos = paymentInfo.card.last_four_digits || null;
                     cuotas = paymentInfo.installments || null;
-                    metodo = capitalizeFirst(paymentInfo.payment_method_id);
+                    metodo = getFriendlyPaymentMethod(paymentInfo.payment_method_id);
                 } else {
                     console.warn("⚠️ El objeto 'card' no está presente en el pago.");
                 }
@@ -611,7 +634,7 @@ export class CartController {
                 if (paymentInfo.card) {
                     ultimosDigitos = paymentInfo.card.last_four_digits || null;
                     cuotas = paymentInfo.installments || null;
-                    metodo = capitalizeFirst(paymentInfo.payment_method_id);
+                    metodo = getFriendlyPaymentMethod(paymentInfo.payment_method_id);
                 } else {
                     console.warn("⚠️ El objeto 'card' no está presente en el pago.");
                 }

@@ -132,7 +132,7 @@
           {{#if ticket.paymentInf.card}}
             <p><strong>Últimos 4 dígitos:</strong> {{ticket.paymentInf.card.lastFourDigits}}</p>
             <p><strong>Cuotas:</strong> {{ticket.paymentInf.card.installments}}</p>
-            <p><strong>Emisor:</strong> {{ticket.paymentInf.card.issuerName}}</p>
+            <p><strong>Emisor:</strong> {{tipoPagoLegible ticket.paymentInf.card.issuerName}}</p>
           {{/if}}
         {{else}}
           <p>No se encontraron datos de pago.</p>
