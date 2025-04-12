@@ -2,14 +2,12 @@ import express from 'express';
 import mongoose from 'mongoose';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
-import handlebars from 'express-handlebars';
 import path from 'path';
 import session from 'express-session';
 import MongoStore from 'connect-mongo';
 import passport from 'passport';
 import cookieParser from 'cookie-parser';
 import initializePassport from './config/passport.config.js';
-import utils from './utils.js';
 import router from './routes/index.js';
 import dotenv from 'dotenv';
 import { Server } from 'socket.io';
@@ -19,10 +17,10 @@ import swaggerConfig from './config/swagger.js';
 import { engine } from 'express-handlebars';
 import morgan from 'morgan'
 import mercadopago from 'mercadopago';
+import cron from 'node-cron';
+import {cancelarTicketsVencidos} from './controllers/tickets.controller.js'
 
 dotenv.config();
-
-const { passportCall } = utils;
 
 
 const __filename = fileURLToPath(import.meta.url)
@@ -148,6 +146,11 @@ const environment = async () => {
 }
 
 app.use(errorHandler);
+
+cron.schedule('0 0 * * *', async () => {
+    console.log("🕐 Ejecutando revisión automática de tickets vencidos...");
+    await cancelarTicketsVencidos();
+});
 
 environment ();
 
