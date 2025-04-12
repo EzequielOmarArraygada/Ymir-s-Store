@@ -55,7 +55,7 @@ export class TicketController {
       };
 
       cancelarTicketsVencidos = async () => {
-        const hace72Horas = new Date(Date.now() - 72 * 60 * 60 * 1000);
+        const hace72Horas = new Date(Date.now() - 1 * 60 * 60 * 1000);
     
         const ticketsVencidos = await Ticket.find({
             status: "Pendiente",
