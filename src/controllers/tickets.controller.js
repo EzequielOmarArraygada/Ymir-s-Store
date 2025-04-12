@@ -1,5 +1,6 @@
 import Ticket from '../dao/models/ticket.model.js';
 import { TicketManagerMongo } from '../dao/services/managers/TicketManagerMongo.js'
+import {formatDate} from '../utils/utils.js'
 
 
 
@@ -18,7 +19,7 @@ export class TicketController {
                 status: ticket.status,
                 products: ticket.products,
                 totalAmount: ticket.totalAmount,
-                purchase_datetime: ticket.purchase_datetime,
+                purchase_datetime: formatDate(ticket.purchase_datetime),
                 paymentInf: ticket.paymentInf, 
             }));
             res.render('adminTickets', { tickets });

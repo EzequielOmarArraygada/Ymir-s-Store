@@ -1,5 +1,6 @@
 import config from '../config/config.js';
 import nodemailer from 'nodemailer';
+import { formatDate} from '../utils/utils.js'
 
 const transporter = nodemailer.createTransport({
     service: config.mailing.SERVICE,
@@ -47,7 +48,7 @@ export function sendCompraAprobada(email, ticket) {
             </div>
                 <h1 style="text-align: center; color: #5B1F0F;">¡${ticket.purchaser.first_name}, gracias por tu compra!</h1>
               
-                <p>Hemos recibido y aprobado tu pedido con el código <strong>${ticket.code}</strong> el <strong>${new Date(ticket.purchase_datetime).toLocaleString()}</strong>.</p>
+                <p>Hemos recibido y aprobado tu pedido con el código <strong>${ticket.code}</strong> el <strong>${formatDate(ticket.purchase_datetime)}</strong>.</p>
 
                 <h2>🧍 Tus datos:</h2>
                 <ul>
