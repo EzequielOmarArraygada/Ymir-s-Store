@@ -136,7 +136,9 @@
           <p><strong>Fecha de pago:</strong> {{formatDate ticket.paymentInf.paymentDate}}</p>
           {{/if}}
           {{#if ticket.paymentInf.card}}
+          {{#if ticket.paymentInf.card.lastFourDigits}}
           <p><strong>Últimos 4 dígitos:</strong> {{ticket.paymentInf.card.lastFourDigits}}</p>
+          {{/if}}
           <p><strong>Cuotas:</strong> {{ticket.paymentInf.card.installments}}</p>
           <p><strong>Emisor:</strong> {{tipoPagoLegible ticket.paymentInf.card.issuerName}}</p>
           {{/if}}
