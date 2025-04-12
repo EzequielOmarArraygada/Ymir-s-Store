@@ -192,6 +192,44 @@
     overflow-x: auto;
     /* por si no entra todo en pantallas pequeñas */
   }
+
+  .ticket-card .payment-info {
+  margin-top: 20px;
+  padding: 15px;
+  background-color: #f9f9f9;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Estilo para los encabezados de los datos de pago */
+.payment-info h4 {
+  margin-top: 0;
+  font-size: 18px;
+  color: #333;
+  border-bottom: 2px solid #ddd;
+  padding-bottom: 5px;
+  margin-bottom: 10px;
+}
+
+/* Estilo para los párrafos dentro de los datos de pago */
+.payment-info p {
+  font-size: 14px;
+  color: #555;
+  margin-bottom: 8px;
+}
+
+/* Resalta el nombre del campo de pago */
+.payment-info p strong {
+  color: #007bff;
+}
+
+/* Ajuste responsivo para pantallas más pequeñas */
+@media (max-width: 768px) {
+  .ticket-card {
+    width: calc(100% - 20px);
+  }
+}
 </style>
 
 
@@ -214,36 +252,42 @@
   <a href="/admin/tickets/details/{{this._id}}" class="ticket-card">
     <h3>Ticket ID: {{this._id}}</h3>
     <div>
-</div>
-    
-    <div class="ticket-status-indicators">
-      <button
-        class="btn-status btn-pendiente {{#ifEquals this.status 'Pendiente'}}active{{else}}btn-apagado{{/ifEquals}}">Pendiente</button>
-      <button class="btn-status btn-aprobado {{#ifEquals this.status 'Aprobado'}}active{{else}}btn-apagado{{/ifEquals}}">Aprobado</button>
-      <button
-        class="btn-status btn-preparando {{#ifEquals this.status 'Preparando'}}active{{else}}btn-apagado{{/ifEquals}}">Preparando</button>
-      <button
-        class="btn-status btn-completado {{#ifEquals this.status 'Completado'}}active{{else}}btn-apagado{{/ifEquals}}">Completado</button>
-      <button
-        class="btn-status btn-cancelado {{#ifEquals this.status 'Cancelado'}}active{{else}}btn-apagado{{/ifEquals}}">Cancelado</button>
+      <div class="ticket-status-indicators">
+        <button class="btn-status btn-pendiente {{#ifEquals this.status 'Pendiente'}}active{{else}}btn-apagado{{/ifEquals}}">Pendiente</button>
+        <button class="btn-status btn-aprobado {{#ifEquals this.status 'Aprobado'}}active{{else}}btn-apagado{{/ifEquals}}">Aprobado</button>
+        <button class="btn-status btn-preparando {{#ifEquals this.status 'Preparando'}}active{{else}}btn-apagado{{/ifEquals}}">Preparando</button>
+        <button class="btn-status btn-completado {{#ifEquals this.status 'Completado'}}active{{else}}btn-apagado{{/ifEquals}}">Completado</button>
+        <button class="btn-status btn-cancelado {{#ifEquals this.status 'Cancelado'}}active{{else}}btn-apagado{{/ifEquals}}">Cancelado</button>
+      </div>
+      <div class="ticket-details">
+        <p><strong>Comprador:</strong> {{this.purchaser}}</p>
+        <p><strong>Código:</strong> {{this.code}}</p>
+        <p><strong>Fecha de Compra:</strong> {{this.purchase_datetime}}</p>
+      </div>
+      <h4>Productos:</h4>
+      {{#if this.products}}
+      <ul class="ticket-products">
+        {{#each this.products}}
+        <li>{{this.title}} - Cantidad: {{this.quantity}} - Precio: ${{this.price}}</li>
+        {{/each}}
+      </ul>
+      {{else}}
+      <p>No hay productos en este ticket.</p>
+      {{/if}}
+      <p><strong>Monto Total:</strong> ${{this.totalAmount}}</p>
     </div>
-    <div class="ticket-details">
-      <p><strong>Comprador:</strong> {{this.purchaser}}</p>
-      <p><strong>Código:</strong> {{this.code}}</p>
-      <p><strong>Fecha de Compra:</strong> {{this.purchase_datetime}}</p>
-    </div>
-    <h4>Productos:</h4>
 
-    {{#if this.products}}
-    <ul class="ticket-products">
-      {{#each this.products}}
-      <li>{{this.title}} - Cantidad: {{this.quantity}} - Precio: ${{this.price}}</li>
-      {{/each}}
-    </ul>
-    {{else}}
-    <p>No hay productos en este ticket.</p>
+    {{#if this.paymentInf}} <!-- Verifica si hay datos de pago -->
+      <div class="payment-info">
+        <h4>Datos de Pago:</h4>
+        <p><strong>Método de Pago:</strong> {{this.paymentInf.method}}</p>
+        <p><strong>Fecha de Pago:</strong> {{this.paymentInf.paymentDate}}</p>
+        <p><strong>Tarjeta (últimos 4 dígitos):</strong> {{this.paymentInf.card.lastFourDigits}}</p>
+        <p><strong>Cuotas:</strong> {{this.paymentInf.card.installments}}</p>
+        <p><strong>Emisor:</strong> {{this.paymentInf.card.issuerName}}</p>
+      </div>
     {{/if}}
-    <p><strong>Monto Total:</strong> ${{this.totalAmount}}</p>
+
   </a>
   {{/each}}
 </div>

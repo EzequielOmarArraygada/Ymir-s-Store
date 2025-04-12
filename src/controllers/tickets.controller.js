@@ -19,6 +19,7 @@ export class TicketController {
                 products: ticket.products,
                 totalAmount: ticket.totalAmount,
                 purchase_datetime: ticket.purchase_datetime,
+                paymentInf: ticket.paymentInf, 
             }));
             res.render('adminTickets', { tickets });
 
