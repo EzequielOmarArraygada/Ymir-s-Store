@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -79,7 +80,8 @@
         font-size: 1.5rem;
       }
 
-      p, li {
+      p,
+      li {
         font-size: 16px;
       }
 
@@ -89,15 +91,16 @@
       }
     }
   </style>
-  
-<script>
-  function togglePaymentDetails() {
-    const details = document.getElementById('paymentDetails');
-    details.style.display = details.style.display === 'none' ? 'block' : 'none';
+
+  <script>
+    function togglePaymentDetails() {
+      const details = document.getElementById('paymentDetails');
+      details.style.display = details.style.display === 'none' ? 'block' : 'none';
     }
-</script>
+  </script>
 
 </head>
+
 <body>
   <div class="container">
     <h1>¡Gracias por tu compra! Falta poco</h1>
@@ -105,48 +108,51 @@
     <p>Tu pago esta pendiente, te avisaremos si se aprueba o se cancela. A continuación, los detalles de la compra:</p>
 
     {{#if ticket}}
-  <div>
-    <p><strong>Número de pedido:</strong> {{ticket.code}}</p>
-    <p><strong>Tu correo:</strong> {{ticket.purchaser.email}}</p>
-    <p><strong>Fecha:</strong> {{formatDate ticket.purchase_datetime}}</p>
-    <p><strong>Total:</strong> ${{ticket.totalAmount}}</p>
-
-    <h3>Productos:</h3>
-    <ul>
-      {{#each ticket.products}}
-        <li>{{this.title}} - Cantidad: {{this.quantity}}</li>
-      {{/each}}
-    </ul>
-
-    <!-- Botón que siempre se ve -->
     <div>
-      <button onclick="togglePaymentDetails()" class="back-button" style="margin-top: 20px;">
-        ▼ Ver detalles de pago
-      </button>
+      <p><strong>Número de pedido:</strong> {{ticket.code}}</p>
+      <p><strong>Tu correo:</strong> {{ticket.purchaser.email}}</p>
+      <p><strong>Fecha:</strong> {{formatDate ticket.purchase_datetime}}</p>
+      <p><strong>Total:</strong> ${{ticket.totalAmount}}</p>
 
-      <!-- Contenedor oculto con detalles -->
-      <div id="paymentDetails" style="display: none; margin-top: 15px; background-color: #E7E2D1; padding: 15px; border-radius: 10px;">
-        {{#if ticket.paymentInf}}
+      <h3>Productos:</h3>
+      <ul>
+        {{#each ticket.products}}
+        <li>{{this.title}} - Cantidad: {{this.quantity}}</li>
+        {{/each}}
+      </ul>
+
+      <!-- Botón que siempre se ve -->
+      <div>
+        <button onclick="togglePaymentDetails()" class="back-button" style="margin-top: 20px;">
+          ▼ Ver detalles de pago
+        </button>
+
+        <!-- Contenedor oculto con detalles -->
+        <div id="paymentDetails"
+          style="display: none; margin-top: 15px; background-color: #E7E2D1; padding: 15px; border-radius: 10px;">
+          {{#if ticket.paymentInf}}
           <p><strong>Método de pago:</strong> {{ticket.paymentInf.method}}</p>
+          {{#if ticket.paymentInf.paymentDate}}
           <p><strong>Fecha de pago:</strong> {{formatDate ticket.paymentInf.paymentDate}}</p>
-          {{#if ticket.paymentInf.card}}
-            <p><strong>Últimos 4 dígitos:</strong> {{ticket.paymentInf.card.lastFourDigits}}</p>
-            <p><strong>Cuotas:</strong> {{ticket.paymentInf.card.installments}}</p>
-            <p><strong>Emisor:</strong> {{ticket.paymentInf.card.issuerName}}</p>
           {{/if}}
-        {{else}}
+          {{#if ticket.paymentInf.card}}
+          <p><strong>Últimos 4 dígitos:</strong> {{ticket.paymentInf.card.lastFourDigits}}</p>
+          <p><strong>Cuotas:</strong> {{ticket.paymentInf.card.installments}}</p>
+          <p><strong>Emisor:</strong> {{ticket.paymentInf.card.issuerName}}</p>
+          {{/if}}
+          {{else}}
           <p>No se encontraron datos de pago.</p>
-        {{/if}}
+          {{/if}}
+        </div>
       </div>
     </div>
-  </div>
-{{else}}
-  <p>No se recibió ningún ticket.</p>
-{{/if}}
+    {{else}}
+    <p>No se recibió ningún ticket.</p>
+    {{/if}}
 
-<a href="/products" class="back-button">Volver a la tienda</a>
+    <a href="/products" class="back-button">Volver a la tienda</a>
   </div>
 
 </body>
-</html>
 
+</html>
