@@ -127,7 +127,7 @@
       <!-- Contenedor oculto con detalles -->
       <div id="paymentDetails" style="display: none; margin-top: 15px; background-color: #E7E2D1; padding: 15px; border-radius: 10px;">
         {{#if ticket.paymentInf}}
-          <p><strong>Método de pago:</strong> {{ticket.paymentInf.method}}</p>
+          <p><strong>Método de pago:</strong> {{metodoPagoLegible ticket.paymentInf.method}}</p>
           <p><strong>Fecha de pago:</strong> {{formatDate ticket.paymentInf.paymentDate}}</p>
           {{#if ticket.paymentInf.card}}
             <p><strong>Últimos 4 dígitos:</strong> {{ticket.paymentInf.card.lastFourDigits}}</p>

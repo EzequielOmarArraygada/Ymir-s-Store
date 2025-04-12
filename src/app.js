@@ -52,7 +52,18 @@ app.engine(
               minute: '2-digit',
               second: '2-digit',
             });
-          }
+          },
+          metodoPagoLegible: function (method) {
+            const mapa = {
+              credit_card: 'Tarjeta de crédito',
+              debit_card: 'Tarjeta de débito',
+              account_money: 'Dinero en cuenta de MercadoPago',
+              ticket: 'Pago en efectivo',
+              bank_transfer: 'Transferencia bancaria',
+            };
+    
+            return mapa[method] || method;
+          },
       },
     })
   );
