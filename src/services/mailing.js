@@ -37,7 +37,7 @@ export function sendCompraAprobada(email, ticket) {
         bank_transfer: 'Transferencia bancaria',
     };
     const mailOptions = {
-        from: config.mailing.USER,
+        from: '"Ymir Store" <tpo.ymir.store@gmail.com>',
         to: email,
         subject: '🛡️ ¡Compra Aprobada! Gracias por confiar en nosotros',
         html: `
