@@ -279,9 +279,9 @@ UsersRouter.post('/password-reset-login', requestPasswordResetFromLogin);
  *         description: Error interno del servidor
  */
 
-UsersRouter.post('/password-reset', passportCall('login', 'user'), postPasswordReset);
+UsersRouter.post('/password-reset', postPasswordReset);
 
-UsersRouter.get('/reset-password', passportCall('login', 'user'), getPasswordReset);
+UsersRouter.get('/reset-password', getPasswordReset);
 
 UsersRouter.get('/profile/:uid', passportCall('login', 'user'), getProfile)
 
