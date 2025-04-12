@@ -43,6 +43,16 @@ app.engine(
         ifEquals: function (arg1, arg2, options) {
           return arg1 === arg2 ? options.fn(this) : options.inverse(this);
         },
+        formatDate: function (date) {
+            return new Date(date).toLocaleString('es-ES', {
+              year: 'numeric',
+              month: 'long',
+              day: 'numeric',
+              hour: '2-digit',
+              minute: '2-digit',
+              second: '2-digit',
+            });
+          }
       },
     })
   );
