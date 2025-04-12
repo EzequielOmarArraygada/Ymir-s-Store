@@ -92,7 +92,7 @@ export function sendCompraAprobada(email, ticket) {
                     : ''
                 }
                 ${ticket.paymentInf?.paymentDate
-                    ? `<li><strong>Fecha:</strong> ${new Date(ticket.paymentInf.paymentDate).toLocaleString()}</li>`
+                    ? `<li><strong>Fecha:</strong> ${formatDate(ticket.purchase_datetime)}</li>`
                     : ''
                 }
             </ul>
@@ -182,7 +182,7 @@ export function sendCompraPendiente(email, ticket) {
                     : ''
                 }
                 ${ticket.paymentInf?.paymentDate
-                    ? `<li><strong>Fecha:</strong> ${new Date(ticket.paymentInf.paymentDate).toLocaleString()}</li>`
+                    ? `<li><strong>Fecha:</strong> ${formatDate(ticket.purchase_datetime)}</li>`
                     : ''
                 }
             </ul>
@@ -272,7 +272,7 @@ export function sendCompraCancelada(email, ticket) {
                     : ''
                 }
                 ${ticket.paymentInf?.paymentDate
-                    ? `<li><strong>Fecha:</strong> ${new Date(ticket.paymentInf.paymentDate).toLocaleString()}</li>`
+                    ? `<li><strong>Fecha:</strong> ${formatDate(ticket.purchase_datetime)}</li>`
                     : ''
                 }
             </ul>

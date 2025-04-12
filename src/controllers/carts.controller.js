@@ -7,7 +7,7 @@ import { TicketManagerMongo } from '../dao/services/managers/TicketManagerMongo.
 import { sendCompraAprobada, sendCompraPendiente, sendCompraCancelada } from '../services/mailing.js'
 import mercadopago from 'mercadopago';
 import dotenv from "dotenv"
-
+import {formatDate} from '../utils/utils.js'
 
 dotenv.config();
 
@@ -539,7 +539,21 @@ export class CartController {
     paymentSuccess = async (req, res) => {
         try {
             const { tid } = req.params;
-            const ticket = await Ticket.findById(tid).populate("purchaser");
+            let ticket = null;
+            if (tid) {
+                ticket = await Ticket.findById(tid).populate("purchaser");
+                ticket.purchase_datetime = formatDate(purchase_datetime)
+                ticket.paymentInf = {
+                    method: metodoPago,
+                    paymentDate: formatDate(fechaPago),
+                    card: {
+                        lastFourDigits: ultimosDigitos,
+                        installments: cuotas,
+                        issuerName: metodo
+                    }
+                };
+                await ticket.save();
+            }
 
             if (!ticket) {
                 return res.status(404).render("failure", { message: "No se encontró el ticket con ese ID." });
