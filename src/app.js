@@ -18,7 +18,7 @@ import { engine } from 'express-handlebars';
 import morgan from 'morgan'
 import mercadopago from 'mercadopago';
 import cron from 'node-cron';
-import {cancelarTicketsVencidos} from './controllers/tickets.controller.js'
+import ticketsService from './controllers/tickets.controller.js'
 
 dotenv.config();
 
@@ -149,7 +149,7 @@ app.use(errorHandler);
 
 cron.schedule('0 0 * * *', async () => {
     console.log("🕐 Ejecutando revisión automática de tickets vencidos...");
-    await cancelarTicketsVencidos();
+    await ticketsService.cancelarTicketsVencidos();
 });
 
 environment ();
