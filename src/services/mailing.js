@@ -67,19 +67,15 @@ export function sendCompraAprobada(email, ticket) {
                         </tr>
                     </thead>
                     <tbody>
-    ${ticket.products.map(p => `
-        <tr style="background-color: #E7E2D1;">
-            <td style="padding: 10px; border: 1px solid #ddd; display: flex; align-items: center; gap: 10px;">
-                <img src="https://raw.githubusercontent.com/EzequielOmarArraygada/Ymir-s-Store/main/public${p.thumbnail}" alt="${p.title}" style="height: 80px; width: auto; border-radius: 8px; border: 1px solid #ccc;" />
-                <span>${p.title}</span>
-            </td>
-            <td style="padding: 10px; border: 1px solid #ddd;">$${p.price}</td>
-            <td style="padding: 10px; border: 1px solid #ddd;">${p.quantity}</td>
-            <td style="padding: 10px; border: 1px solid #ddd;">$${(p.price * p.quantity).toFixed(2)}</td>
-        </tr>
-    `).join('')}
-</tbody>
-
+                        ${ticket.products.map(p => `
+                            <tr style="background-color: #E7E2D1;">
+                                <td style="padding: 10px; border: 1px solid #ddd;">${p.title}</td>
+                                <td style="padding: 10px; border: 1px solid #ddd;">$${p.price}</td>
+                                <td style="padding: 10px; border: 1px solid #ddd;">${p.quantity}</td>
+                                <td style="padding: 10px; border: 1px solid #ddd;">$${p.price * p.quantity}</td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
                 </table>
 
                 <h2 style="text-align: right;">💰 Total: $${ticket.totalAmount.toFixed(2)}</h2>
