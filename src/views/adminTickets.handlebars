@@ -8,37 +8,39 @@
     min-height: 100vh;
   }
 
- .navbarDash {
-        background-color: #fffefe; /* Cambiamos a blanco */
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 10px 20px;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        margin-bottom: 3%;
-    }
+  .navbarDash {
+    background-color: #fffefe;
+    /* Cambiamos a blanco */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-bottom: 3%;
+  }
 
-    .navbar-leftDash {
-        display: flex;
-        align-items: center;
-    }
+  .navbar-leftDash {
+    display: flex;
+    align-items: center;
+  }
 
-    .navbar-logoDash img {
-        width: 50px; /* Ajusta el tamaño del logo según sea necesario */
-        height: auto;
-        margin-right: 20px;
-    }
+  .navbar-logoDash img {
+    width: 50px;
+    /* Ajusta el tamaño del logo según sea necesario */
+    height: auto;
+    margin-right: 20px;
+  }
 
-    .navbar-itemDash {
-        margin-right: 15px;
-        text-decoration: none;
-        color: #333;
-        font-weight: bold;
-    }
+  .navbar-itemDash {
+    margin-right: 15px;
+    text-decoration: none;
+    color: #333;
+    font-weight: bold;
+  }
 
-    .navbar-itemDash:last-child {
-        margin-right: 0;
-    }
+  .navbar-itemDash:last-child {
+    margin-right: 0;
+  }
 
   #search {
     margin-bottom: 20px;
@@ -64,9 +66,12 @@
     box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
     width: calc(33.333% - 20px);
     transition: transform 0.3s, box-shadow 0.3s;
-    text-decoration: none; /* Para que no aparezca el subrayado por defecto en los enlaces */
-    color: inherit; /* Para heredar el color del texto de la tarjeta */
-    display: block; /* Para hacer toda la tarjeta clicable */
+    text-decoration: none;
+    /* Para que no aparezca el subrayado por defecto en los enlaces */
+    color: inherit;
+    /* Para heredar el color del texto de la tarjeta */
+    display: block;
+    /* Para hacer toda la tarjeta clicable */
   }
 
   .ticket-card:hover {
@@ -129,6 +134,64 @@
       width: calc(100% - 20px);
     }
   }
+
+  .btn-status {
+    font-size: 12px;
+    padding: 4px 8px;
+    border: none;
+    border-radius: 4px;
+    font-weight: bold;
+    color: #fff;
+    opacity: 0.4;
+    pointer-events: none;
+    /* deshabilitado por defecto */
+    transition: all 0.3s ease;
+    white-space: nowrap;
+  }
+
+  .btn-status.active {
+    opacity: 1;
+  }
+
+  .btn-status:not(.active) {
+    filter: grayscale(100%) brightness(1.2);
+    opacity: 0.4;
+    pointer-events: none;
+  }
+
+  .btn-pendiente {
+    background-color: orange;
+  }
+
+  .btn-preparando {
+    background-color: yellow;
+    color: #333;
+  }
+
+  .btn-aprobado {
+    background-color: green;
+  }
+
+  .btn-completado {
+    background-color: royalblue;
+  }
+
+  .btn-cancelado {
+    background-color: red;
+  }
+
+  .ticket-status-indicators {
+    display: flex;
+    flex-wrap: nowrap;
+    /* evita que se vayan a varias líneas */
+    justify-content: flex-start;
+    align-items: center;
+    margin-bottom: 10px;
+    gap: 4px;
+    /* separación entre botones */
+    overflow-x: auto;
+    /* por si no entra todo en pantallas pequeñas */
+  }
 </style>
 
 
@@ -150,13 +213,27 @@
   {{#each tickets}}
   <a href="/admin/tickets/details/{{this._id}}" class="ticket-card">
     <h3>Ticket ID: {{this._id}}</h3>
+    <div>
+</div>
+    
+    <div class="ticket-status-indicators">
+      <button
+        class="btn-status btn-pendiente {{#ifEquals this.status 'Pendiente'}}active{{else}}btn-apagado{{/ifEquals}}">Pendiente</button>
+      <button class="btn-status btn-aprobado {{#ifEquals this.status 'Aprobado'}}active{{else}}btn-apagado{{/ifEquals}}">Aprobado</button>
+      <button
+        class="btn-status btn-preparando {{#ifEquals this.status 'Preparando'}}active{{else}}btn-apagado{{/ifEquals}}">Preparando</button>
+      <button
+        class="btn-status btn-completado {{#ifEquals this.status 'Completado'}}active{{else}}btn-apagado{{/ifEquals}}">Completado</button>
+      <button
+        class="btn-status btn-cancelado {{#ifEquals this.status 'Cancelado'}}active{{else}}btn-apagado{{/ifEquals}}">Cancelado</button>
+    </div>
     <div class="ticket-details">
       <p><strong>Comprador:</strong> {{this.purchaser}}</p>
       <p><strong>Código:</strong> {{this.code}}</p>
       <p><strong>Fecha de Compra:</strong> {{this.purchase_datetime}}</p>
     </div>
     <h4>Productos:</h4>
-    
+
     {{#if this.products}}
     <ul class="ticket-products">
       {{#each this.products}}

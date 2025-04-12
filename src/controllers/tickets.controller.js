@@ -15,6 +15,7 @@ export class TicketController {
                 _id: ticket._id,
                 code: ticket.code,
                 purchaser: ticket.purchaser.email,
+                status: ticket.status,
                 products: ticket.products,
                 totalAmount: ticket.totalAmount,
                 purchase_datetime: ticket.purchase_datetime,
