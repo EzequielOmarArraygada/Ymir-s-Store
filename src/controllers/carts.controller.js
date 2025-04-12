@@ -539,21 +539,8 @@ export class CartController {
     paymentSuccess = async (req, res) => {
         try {
             const { tid } = req.params;
-            let ticket = null;
-            const paymentId = req.query.payment_id;
-            const payment = await mercadopago.payment.findById(paymentId);
-            const paymentInfo = payment.body;
-            const fechaPago = paymentInfo.date_approved;
-            if (tid) {
-                ticket = await Ticket.findById(tid).populate("purchaser");
-                const dataTimeF = formatDate(ticket.purchase_datetime)
-                ticket.purchase_datetime = dataTimeF
-                ticket.paymentInf = {
-                    paymentDate: formatDate(fechaPago),
-                };
-                await ticket.save();
-            }
-
+            const ticket = await Ticket.findById(tid).populate("purchaser");
+            
             if (!ticket) {
                 return res.status(404).render("failure", { message: "No se encontró el ticket con ese ID." });
             }
