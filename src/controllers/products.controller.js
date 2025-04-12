@@ -135,7 +135,7 @@ export class ProductController {
             }
             
             if (req.file) {
-                thumbnail = `/src/public/assets/${req.file.filename}`; 
+                thumbnail = `/public/assets/${req.file.filename}`; 
             }
 
             const result = await this.productsService.addProduct({
@@ -164,7 +164,7 @@ export class ProductController {
             const { pid } = req.params;
             const updatedData = req.body;
             if (req.file) {
-                updatedData.thumbnail = `/src/public/assets/${req.file.filename}`; 
+                updatedData.thumbnail = `/public/assets/${req.file.filename}`; 
             }
             const result = await this.productsService.updateProduct(pid, updatedData);
             res.send({ result: 'success', payload: result });
