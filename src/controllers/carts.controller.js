@@ -718,26 +718,6 @@ export class CartController {
         }
     };
 
-    cancelarTicketsVencidos = async () => {
-        const hace72Horas = new Date(Date.now() - 72 * 60 * 60 * 1000);
-    
-        const ticketsVencidos = await Ticket.find({
-            status: "Pendiente",
-            purchase_datetime: { $lt: hace72Horas }
-        });
-    
-        for (const ticket of ticketsVencidos) {
-            ticket.status = "Cancelado";
-            await ticket.save();
-    
-            const user = await this.userService.findById(ticket.purchaser);
-            await sendCompraCancelada(user.email, ticket);
-        }
-    
-        console.log(`${ticketsVencidos.length} ticket(s) cancelado(s) por estar vencidos.`);
-    };
-
-
 
     getUserCartId = async (req, res) => {
         try {
