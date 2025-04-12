@@ -225,6 +225,34 @@ export class UserController {
         }
     }
 
+    requestPasswordResetFromLogin = async (req, res) => {
+        const { email } = req.body;
+    
+        if (!email) {
+            return res.status(400).json({ message: 'El email es obligatorio' });
+        }
+    
+        try {
+            const user = await this.usersService.findByEmail(email);
+            if (!user) {
+                return res.status(404).json({ message: 'Usuario no encontrado' });
+            }
+    
+            const token = jwt.sign(
+                { userId: user._id },
+                process.env.JWT_SECRET,
+                { expiresIn: '1h' }
+            );
+    
+            await sendPasswordResetEmail(user.email, token);
+    
+            return res.status(200).json({ message: 'Correo enviado' });
+        } catch (error) {
+            console.error("Error en requestPasswordResetFromEmail:", error);
+            return res.status(500).json({ message: 'Error interno del servidor' });
+        }
+    };
+
     getPasswordReset = async (req, res) => {
         const { token } = req.query;
         try {

@@ -18,7 +18,8 @@ const {
     getPasswordReset,
     postPasswordReset,
     getProfile,
-    updateUser
+    updateUser,
+    requestPasswordResetFromLogin,
 } = new UserController();
 
 /**
@@ -245,6 +246,9 @@ UsersRouter.delete('/', deleteInactiveUsers);
  */
 
 UsersRouter.post('/password-reset-request', passportCall('login', 'user'), requestPasswordReset);
+
+UsersRouter.post('/password-reset-login', requestPasswordResetFromLogin);
+
 
 /**
  * @swagger

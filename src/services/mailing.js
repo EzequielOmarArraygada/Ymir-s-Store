@@ -13,17 +13,32 @@ const transporter = nodemailer.createTransport({
 export function sendPasswordResetEmail(email, token) {
     const resetLink = `http://ymir.up.railway.app/api/sessions/reset-password?token=${token}`;
     const mailOptions = {
-        from: config.mailing.USER,
+        from: '"Ymir Store" <tpo.ymir.store@gmail.com>',
         to: email,
-        subject: 'Restablecimiento de contraseña',
-        html: `<p>Haz clic en el siguiente enlace para restablecer tu contraseña:</p><a href="${resetLink}">Restablecer contraseña</a>`
+        subject: '🛡️ Restablece tu contraseña',
+        html: `
+        <div style="font-family: 'Arial', sans-serif; background-color: #E7E2D1; padding: 20px; color: #5B1F0F;">
+            <div style="max-width: 600px; margin: auto; background-color: #C2B7A0; border-radius: 12px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); padding: 30px;">
+                <div style="text-align: center;">
+                    <img src="https://res.cloudinary.com/dsvo0wjue/image/upload/v1744145650/banner2_gm9jzu.jpg" alt="Banner medieval" style="width: 100%; border-radius: 8px;" />
+                    <h2 style="margin-top: 20px;">¿Olvidaste tu contraseña?</h2>
+                    <p>No te preocupes, puedes restablecerla haciendo clic en el siguiente botón:</p>
+                    <a href="${resetLink}" style="display: inline-block; margin-top: 20px; background-color: #5B1F0F; color: white; padding: 12px 20px; border-radius: 6px; text-decoration: none;">Restablecer contraseña</a>
+                </div>
+                <p style="margin-top: 30px;">⚔️ Este enlace expirará en unos minutos. Si no solicitaste este cambio, ignora este mensaje.</p>
+                <div style="text-align: center; margin-top: 30px;">
+                    <img src="https://res.cloudinary.com/dsvo0wjue/image/upload/v1744145651/logoMail_bkhkmd.png" alt="Logo medieval" width="120" />
+                </div>
+            </div>
+        </div>
+        `
     };
 
     transporter.sendMail(mailOptions, (error, info) => {
         if (error) {
-            console.log(error);
+            console.log('Error al enviar correo de restablecimiento:', error);
         } else {
-            console.log('Correo enviado: ' + info.response);
+            console.log('Correo de restablecimiento enviado:', info.response);
         }
     });
 }
