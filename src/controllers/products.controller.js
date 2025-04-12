@@ -25,7 +25,7 @@ export class ProductController {
     getProducts = async (req, res) => {
         try {
             const page = req.query.page ? parseInt(req.query.page) : 1;
-            const limit = req.query.limit ? parseInt(req.query.limit) : 13;
+            const limit = req.query.limit ? parseInt(req.query.limit) : 12;
             const sortOrder = req.query.sort ? req.query.sort : null;
             const category = req.query.category ? req.query.category : null;
             const searchQuery = req.query.search ? req.query.search : null;
