@@ -115,11 +115,19 @@
       <p><strong>Total:</strong> ${{ticket.totalAmount}}</p>
 
       <h3>Productos:</h3>
-      <ul>
+      <div style="display: flex; flex-direction: column; gap: 16px; margin-top: 15px;">
         {{#each ticket.products}}
-        <li>{{this.title}} - Cantidad: {{this.quantity}}</li>
+        <div
+          style="display: flex; justify-content: space-between; align-items: center; background-color: #E7E2D1; border-radius: 10px; padding: 15px; box-shadow: 0 2px 6px rgba(0,0,0,0.15);">
+          <div style="flex: 1;">
+            <p style="margin: 0 0 6px 0; font-weight: bold; font-size: 18px;">{{this.title}}</p>
+            <p style="margin: 0;">Cantidad: {{this.quantity}}</p>
+          </div>
+          <img src="{{this.thumbnail}}" alt="{{this.title}}"
+            style="width: 100px; height: 100px; object-fit: cover; border-radius: 8px; margin-left: 15px;">
+        </div>
         {{/each}}
-      </ul>
+      </div>
 
       <!-- Botón que siempre se ve -->
       <div>
