@@ -1,0 +1,122 @@
+<section class="contacto">
+  <div class="contenedor">
+    <div class="texto-contacto">
+      <h2>Contáctanos</h2>
+      <p>¿Tienes dudas, pedidos personalizados o simplemente quieres enviarnos un cuervo con tus saludos? Estamos aquí, al otro lado del portal, aguardando tu mensaje.</p>
+      <p>Forjamos sueños junto a ti, así que no temas escribirnos, ya sea desde una aldea escondida o un reino lejano.</p>
+      <p class="frase-contacto">📜 ¡Haznos saber qué murmura tu espíritu!</p>
+    </div>
+
+    <form class="formulario-contacto" action="/api/contact" method="POST">
+      <label for="nombre">Nombre:</label>
+      <input type="text" id="nombre" name="nombre" required>
+
+      <label for="email">Correo electrónico:</label>
+      <input type="email" id="email" name="email" required>
+
+      <label for="mensaje">Mensaje:</label>
+      <textarea id="mensaje" name="mensaje" rows="6" required></textarea>
+
+      <button type="submit" class="btn-enviar">Enviar pergamino</button>
+    </form>
+  </div>
+</section>
+
+<style>
+.contacto {
+  background-color: #E7E2D1;
+  color: #5B1F0F;
+  font-family: 'Cinzel', serif;
+  padding: 4rem 2rem;
+  border-top: 5px solid #8B5B29;
+}
+
+.contacto .contenedor {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.texto-contacto h2 {
+  font-size: 2.5rem;
+  text-align: center;
+  border-bottom: 2px solid #8B5B29;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+}
+
+.texto-contacto p {
+  font-size: 1.1rem;
+  margin-bottom: 1rem;
+  line-height: 1.8;
+  text-align: center;
+}
+
+.frase-contacto {
+  font-style: italic;
+  font-weight: bold;
+  font-size: 1.3rem;
+  margin-top: 2rem;
+  text-align: center;
+}
+
+.formulario-contacto {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  background-color: #f8f4eb;
+  padding: 2rem;
+  border-radius: 16px;
+  border: 3px solid #C2B7A0;
+  box-shadow: 0 0 15px rgba(0,0,0,0.1);
+}
+
+.formulario-contacto label {
+  font-weight: bold;
+  font-size: 1.1rem;
+}
+
+.formulario-contacto input,
+.formulario-contacto textarea {
+  font-family: 'Cinzel', serif;
+  padding: 0.7rem;
+  border: 2px solid #C2B7A0;
+  border-radius: 12px;
+  background-color: #fffdf9;
+  resize: none;
+  font-size: 1rem;
+}
+
+.btn-enviar {
+  align-self: center;
+  padding: 0.8rem 2rem;
+  background-color: #8B5B29;
+  color: #fff;
+  border: none;
+  border-radius: 12px;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.btn-enviar:hover {
+  background-color: #5B1F0F;
+}
+
+@media (min-width: 768px) {
+  .contacto .contenedor {
+    flex-direction: row;
+    justify-content: space-between;
+  }
+
+  .texto-contacto {
+    width: 45%;
+  }
+
+  .formulario-contacto {
+    width: 50%;
+  }
+}
+</style>
