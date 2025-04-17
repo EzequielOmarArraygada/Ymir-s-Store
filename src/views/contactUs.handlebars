@@ -7,7 +7,7 @@
       <p class="frase-contacto">📜 ¡Haznos saber qué murmura tu espíritu!</p>
     </div>
 
-    <form class="formulario-contacto" action="/api/contact" method="POST">
+    <form id="form-contacto" class="formulario-contacto">
       <label for="nombre">Nombre:</label>
       <input type="text" id="nombre" name="nombre" required>
 
@@ -21,6 +21,52 @@
     </form>
   </div>
 </section>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+  const formulario = document.getElementById('form-contacto');
+
+  formulario.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const formData = new FormData(formulario);
+    const data = {
+      nombre: formData.get('nombre'),
+      email: formData.get('email'),
+      mensaje: formData.get('mensaje'),
+    };
+
+    try {
+      const response = await fetch('/company/contactus', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+      });
+
+      if (response.ok) {
+        Swal.fire({
+          icon: 'success',
+          title: '¡Pergamino enviado exitosamente!',
+          text: 'Tu mensaje ha sido recibido. Pronto responderemos desde las tierras lejanas.',
+          confirmButtonColor: '#8B5B29'
+        });
+
+        formulario.reset(); 
+      } else {
+        throw new Error('No se pudo enviar el mensaje');
+      }
+    } catch (err) {
+      Swal.fire({
+        icon: 'error',
+        title: '¡Oh no!',
+        text: 'Hubo un error al enviar el pergamino. Intenta nuevamente.',
+        confirmButtonColor: '#8B5B29'
+      });
+    }
+  });
+</script>
 
 <style>
 .contacto {
