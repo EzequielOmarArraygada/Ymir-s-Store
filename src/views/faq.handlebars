@@ -1,0 +1,181 @@
+<section class="nosotros">
+  <div class="contenedor-nosotros">
+    <div class="texto-nosotros">
+      <h2>¿Cómo compro en Ymir?</h2>
+      <p>Comprar en Ymir es tan sencillo como emprender una aventura guiada por runas antiguas. Aquí te explicamos el paso a paso para elegir tu destino:</p>
+
+      <p><strong>1. Explora el reino:</strong> Navega por las tierras de Ymir y descubre reliquias únicas: espadas, grimorios, pociones y vestimentas encantadas.</p>
+
+      <p><strong>2. Inicia sesión o crea tu pacto:</strong> Antes de sellar el destino, deberás registrarte o iniciar sesión como todo buen viajero en busca de reliquias.</p>
+
+      <p><strong>3. Elige tu tesoro:</strong> Al hallar el objeto que hable a tu alma, agrégalo al alforja (carrito). Puedes seguir explorando o marchar directo a tu misión.</p>
+
+      <p><strong>4. Revisa tu alforja:</strong> Observa lo reunido, modifica cantidades o elimina ítems si así lo dicta tu corazón. Luego, continúa al rito de compra.</p>
+
+      <p><strong>5. Realiza el pago mágico:</strong> Nuestro sistema acepta hechizos modernos: tarjetas, MercadoPago y otros encantamientos digitales.</p>
+
+      <p><strong>6. ¡Tu aventura comienza!</strong> Recibirás un mensaje en forma de cuervo digital (email) con los detalles del envío. Prepara tu morada, tus tesoros están en camino.</p>
+
+      <p class="frase-nosotros">🛡️ En Ymir no solo compras objetos... sellas pactos con la historia.</p>
+    </div>
+  </div>
+</section>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const cartId = '{{user.cart}}';
+     async function updateCartCount() {
+                try {
+                    const response = await fetch(`/api/carts/${cartId}/count`, {
+                        method: 'GET',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                    });
+                    if (response.ok) {
+                        const cart = await response.json();
+                        const cartCount = cart.cart.products.reduce((total, product) => total + product.quantity, 0);
+                        const cartCountGreaterThanZero = cartCount > 0;
+                        document.getElementById('cart-count').innerText = cartCount;
+                        document.getElementById('cart-count').style.display = cartCountGreaterThanZero ? 'inline-block' : 'none';
+                    }
+                } catch (error) {
+                    console.error('Error al obtener el conteo del carrito', error);
+                }
+            }
+
+            if (cartId != '') {
+                document.getElementById('goToCartButton').addEventListener('click', () => {
+                    const cartId = '{{user.cart}}';
+                    window.location.href = `/api/carts/${cartId}`;
+                });
+
+                updateCartCount();
+            }
+
+    const formulario = document.getElementById('form-contacto');
+
+  formulario.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const formData = new FormData(formulario);
+    const data = {
+      nombre: formData.get('nombre'),
+      email: formData.get('email'),
+      mensaje: formData.get('mensaje'),
+    };
+
+    try {
+      const response = await fetch('/company/contactus', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+      });
+
+      if (response.ok) {
+        Swal.fire({
+          icon: 'success',
+          title: '¡Pergamino enviado exitosamente!',
+          text: 'Tu mensaje ha sido recibido. Pronto responderemos desde las tierras lejanas.',
+          confirmButtonColor: '#8B5B29'
+        });
+
+        formulario.reset(); 
+      } else {
+        throw new Error('No se pudo enviar el mensaje');
+      }
+    } catch (err) {
+      Swal.fire({
+        icon: 'error',
+        title: '¡Oh no!',
+        text: 'Hubo un error al enviar el pergamino. Intenta nuevamente.',
+        confirmButtonColor: '#8B5B29'
+      });
+    }
+  });
+  });
+</script>
+
+<style>
+.nosotros {
+  position: relative;
+  color: #8f6053;
+  font-family: 'Cinzel', serif;
+  background-image: url('/assets/faq.jpg');
+  background-size: cover; 
+  padding: 4rem 2rem;
+  border-top: 5px solid #8B5B29;
+  opacity: 0.8;
+  overflow: hidden;
+  z-index: 1;
+}
+
+.nosotros::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url('/assets/nosotros.jpg'); /* Cambiá esta ruta si necesitás otra imagen de fondo */
+  background-size: cover;
+  background-position: center;
+  opacity: 0.6;
+  z-index: -1;
+}
+
+.contenedor-nosotros {
+  max-width: 900px;
+  margin: 0 auto;
+  background-color: #f8f4ebd0;
+  padding: 2rem;
+  border-radius: 16px;
+  border: 3px solid #C2B7A0;
+  box-shadow: 0 0 15px rgba(0,0,0,0.1);
+}
+
+.texto-nosotros h2 {
+  font-size: 2.5rem;
+  text-align: center;
+  border-bottom: 2px solid #0f0f0e;
+  margin-bottom: 1.5rem;
+  padding-bottom: 0.5rem;
+  color: #0e0d0c;
+}
+
+.texto-nosotros p {
+  font-size: 1.1rem;
+  margin-bottom: 1.2rem;
+  line-height: 1.8;
+  color: #2c1c12;
+}
+
+.texto-nosotros strong {
+  color: #5B1F0F;
+}
+
+.frase-nosotros {
+  font-style: italic;
+  font-weight: bold;
+  font-size: 1.3rem;
+  margin-top: 2rem;
+  text-align: center;
+  color: #dfbb93;
+}
+
+@media (max-width: 768px) {
+  .contenedor-nosotros {
+    padding: 1.5rem;
+  }
+
+  .texto-nosotros h2 {
+    font-size: 2rem;
+  }
+
+  .texto-nosotros p {
+    font-size: 1rem;
+  }
+}
+</style>
