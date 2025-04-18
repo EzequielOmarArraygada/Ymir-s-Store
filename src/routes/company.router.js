@@ -6,15 +6,14 @@ const companyRouter = Router()
 
 const {
   postMessage,
+  getViewMessage,
 } = new MessageController();
 
 companyRouter.get('/about', (req, res) => {
     res.render('about');
   });
 
-  companyRouter.get('/contactus', (req, res) => {
-    res.render('contactUs');
-  });
+  companyRouter.get('/contactus', getViewMessage);
 
   companyRouter.post('/contactus', postMessage)
   

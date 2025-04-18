@@ -23,7 +23,7 @@
 </section>
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script>
+<script>        
   const formulario = document.getElementById('form-contacto');
 
   formulario.addEventListener('submit', async (e) => {
@@ -65,6 +65,31 @@
         confirmButtonColor: '#8B5B29'
       });
     }
+  });
+</script>
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const cartId = '{{user.cart}}';
+
+    async function updateCartCount() {
+      try {
+        const response = await fetch(`/api/carts/${cartId}/count`);
+        if (response.ok) {
+          const data = await response.json();
+          const totalCount = data.cart.products.reduce((acc, item) => acc + item.quantity, 0);
+
+          const countBadge = document.getElementById('cartCount');
+          if (countBadge) {
+            countBadge.textContent = totalCount;
+            countBadge.style.display = totalCount > 0 ? 'inline-block' : 'none';
+          }
+        }
+      } catch (error) {
+        console.error('Error al actualizar el contador del carrito:', error);
+      }
+    }
+
+    if (cartId) updateCartCount();
   });
 </script>
 

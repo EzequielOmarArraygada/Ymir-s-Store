@@ -1,10 +1,23 @@
 import messageModel from '../dao/models/message.model.js'
 import { MessageManagerMongo } from '../dao/services/managers/MessageManagerMongo.js'
+import { UserManagerMongo } from '../dao/services/managers/UserManagerMongo.js'
 
 
 export class MessageController {
     constructor(){
         this.messageService = new MessageManagerMongo();
+        this.userService = new UserManagerMongo(); 
+    }
+
+    getViewMessage = async (req, res) => {
+      try{
+        let userId = req.session.clientId;
+        const user = await this.userService.findById(userId)
+        res.render('contactUs', { user });
+
+      } catch (error) {
+      res.status(500).send({ error: 'Ocurrió un error.' });
+  }
     }
 
     getMessages = async (req, res) => {
