@@ -11,10 +11,12 @@ export class MessageController {
 
     getViewMessage = async (req, res) => {
       try{
-        let userId = req.session.clientId;
-        const user = await this.userService.findById(userId)
-        res.render('contactUs', { user });
-
+        let cartId = null;
+            if (req.isAuthenticated()) {
+                const user = req.user;
+                cartId = user.cart ? user.cart : null;
+            }
+        res.render('contactUs', { user: req.user, cartId });
       } catch (error) {
       res.status(500).send({ error: 'Ocurrió un error.' });
   }

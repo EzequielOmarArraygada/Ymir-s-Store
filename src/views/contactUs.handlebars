@@ -23,8 +23,40 @@
 </section>
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script>        
-  const formulario = document.getElementById('form-contacto');
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const cartId = '{{user.cart}}';
+     async function updateCartCount() {
+                try {
+                    const response = await fetch(`/api/carts/${cartId}/count`, {
+                        method: 'GET',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                    });
+                    if (response.ok) {
+                        const cart = await response.json();
+                        const cartCount = cart.cart.products.reduce((total, product) => total + product.quantity, 0);
+                        const cartCountGreaterThanZero = cartCount > 0;
+                        document.getElementById('cart-count').innerText = cartCount;
+                        document.getElementById('cart-count').style.display = cartCountGreaterThanZero ? 'inline-block' : 'none';
+                    }
+                } catch (error) {
+                    console.error('Error al obtener el conteo del carrito', error);
+                }
+            }
+
+            if (cartId != '') {
+                document.getElementById('goToCartButton').addEventListener('click', () => {
+                    const cartId = '{{user.cart}}';
+                    window.location.href = `/api/carts/${cartId}`;
+                });
+
+                updateCartCount();
+            }
+
+    const formulario = document.getElementById('form-contacto');
 
   formulario.addEventListener('submit', async (e) => {
     e.preventDefault();
@@ -66,30 +98,6 @@
       });
     }
   });
-</script>
-<script>
-  document.addEventListener('DOMContentLoaded', () => {
-    const cartId = '{{user.cart}}';
-
-    async function updateCartCount() {
-      try {
-        const response = await fetch(`/api/carts/${cartId}/count`);
-        if (response.ok) {
-          const data = await response.json();
-          const totalCount = data.cart.products.reduce((acc, item) => acc + item.quantity, 0);
-
-          const countBadge = document.getElementById('cartCount');
-          if (countBadge) {
-            countBadge.textContent = totalCount;
-            countBadge.style.display = totalCount > 0 ? 'inline-block' : 'none';
-          }
-        }
-      } catch (error) {
-        console.error('Error al actualizar el contador del carrito:', error);
-      }
-    }
-
-    if (cartId) updateCartCount();
   });
 </script>
 
