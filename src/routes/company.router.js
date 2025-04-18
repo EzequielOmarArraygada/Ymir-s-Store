@@ -42,5 +42,17 @@ companyRouter.get('/faq', passportCall('login', 'user'), (req, res) => {
   }
 });
 
+companyRouter.get('/gallery', passportCall('login', 'user'), (req, res) => {
+  try {
+    let cartId = null;
+    if (req.isAuthenticated()) {
+      const user = req.user;
+      cartId = user.cart ? user.cart : null;
+    }
+    res.render('gallery', { user: req.user, cartId });
+  } catch (error) {
+    res.status(500).send({ error: 'Ocurrió un error.' });
+  }
+});
 
 export default companyRouter;

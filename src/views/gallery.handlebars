@@ -1,0 +1,199 @@
+<section class="galeria">
+  <div class="contenedor-galeria">
+    <div class="titulo-galeria">
+      <p>Las imágenes que adornan estas paredes virtuales son el reflejo del alma de quienes, con destreza y pasión, dan vida a mundos medievales a través de sus pinceles y herramientas. Cada trazo y cada color cuentan historias de épocas pasadas y sueños forjados en la imaginación.</p>
+      <p>Si eres un creador de arte medieval, te invitamos a compartir tus obras con nosotros. Tu arte podría ser la próxima joya que embellezca nuestra galería, uniendo la creatividad de todos aquellos que, como tú, sienten el latido de la fantasía en sus manos.</p>
+    </div>
+    <div class="grid-galeria">
+      <!-- Lista de imágenes thumbnails -->
+      <img src="/assets/galeria/1.jpg" alt="Arte medieval 1" class="imagen-galeria" />
+      <img src="/assets/galeria/2.jpg" alt="Arte medieval 2" class="imagen-galeria" />
+      <img src="/assets/galeria/3.jpg" alt="Arte medieval 3" class="imagen-galeria" />
+      <img src="/assets/galeria/4.jpg" alt="Arte medieval 4" class="imagen-galeria" />
+      <img src="/assets/galeria/5.jpg" alt="Arte medieval 5" class="imagen-galeria" />
+      <img src="/assets/galeria/6.jpg" alt="Arte medieval 6" class="imagen-galeria" />
+      <img src="/assets/galeria/7.jpg" alt="Arte medieval 7" class="imagen-galeria" />
+      <img src="/assets/galeria/8.jpg" alt="Arte medieval 8" class="imagen-galeria" />
+      <img src="/assets/galeria/9.jpg" alt="Arte medieval 9" class="imagen-galeria" />
+      <img src="/assets/galeria/10.jpg" alt="Arte medieval 10" class="imagen-galeria" />
+      <img src="/assets/galeria/11.jpg" alt="Arte medieval 11" class="imagen-galeria" />
+      <img src="/assets/galeria/12.jpg" alt="Arte medieval 12" class="imagen-galeria" />
+      <img src="/assets/galeria/13.jpg" alt="Arte medieval 13" class="imagen-galeria" />
+      <img src="/assets/galeria/14.jpg" alt="Arte medieval 14" class="imagen-galeria" />
+      <img src="/assets/galeria/15.jpg" alt="Arte medieval 15" class="imagen-galeria" />
+      <img src="/assets/galeria/16.jpg" alt="Arte medieval 16" class="imagen-galeria" />
+      <img src="/assets/galeria/17.jpg" alt="Arte medieval 17" class="imagen-galeria" />
+      <img src="/assets/galeria/18.jpg" alt="Arte medieval 18" class="imagen-galeria" />
+      <img src="/assets/galeria/19.jpg" alt="Arte medieval 19" class="imagen-galeria" />
+      <img src="/assets/galeria/20.jpg" alt="Arte medieval 20" class="imagen-galeria" />
+      <img src="/assets/galeria/21.jpg" alt="Arte medieval 21" class="imagen-galeria" />
+      <img src="/assets/galeria/22.jpg" alt="Arte medieval 22" class="imagen-galeria" />
+      <img src="/assets/galeria/23.jpg" alt="Arte medieval 23" class="imagen-galeria" />
+      <img src="/assets/galeria/24.jpg" alt="Arte medieval 24" class="imagen-galeria" />
+    </div>
+  </div>
+
+  <!-- Modal -->
+  <div class="modal-galeria" id="modalGaleria">
+    <span class="cerrar-modal" id="cerrarModal">&times;</span>
+    <img class="contenido-modal" id="imagenModal" />
+    <a class="anterior" id="anterior">&#10094;</a>
+    <a class="siguiente" id="siguiente">&#10095;</a>
+  </div>
+</section>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const imagenes = Array.from(document.querySelectorAll('.imagen-galeria'));
+  const modal = document.getElementById('modalGaleria');
+  const imagenModal = document.getElementById('imagenModal');
+  const cerrarModal = document.getElementById('cerrarModal');
+  const anterior = document.getElementById('anterior');
+  const siguiente = document.getElementById('siguiente');
+
+  let indiceActual = 0;
+
+  function mostrarImagen(index) {
+    if (index >= 0 && index < imagenes.length) {
+      imagenModal.src = imagenes[index].src;
+      indiceActual = index;
+      modal.style.display = 'block';
+    }
+  }
+
+  imagenes.forEach((img, index) => {
+    img.addEventListener('click', () => mostrarImagen(index));
+  });
+
+  cerrarModal.onclick = () => modal.style.display = 'none';
+
+  anterior.onclick = () => {
+    indiceActual = (indiceActual - 1 + imagenes.length) % imagenes.length;
+    mostrarImagen(indiceActual);
+  };
+
+  siguiente.onclick = () => {
+    indiceActual = (indiceActual + 1) % imagenes.length;
+    mostrarImagen(indiceActual);
+  };
+
+  document.addEventListener('keydown', (e) => {
+    if (modal.style.display === 'block') {
+      if (e.key === 'ArrowLeft') anterior.click();
+      if (e.key === 'ArrowRight') siguiente.click();
+      if (e.key === 'Escape') cerrarModal.click();
+    }
+  });
+});
+</script>
+
+<style>
+.galeria {
+  padding: 4rem 2rem;
+  background-image: url('/assets/fondo_galeria.jpg');
+  background-size: cover;
+  background-position: center;
+  border-top: 5px solid #8B5B29;
+  font-family: 'Cinzel', serif;
+}
+
+.contenedor-galeria {
+  width: 95%;
+  max-width: 1500px;
+  margin: 0 auto;
+  background-color: #f8f4ebd0;
+  padding: 2rem;
+  border-radius: 16px;
+  border: 3px solid #C2B7A0;
+  box-shadow: 0 0 15px rgba(0,0,0,0.1);
+}
+
+.titulo-galeria {
+  font-size: 1.5rem;
+  text-align: center;
+  margin-bottom: 2rem;
+  color: #5B1F0F;
+  border-bottom: 2px solid #0e0d0c;
+  padding-bottom: 1rem;
+}
+
+.grid-galeria {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+}
+
+.imagen-galeria {
+  width: 100%;
+  aspect-ratio: 10 / 9;
+  object-fit: cover;
+  border-radius: 12px;
+  border: 2px solid #C2B7A0;
+  cursor: pointer;
+  height: 100%;
+  transition: transform 0.3s ease;
+}
+
+.imagen-galeria:hover {
+  transform: scale(1.05);
+  z-index: 2;
+}
+
+/* Modal */
+.modal-galeria {
+  display: none;
+  position: fixed;
+  z-index: 9999;
+  padding-top: 60px;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(15, 10, 5, 0.95);
+}
+
+.contenido-modal {
+  margin: auto;
+  display: block;
+  max-width: 90%;
+  max-height: 80vh;
+  border: 5px solid #C2B7A0;
+  border-radius: 16px;
+}
+
+.cerrar-modal {
+  position: absolute;
+  top: 20px;
+  right: 40px;
+  color: #f8f4eb;
+  font-size: 40px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.anterior, .siguiente {
+  cursor: pointer;
+  position: absolute;
+  top: 50%;
+  color: #f8f4eb;
+  font-size: 40px;
+  font-weight: bold;
+  user-select: none;
+  transform: translateY(-50%);
+  padding: 10px;
+}
+
+.anterior { left: 20px; }
+.siguiente { right: 20px; }
+
+@media (max-width: 768px) {
+  .titulo-galeria {
+    font-size: 2rem;
+  }
+
+  .imagen-galeria {
+    border-radius: 8px;
+  }
+}
+</style>
