@@ -1,8 +1,12 @@
 <section class="galeria">
   <div class="contenedor-galeria">
     <div class="titulo-galeria">
-      <p>Las imágenes que adornan estas paredes virtuales son el reflejo del alma de quienes, con destreza y pasión, dan vida a mundos medievales a través de sus pinceles y herramientas. Cada trazo y cada color cuentan historias de épocas pasadas y sueños forjados en la imaginación.</p>
-      <p>Si eres un creador de arte medieval, te invitamos a compartir tus obras con nosotros. Tu arte podría ser la próxima joya que embellezca nuestra galería, uniendo la creatividad de todos aquellos que, como tú, sienten el latido de la fantasía en sus manos.</p>
+      <p>Las imágenes que adornan estas paredes virtuales son el reflejo del alma de quienes, con destreza y pasión, dan
+        vida a mundos medievales a través de sus pinceles y herramientas. Cada trazo y cada color cuentan historias de
+        épocas pasadas y sueños forjados en la imaginación.</p>
+      <p>Si eres un creador de arte medieval, te invitamos a compartir tus obras con nosotros. Tu arte podría ser la
+        próxima joya que embellezca nuestra galería, uniendo la creatividad de todos aquellos que, como tú, sienten el
+        latido de la fantasía en sus manos.</p>
     </div>
     <div class="grid-galeria">
       <!-- Lista de imágenes thumbnails -->
@@ -43,230 +47,205 @@
 </section>
 
 <script>
-document.addEventListener('DOMContentLoaded', () => {
-const cartId = '{{user.cart}}';
-     async function updateCartCount() {
-                try {
-                    const response = await fetch(`/api/carts/${cartId}/count`, {
-                        method: 'GET',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                    });
-                    if (response.ok) {
-                        const cart = await response.json();
-                        const cartCount = cart.cart.products.reduce((total, product) => total + product.quantity, 0);
-                        const cartCountGreaterThanZero = cartCount > 0;
-                        document.getElementById('cart-count').innerText = cartCount;
-                        document.getElementById('cart-count').style.display = cartCountGreaterThanZero ? 'inline-block' : 'none';
-                    }
-                } catch (error) {
-                    console.error('Error al obtener el conteo del carrito', error);
-                }
-            }
+  document.addEventListener('DOMContentLoaded', () => {
+    const imagenes = Array.from(document.querySelectorAll('.imagen-galeria'));
+    const modal = document.getElementById('modalGaleria');
+    const imagenModal = document.getElementById('imagenModal');
+    const cerrarModal = document.getElementById('cerrarModal');
+    const anterior = document.getElementById('anterior');
+    const siguiente = document.getElementById('siguiente');
 
-            if (cartId != '') {
-                document.getElementById('goToCartButton').addEventListener('click', () => {
-                    const cartId = '{{user.cart}}';
-                    window.location.href = `/api/carts/${cartId}`;
-                });
+    let indiceActual = 0;
 
-                updateCartCount();
-            }
+    // Función para mostrar la imagen en el modal
+    function mostrarImagen(index) {
+      if (index >= 0 && index < imagenes.length) {
+        imagenModal.src = imagenes[index].src;
+        indiceActual = index;
+        modal.style.display = 'block';  // Mostrar el modal
+      }
+    }
 
-    const formulario = document.getElementById('form-contacto');
+    // Agregar evento de clic a cada imagen para abrir el modal
+    imagenes.forEach((img, index) => {
+      img.addEventListener('click', () => {
+        console.log(`Imagen ${index} clickeada`);  // Para depuración
+        mostrarImagen(index);
+      });
+    });
 
-  formulario.addEventListener('submit', async (e) => {
-    e.preventDefault();
-
-    const formData = new FormData(formulario);
-    const data = {
-      nombre: formData.get('nombre'),
-      email: formData.get('email'),
-      mensaje: formData.get('mensaje'),
+    // Cerrar el modal al hacer clic en la "X"
+    cerrarModal.onclick = () => {
+      console.log('Cerrando modal');  // Para depuración
+      modal.style.display = 'none';
     };
 
-    try {
-      const response = await fetch('/company/contactus', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(data)
-      });
+    // Función para navegar a la imagen anterior
+    anterior.onclick = () => {
+      indiceActual = (indiceActual - 1 + imagenes.length) % imagenes.length;
+      mostrarImagen(indiceActual);
+    };
 
-      if (response.ok) {
-        Swal.fire({
-          icon: 'success',
-          title: '¡Pergamino enviado exitosamente!',
-          text: 'Tu mensaje ha sido recibido. Pronto responderemos desde las tierras lejanas.',
-          confirmButtonColor: '#8B5B29'
-        });
+    // Función para navegar a la imagen siguiente
+    siguiente.onclick = () => {
+      indiceActual = (indiceActual + 1) % imagenes.length;
+      mostrarImagen(indiceActual);
+    };
 
-        formulario.reset(); 
-      } else {
-        throw new Error('No se pudo enviar el mensaje');
+    // Navegar con las teclas de flechas
+    document.addEventListener('keydown', (e) => {
+      if (modal.style.display === 'block') {
+        if (e.key === 'ArrowLeft') anterior.click();
+        if (e.key === 'ArrowRight') siguiente.click();
+        if (e.key === 'Escape') cerrarModal.click();
       }
-    } catch (err) {
-      Swal.fire({
-        icon: 'error',
-        title: '¡Oh no!',
-        text: 'Hubo un error al enviar el pergamino. Intenta nuevamente.',
-        confirmButtonColor: '#8B5B29'
+    });
+
+    const cartId = '{{user.cart}}';
+    async function updateCartCount() {
+      try {
+        const response = await fetch(`/api/carts/${cartId}/count`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+        });
+        if (response.ok) {
+          const cart = await response.json();
+          const cartCount = cart.cart.products.reduce((total, product) => total + product.quantity, 0);
+          const cartCountGreaterThanZero = cartCount > 0;
+          document.getElementById('cart-count').innerText = cartCount;
+          document.getElementById('cart-count').style.display = cartCountGreaterThanZero ? 'inline-block' : 'none';
+        }
+      } catch (error) {
+        console.error('Error al obtener el conteo del carrito', error);
+      }
+    }
+
+    if (cartId != '') {
+      document.getElementById('goToCartButton').addEventListener('click', () => {
+        const cartId = '{{user.cart}}';
+        window.location.href = `/api/carts/${cartId}`;
       });
+
+      updateCartCount();
     }
   });
-
-  const imagenes = Array.from(document.querySelectorAll('.imagen-galeria'));
-  const modal = document.getElementById('modalGaleria');
-  const imagenModal = document.getElementById('imagenModal');
-  const cerrarModal = document.getElementById('cerrarModal');
-  const anterior = document.getElementById('anterior');
-  const siguiente = document.getElementById('siguiente');
-
-  let indiceActual = 0;
-
-  function mostrarImagen(index) {
-    if (index >= 0 && index < imagenes.length) {
-      imagenModal.src = imagenes[index].src;
-      indiceActual = index;
-      modal.style.display = 'block';
-    }
-  }
-
-  imagenes.forEach((img, index) => {
-    img.addEventListener('click', () => mostrarImagen(index));
-  });
-
-  cerrarModal.onclick = () => modal.style.display = 'none';
-
-  anterior.onclick = () => {
-    indiceActual = (indiceActual - 1 + imagenes.length) % imagenes.length;
-    mostrarImagen(indiceActual);
-  };
-
-  siguiente.onclick = () => {
-    indiceActual = (indiceActual + 1) % imagenes.length;
-    mostrarImagen(indiceActual);
-  };
-
-  document.addEventListener('keydown', (e) => {
-    if (modal.style.display === 'block') {
-      if (e.key === 'ArrowLeft') anterior.click();
-      if (e.key === 'ArrowRight') siguiente.click();
-      if (e.key === 'Escape') cerrarModal.click();
-    }
-  });
-});
 </script>
 
 <style>
-.galeria {
-  padding: 2rem 1rem;
-  background-image: url('/assets/fondo_galeria.jpg');
-  background-size: cover;
-  background-position: center;
-  border-top: 5px solid #8B5B29;
-  font-family: 'Cinzel', serif;
-}
+  .galeria {
+    padding: 2rem 1rem;
+    background-image: url('/assets/fondo_galeria.jpg');
+    background-size: cover;
+    background-position: center;
+    border-top: 5px solid #8B5B29;
+    font-family: 'Cinzel', serif;
+  }
 
-.contenedor-galeria {
-  width: 95%;
-  max-width: 1500px;
-  margin: 0 auto;
-  background-color: #f8f4ebd0;
-  padding: 2rem;
-  border-radius: 16px;
-  border: 3px solid #C2B7A0;
-  box-shadow: 0 0 15px rgba(0,0,0,0.1);
-}
+  .contenedor-galeria {
+    width: 95%;
+    max-width: 1500px;
+    margin: 0 auto;
+    background-color: #f8f4ebd0;
+    padding: 2rem;
+    border-radius: 16px;
+    border: 3px solid #C2B7A0;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+  }
 
-.titulo-galeria {
-  font-size: 1.5rem;
-  text-align: center;
-  margin-bottom: 2rem;
-  color: #5B1F0F;
-  border-bottom: 2px solid #0e0d0c;
-  padding-bottom: 1rem;
-}
-
-.grid-galeria {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 1.5rem;
-}
-
-.imagen-galeria {
-  width: 100%;
-  aspect-ratio: 10 / 9;
-  object-fit: cover;
-  border-radius: 12px;
-  border: 2px solid #C2B7A0;
-  cursor: pointer;
-  height: 100%;
-  transition: transform 0.3s ease;
-}
-
-.imagen-galeria:hover {
-  transform: scale(1.05);
-  z-index: 2;
-}
-
-/* Modal */
-.modal-galeria {
-  display: none;
-  position: fixed;
-  z-index: 9999;
-  padding-top: 60px;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  overflow: auto;
-  background-color: rgba(15, 10, 5, 0.95);
-}
-
-.contenido-modal {
-  margin: auto;
-  display: block;
-  max-width: 90%;
-  max-height: 80vh;
-  border: 5px solid #C2B7A0;
-  border-radius: 16px;
-}
-
-.cerrar-modal {
-  position: absolute;
-  top: 20px;
-  right: 40px;
-  color: #f8f4eb;
-  font-size: 40px;
-  font-weight: bold;
-  cursor: pointer;
-}
-
-.anterior, .siguiente {
-  cursor: pointer;
-  position: absolute;
-  top: 50%;
-  color: #f8f4eb;
-  font-size: 40px;
-  font-weight: bold;
-  user-select: none;
-  transform: translateY(-50%);
-  padding: 10px;
-}
-
-.anterior { left: 20px; }
-.siguiente { right: 20px; }
-
-@media (max-width: 768px) {
   .titulo-galeria {
-    font-size: 2rem;
+    font-size: 1.5rem;
+    text-align: center;
+    margin-bottom: 2rem;
+    color: #5B1F0F;
+    border-bottom: 2px solid #0e0d0c;
+    padding-bottom: 1rem;
+  }
+
+  .grid-galeria {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
   }
 
   .imagen-galeria {
-    border-radius: 8px;
+    width: 100%;
+    aspect-ratio: 10 / 9;
+    object-fit: cover;
+    border-radius: 12px;
+    border: 2px solid #C2B7A0;
+    cursor: pointer;
+    height: 100%;
+    transition: transform 0.3s ease;
   }
-}
+
+  .imagen-galeria:hover {
+    transform: scale(1.05);
+    z-index: 2;
+  }
+
+  /* Modal */
+  .modal-galeria {
+    display: none;
+    position: fixed;
+    z-index: 9999;
+    padding-top: 60px;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(15, 10, 5, 0.95);
+  }
+
+  .contenido-modal {
+    margin: auto;
+    display: block;
+    max-width: 90%;
+    max-height: 80vh;
+    border: 5px solid #C2B7A0;
+    border-radius: 16px;
+  }
+
+  .cerrar-modal {
+    position: absolute;
+    top: 20px;
+    right: 40px;
+    color: #f8f4eb;
+    font-size: 40px;
+    font-weight: bold;
+    cursor: pointer;
+  }
+
+  .anterior,
+  .siguiente {
+    cursor: pointer;
+    position: absolute;
+    top: 50%;
+    color: #f8f4eb;
+    font-size: 40px;
+    font-weight: bold;
+    user-select: none;
+    transform: translateY(-50%);
+    padding: 10px;
+  }
+
+  .anterior {
+    left: 20px;
+  }
+
+  .siguiente {
+    right: 20px;
+  }
+
+  @media (max-width: 768px) {
+    .titulo-galeria {
+      font-size: 2rem;
+    }
+
+    .imagen-galeria {
+      border-radius: 8px;
+    }
+  }
 </style>
