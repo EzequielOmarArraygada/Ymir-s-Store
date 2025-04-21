@@ -283,10 +283,10 @@
     <div>
       <div class="message-status-indicators">
         <button class="btn-status btn-novisto {{#ifEquals this.status 'NoVisto'}}active{{else}}btn-apagado{{/ifEquals}}">NoVisto</button>
-        <button class="btn-status btn-contestado {{#ifEquals this.status 'Contestado'}}active{{else}}btn-apagado{{/ifEquals}}">Contestado</button>
-        <button class="btn-status btn-enespera {{#ifEquals this.status 'EnEspera'}}active{{else}}btn-apagado{{/ifEquals}}">EnEspera</button>
-        <button class="btn-status btn-visto {{#ifEquals this.status 'Visto'}}active{{else}}btn-apagado{{/ifEquals}}">Visto</button>
+        <button class="btn-status btn-visto {{#ifEquals this.status 'Visto'}}active{{else}}btn-apagado{{/ifEquals}}">Visto</button>       
+        <button class="btn-status btn-enespera {{#ifEquals this.status 'EnEspera'}}active{{else}}btn-apagado{{/ifEquals}}">EnEspera</button> 
         <button class="btn-status btn-spam {{#ifEquals this.status 'Spam'}}active{{else}}btn-apagado{{/ifEquals}}">Spam</button>
+        <button class="btn-status btn-contestado {{#ifEquals this.status 'Contestado'}}active{{else}}btn-apagado{{/ifEquals}}">Contestado</button>
       </div>
       <div class="message-details">
         <p><strong>Cliente:</strong> {{this.client_name}}</p>

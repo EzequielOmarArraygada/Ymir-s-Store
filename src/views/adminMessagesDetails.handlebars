@@ -202,7 +202,7 @@
 
 <div class="message-details-container">
   <div class="message-header">
-    <h2>Detalles del Message</h2>
+    <h2>Detalles del mensaje</h2>
     <a href="/admin/messages" class="btn-back">Volver</a>
   </div>
 
@@ -215,10 +215,10 @@
 
   <div class="message-actions">
   <button class="btn-status btn-novisto {{#ifEquals message.status 'NoVisto'}}active{{else}}btn-apagado{{/ifEquals}}" onclick="updateMessageStatus('NoVisto')">NoVisto</button>
-  <button class="btn-status btn-contestado {{#ifEquals message.status 'Contestado'}}active{{else}}btn-apagado{{/ifEquals}}" onclick="updateMessageStatus('Contestado')">Contestado</button>
-  <button class="btn-status btn-enespera {{#ifEquals message.status 'EnEspera'}}active{{else}}btn-apagado{{/ifEquals}}" onclick="updateMessageStatus('EnEspera')">EnEspera</button>
   <button class="btn-status btn-visto {{#ifEquals message.status 'Visto'}}active{{else}}btn-apagado{{/ifEquals}}" onclick="updateMessageStatus('Visto')">Visto</button>
+  <button class="btn-status btn-enespera {{#ifEquals message.status 'EnEspera'}}active{{else}}btn-apagado{{/ifEquals}}" onclick="updateMessageStatus('EnEspera')">EnEspera</button>
   <button class="btn-status btn-spam {{#ifEquals message.status 'Spam'}}active{{else}}btn-apagado{{/ifEquals}}" onclick="updateMessageStatus('Spam')">Spam</button>
+  <button class="btn-status btn-contestado {{#ifEquals message.status 'Contestado'}}active{{else}}btn-apagado{{/ifEquals}}" onclick="updateMessageStatus('Contestado')">Contestado</button>
   </div>
 </div>
 
