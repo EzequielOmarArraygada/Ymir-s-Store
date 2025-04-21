@@ -27,8 +27,11 @@ export class MessageController {
             const result = await this.messageService.getMessages();
             const messages = result.map(message => ({
                 _id: message._id,
-                clien_name: message.client_name,
+                client_name: message.client_name,
                 client_email: message.client_email,
+                datetime: message.datetime,
+                status: message.status,
+                message: message.message
             }));
             res.render('adminMessages', { messages });
 
@@ -50,6 +53,7 @@ export class MessageController {
             client_name: nombre,
             client_email: email,
             message: mensaje,
+            status: "NoVisto",
           });
       
           await nuevoMensaje.save();
@@ -65,13 +69,27 @@ export class MessageController {
         try {
             let { mid } = req.params;
             let message = await this.messageService.getMessage(mid);
-            res.render('adminTicketsDetails', { message });
+            res.render('adminMessagesDetails', { message });
         } catch (error) {
             console.error(error);
             res.status(500).send('Error al obtener los detalles del ticket');
         }
     };
 
-    
+    updateMessageStatus = async (req, res) => {
+      try {
+        const { mid, status } = req.body;
+        const updatedMessage = await this.messageService.updateMessageStatus(mid, status);
+  
+        if (updatedMessage) {
+          res.json({ success: true, message: 'Estado del ticket actualizado con éxito' });
+        } else {
+          res.status(404).json({ success: false, message: 'Ticket no encontrado' });
+        }
+      } catch (error) {
+        console.error(`Error al actualizar el estado del ticket: ${error.message}`);
+        res.status(500).json({ success: false, message: 'Error al actualizar el estado del ticket' });
+      }
+    };
 
     }

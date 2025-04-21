@@ -7,6 +7,11 @@ const messageSchema = new mongoose.Schema({
     client_email: { type: String, required: true },
     message: { type: String, required: true },
     datetime: { type: Date, default: Date.now },
+    status: { 
+        type: String,
+        enum: ['NoVisto', 'Contestado', 'EnEspera', 'Visto', 'Spam'],
+        default: 'NoVisto',
+      },
 });
 
 

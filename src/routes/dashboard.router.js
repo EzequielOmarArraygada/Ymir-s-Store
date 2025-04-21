@@ -4,6 +4,7 @@ import { ProductController } from '../controllers/products.controller.js';
 import { UserController } from '../controllers/users.controller.js';
 import { ViewsController } from '../controllers/views.controller.js'
 import { TicketController } from '../controllers/tickets.controller.js'
+import { MessageController } from '../controllers/messages.controller.js'
 import utils from '../utils.js';
 import upload from '../middlewares/upload.js';
 import passport from 'passport';
@@ -37,6 +38,12 @@ const {
 } = new ViewsController
 
 const {
+    updateMessageStatus,
+    getMessageDetails,
+    getMessages
+} = new MessageController
+
+const {
     getTickets,
     updateStatus,
     getTicketDetails,
@@ -68,6 +75,13 @@ DashboardRouter.delete('/users/delete/:uid', passportCall('login', 'admin'), isA
 DashboardRouter.get('/tickets/details/:tid', passportCall('login', 'admin'), isAdmin, getTicketDetails);
 
 DashboardRouter.post('/tickets/details/updateStatus', passportCall('login', 'admin'), isAdmin, updateStatus);
+
+DashboardRouter.get('/messages', passportCall('login', 'admin'), isAdmin, getMessages);
+
+DashboardRouter.get('/messages/details/:mid', passportCall('login', 'admin'), isAdmin, getMessageDetails);
+
+DashboardRouter.post('/messages/details/updateMessageStatus', passportCall('login', 'admin'), isAdmin, updateMessageStatus);
+
 
 export default DashboardRouter;    
 

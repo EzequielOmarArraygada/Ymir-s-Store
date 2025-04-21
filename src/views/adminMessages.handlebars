@@ -51,14 +51,14 @@
     box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
   }
 
-  .ticket-container {
+  .message-container {
     display: flex;
     flex-wrap: wrap;
     gap: 20px;
     justify-content: center;
   }
 
-  .ticket-card {
+  .message-card {
     background-color: #ffffff;
     border: 1px solid #ddd;
     border-radius: 10px;
@@ -74,12 +74,12 @@
     /* Para hacer toda la tarjeta clicable */
   }
 
-  .ticket-card:hover {
+  .message-card:hover {
     transform: scale(1.05);
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
   }
 
-  .ticket-card h3 {
+  .message-card h3 {
     margin-top: 0;
     font-size: 20px;
     color: #333;
@@ -88,19 +88,19 @@
     margin-bottom: 10px;
   }
 
-  .ticket-details {
+  .message-details {
     margin: 10px 0;
     color: #555;
     font-size: 14px;
   }
 
-  .ticket-products {
+  .message-products {
     list-style-type: none;
     padding: 0;
     margin: 10px 0;
   }
 
-  .ticket-products li {
+  .message-products li {
     background-color: #f9f9f9;
     padding: 8px;
     margin-bottom: 5px;
@@ -110,7 +110,7 @@
     font-size: 14px;
   }
 
-  .ticket-actions a {
+  .message-actions a {
     text-decoration: underline;
     margin-right: 10px;
     color: #007bff;
@@ -118,19 +118,19 @@
     transition: color 0.3s ease;
   }
 
-  .ticket-actions a:hover {
+  .message-actions a:hover {
     color: #0056b3;
   }
 
   /* Estilos Responsivos */
   @media (max-width: 1024px) {
-    .ticket-card {
+    .message-card {
       width: calc(50% - 20px);
     }
   }
 
   @media (max-width: 768px) {
-    .ticket-card {
+    .message-card {
       width: calc(100% - 20px);
     }
   }
@@ -159,28 +159,28 @@
     pointer-events: none;
   }
 
-  .btn-pendiente {
+  .btn-novisto {
     background-color: orange;
   }
 
-  .btn-preparando {
+  .btn-enespera {
     background-color: yellow;
     color: #333;
   }
 
-  .btn-aprobado {
+  .btn-contestado {
     background-color: green;
   }
 
-  .btn-completado {
+  .btn-visto {
     background-color: royalblue;
   }
 
-  .btn-cancelado {
+  .btn-spam {
     background-color: red;
   }
 
-  .ticket-status-indicators {
+  .message-status-indicators {
     display: flex;
     flex-wrap: nowrap;
     /* evita que se vayan a varias líneas */
@@ -238,17 +238,17 @@
 </style>
 
 <script>
-  function handleCardClick(event, ticketId) {
+  function handleCardClick(event, messageId) {
     // Si el click vino desde el botón de "Ver Datos de Pago", no redirecciona
     if (event.target.closest('.toggle-payment-info')) return;
 
     // Si no, redirige al detalle
-    window.location.href = `/admin/tickets/details/${ticketId}`;
+    window.location.href = `/admin/messages/details/${messageId}`;
   }
 
-  function togglePaymentInfo(ticketId) {
-    const paymentInfo = document.getElementById('payment-info-' + ticketId);
-    const arrow = document.querySelector(`#toggle-btn-${ticketId} .arrow`);
+  function togglePaymentInfo(messageId) {
+    const paymentInfo = document.getElementById('payment-info-' + messageId);
+    const arrow = document.querySelector(`#toggle-btn-${messageId} .arrow`);
     if (paymentInfo.style.display === 'none' || paymentInfo.style.display === '') {
       paymentInfo.style.display = 'block';
       arrow.textContent = '▲';
@@ -270,39 +270,30 @@
     <a href="/admin/products?page=1" class="navbar-itemDash">Productos</a>
     <a href="/admin/tickets" class="navbar-itemDash">Pedidos</a>
     <a href="/admin/messages" class="navbar-itemDash">Mensajes</a>
+
   </div>
 </div>
 
-<input type="text" id="search" placeholder="Buscar ticket...">
+<input type="text" id="search" placeholder="Buscar message...">
 
-<div class="ticket-container">
-  {{#each tickets}}
-<div class="ticket-card" onclick="handleCardClick(event, '{{this._id}}')">
-    <h3>Ticket ID: {{this._id}}</h3>
+<div class="message-container">
+  {{#each messages}}
+<div class="message-card" onclick="handleCardClick(event, '{{this._id}}')">
+    <h3>Message ID: {{this._id}}</h3>
     <div>
-      <div class="ticket-status-indicators">
-        <button class="btn-status btn-pendiente {{#ifEquals this.status 'Pendiente'}}active{{else}}btn-apagado{{/ifEquals}}">Pendiente</button>
-        <button class="btn-status btn-aprobado {{#ifEquals this.status 'Aprobado'}}active{{else}}btn-apagado{{/ifEquals}}">Aprobado</button>
-        <button class="btn-status btn-preparando {{#ifEquals this.status 'Preparando'}}active{{else}}btn-apagado{{/ifEquals}}">Preparando</button>
-        <button class="btn-status btn-completado {{#ifEquals this.status 'Completado'}}active{{else}}btn-apagado{{/ifEquals}}">Completado</button>
-        <button class="btn-status btn-cancelado {{#ifEquals this.status 'Cancelado'}}active{{else}}btn-apagado{{/ifEquals}}">Cancelado</button>
+      <div class="message-status-indicators">
+        <button class="btn-status btn-novisto {{#ifEquals this.status 'NoVisto'}}active{{else}}btn-apagado{{/ifEquals}}">NoVisto</button>
+        <button class="btn-status btn-contestado {{#ifEquals this.status 'Contestado'}}active{{else}}btn-apagado{{/ifEquals}}">Contestado</button>
+        <button class="btn-status btn-enespera {{#ifEquals this.status 'EnEspera'}}active{{else}}btn-apagado{{/ifEquals}}">EnEspera</button>
+        <button class="btn-status btn-visto {{#ifEquals this.status 'Visto'}}active{{else}}btn-apagado{{/ifEquals}}">Visto</button>
+        <button class="btn-status btn-spam {{#ifEquals this.status 'Spam'}}active{{else}}btn-apagado{{/ifEquals}}">Spam</button>
       </div>
-      <div class="ticket-details">
-        <p><strong>Comprador:</strong> {{this.purchaser}}</p>
-        <p><strong>Código:</strong> {{this.code}}</p>
-        <p><strong>Fecha de Compra:</strong> {{this.purchase_datetime}}</p>
+      <div class="message-details">
+        <p><strong>Cliente:</strong> {{this.client_name}}</p>
+        <p><strong>Email del cliente:</strong> {{this.client_email}}</p>
+        <p><strong>Fecha de mensaje:</strong> {{this.datetime}}</p>
+        <p><strong>Mensaje:</strong> {{this.message}}</p>
       </div>
-      <h4>Productos:</h4>
-      {{#if this.products}}
-      <ul class="ticket-products">
-        {{#each this.products}}
-        <li>{{this.title}} - Cantidad: {{this.quantity}} - Precio: ${{this.price}}</li>
-        {{/each}}
-      </ul>
-      {{else}}
-      <p>No hay productos en este ticket.</p>
-      {{/if}}
-      <p><strong>Monto Total:</strong> ${{this.totalAmount}}</p>
     </div>
 
     {{#if this.paymentInf}} <!-- Verifica si hay datos de pago -->

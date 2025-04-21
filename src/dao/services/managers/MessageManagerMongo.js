@@ -18,4 +18,16 @@ export class MessageManagerMongo {
         return await this.messageRepository.getTicketById(mid);
     }
 
+    async updateMessageStatus(id, status) {
+        try {
+          const updatedMessage = await this.messageRepository.updateMessageStatus(id, status);
+          if (!updatedMessage) {
+            throw new Error('No se pudo actualizar el estado del ticket');
+          }
+          return updatedMessage;
+        } catch (error) {
+          throw new Error(`Error al actualizar el estado del ticket: ${error.message}`);
+        }
+      }
+
 }

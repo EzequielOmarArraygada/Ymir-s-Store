@@ -23,4 +23,16 @@ export class MessageRepository {
         }
     }
 
+    async updateMessageStatus(mid, status) {
+            try {
+              return await this.model.findByIdAndUpdate(
+                mid,
+                { status },
+                { new: true } 
+              );
+            } catch (error) {
+              throw new Error(`Error al actualizar el estado del ticket: ${error.message}`);
+            }
+          }
+
 }
