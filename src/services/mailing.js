@@ -13,7 +13,7 @@ const transporter = nodemailer.createTransport({
 export function sendPasswordResetEmail(email, token) {
     const resetLink = `http://ymir.up.railway.app/api/sessions/reset-password?token=${token}`;
     const mailOptions = {
-        from: '"Ymir Store" <tpo.ymir.store@gmail.com>',
+        from: `"🛡️ Ymir Store" <${process.env.EMAIL_USER}>`,
         to: email,
         subject: '🛡️ Restablece tu contraseña',
         html: `
@@ -52,7 +52,7 @@ export function sendCompraAprobada(email, ticket) {
         bank_transfer: 'Transferencia bancaria',
     };
     const mailOptions = {
-        from: '"Ymir Store" <tpo.ymir.store@gmail.com>',
+        from: `"🛡️ Ymir Store" <${process.env.EMAIL_USER}>`,
         to: email,
         subject: '🛡️ ¡Compra Aprobada! Gracias por confiar en nosotros',
         html: `
@@ -140,7 +140,7 @@ export function sendCompraPendiente(email, ticket) {
         bank_transfer: 'Transferencia bancaria',
     };
     const mailOptions = {
-        from: config.mailing.USER,
+        from: `"🛡️ Ymir Store" <${process.env.EMAIL_USER}>`,
         to: email,
         subject: '🛡️ ¡Falta un poco más! Tu pago esta pendiente',
         html: `
@@ -229,7 +229,7 @@ export function sendCompraCancelada(email, ticket) {
         bank_transfer: 'Transferencia bancaria',
     };
     const mailOptions = {
-        from: config.mailing.USER,
+        from: `"🛡️ Ymir Store" <${process.env.EMAIL_USER}>`,
         to: email,
         subject: '🛡️ Tu pago fue rechazado ❌',
         html: `
@@ -310,16 +310,16 @@ export function sendCompraCancelada(email, ticket) {
     });
 }
 
-export async function sendEmail(emailDetails) {
+export function sendEmail({ to, subject, html }) {
     const mailOptions = {
-        from: config.mailing.USER,
-        to: emailDetails.to,
-        subject: emailDetails.subject,
-        text: emailDetails.text
+        from: `"🛡️ Ymir Store" <${process.env.EMAIL_USER}>`,
+        to,
+        subject,
+        html
     };
 
     try {
-        const info = await transporter.sendMail(mailOptions);
+        const info = transporter.sendMail(mailOptions);
         console.log('Correo enviado:', info.response);
         return info;
     } catch (error) {

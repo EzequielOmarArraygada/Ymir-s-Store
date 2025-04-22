@@ -127,64 +127,79 @@
   }
 
   .btn-status {
-  padding: 10px 15px;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  font-weight: bold;
-  color: #fff;
-  opacity: 0.6; /* Apagado por defecto */
-  transition: opacity 0.3s;
-}
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    color: #fff;
+    opacity: 0.6;
+    /* Apagado por defecto */
+    transition: opacity 0.3s;
+  }
 
-.btn-status.active {
-  opacity: 1; /* Encendido cuando está activo */
-}
+  .btn-status.active {
+    opacity: 1;
+    /* Encendido cuando está activo */
+  }
 
-.btn-pendiente {
-  background-color: orange;
-}
+  .btn-pendiente {
+    background-color: orange;
+  }
 
-.btn-preparando {
-  background-color: yellow;
-  color: #333; /* Texto oscuro para mejor legibilidad */
-}
+  .btn-preparando {
+    background-color: yellow;
+    color: #333;
+    /* Texto oscuro para mejor legibilidad */
+  }
 
-.btn-completado {
-  background-color: rgb(36, 123, 253);
-}
+  .btn-completado {
+    background-color: rgb(36, 123, 253);
+  }
 
-.btn-aprobado {
-  background-color: green;
-}
+  .btn-aprobado {
+    background-color: green;
+  }
 
-.btn-cancelado {
-  background-color: red;
-}
+  .btn-cancelado {
+    background-color: red;
+  }
 
-.btn-apagado {
-  background-color: grey;
-}
-.btn-back {
-  background-color: #007bff; /* Color azul */
-  color: #fff; /* Color del texto */
-  padding: 10px 20px; /* Espaciado */
-  border: none; /* Sin borde */
-  border-radius: 5px; /* Esquinas redondeadas */
-  cursor: pointer; /* Cambiar el cursor al pasar el ratón */
-  font-weight: bold; /* Texto en negrita */
-  transition: background-color 0.3s, transform 0.2s; /* Animaciones suaves */
-  text-decoration: none;
-}
+  .btn-apagado {
+    background-color: grey;
+  }
 
-.btn-back:hover {
-  background-color: #0056b3; /* Color más oscuro al pasar el ratón */
-  transform: translateY(-2px); /* Elevar ligeramente el botón */
-}
+  .btn-back {
+    background-color: #007bff;
+    /* Color azul */
+    color: #fff;
+    /* Color del texto */
+    padding: 10px 20px;
+    /* Espaciado */
+    border: none;
+    /* Sin borde */
+    border-radius: 5px;
+    /* Esquinas redondeadas */
+    cursor: pointer;
+    /* Cambiar el cursor al pasar el ratón */
+    font-weight: bold;
+    /* Texto en negrita */
+    transition: background-color 0.3s, transform 0.2s;
+    /* Animaciones suaves */
+    text-decoration: none;
+  }
 
-.btn-back:active {
-  transform: translateY(0); /* Regresar a la posición normal al hacer clic */
-}
+  .btn-back:hover {
+    background-color: #0056b3;
+    /* Color más oscuro al pasar el ratón */
+    transform: translateY(-2px);
+    /* Elevar ligeramente el botón */
+  }
+
+  .btn-back:active {
+    transform: translateY(0);
+    /* Regresar a la posición normal al hacer clic */
+  }
 </style>
 
 <div class="navbarDash">
@@ -229,15 +244,76 @@
   {{/if}}
 
   <div class="ticket-actions">
-  <button class="btn-status btn-pendiente {{#ifEquals ticket.status 'Pendiente'}}active{{else}}btn-apagado{{/ifEquals}}" onclick="updateTicketStatus('Pendiente')">Pendiente</button>
-  <button class="btn-status btn-aprobado {{#ifEquals ticket.status 'Aprobado'}}active{{else}}btn-apagado{{/ifEquals}}" onclick="updateTicketStatus('Aprobado')">Aprobado</button>
-  <button class="btn-status btn-preparando {{#ifEquals ticket.status 'Preparando'}}active{{else}}btn-apagado{{/ifEquals}}" onclick="updateTicketStatus('Preparando')">Preparando</button>
-  <button class="btn-status btn-completado {{#ifEquals ticket.status 'Completado'}}active{{else}}btn-apagado{{/ifEquals}}" onclick="updateTicketStatus('Completado')">Completado</button>
-  <button class="btn-status btn-cancelado {{#ifEquals ticket.status 'Cancelado'}}active{{else}}btn-apagado{{/ifEquals}}" onclick="updateTicketStatus('Cancelado')">Cancelado</button>
+    <button
+      class="btn-status btn-pendiente {{#ifEquals ticket.status 'Pendiente'}}active{{else}}btn-apagado{{/ifEquals}}"
+      onclick="updateTicketStatus('Pendiente')">Pendiente</button>
+    <button class="btn-status btn-aprobado {{#ifEquals ticket.status 'Aprobado'}}active{{else}}btn-apagado{{/ifEquals}}"
+      onclick="updateTicketStatus('Aprobado')">Aprobado</button>
+    <button
+      class="btn-status btn-preparando {{#ifEquals ticket.status 'Preparando'}}active{{else}}btn-apagado{{/ifEquals}}"
+      onclick="updateTicketStatus('Preparando')">Preparando</button>
+    <button
+      class="btn-status btn-completado {{#ifEquals ticket.status 'Completado'}}active{{else}}btn-apagado{{/ifEquals}}"
+      onclick="updateTicketStatus('Completado')">Completado</button>
+    <button
+      class="btn-status btn-cancelado {{#ifEquals ticket.status 'Cancelado'}}active{{else}}btn-apagado{{/ifEquals}}"
+      onclick="updateTicketStatus('Cancelado')">Cancelado</button>
+  </div>
+  <div style="margin-top: 30px;">
+    <button id="toggleReplyBtn" class="btn-primary">Responder</button>
+
+    <div id="replyForm" style="display: none; margin-top: 15px;">
+      <textarea id="replyMessage" rows="5"
+        style="width: 100%; padding: 10px; border-radius: 5px; border: 1px solid #ccc;"
+        placeholder="Escribe tu respuesta aquí..."></textarea>
+      <button class="btn-secondary" style="margin-top: 10px;" onclick="sendReply()">Enviar</button>
+    </div>
   </div>
 </div>
 
+
 <script>
+  const toggleBtn = document.getElementById('toggleReplyBtn');
+  const replyForm = document.getElementById('replyForm');
+
+  toggleBtn.addEventListener('click', () => {
+    replyForm.style.display = replyForm.style.display === 'none' ? 'block' : 'none';
+  });
+
+  function sendReply() {
+    const message = document.getElementById('replyMessage').value;
+    const email = "{{ticket.purchaser.email}}"; // El destinatario
+
+    if (!message.trim()) {
+      alert("El mensaje no puede estar vacío.");
+      return;
+    }
+
+    fetch('/api/mail/send-reply', { // Ajusta esta ruta según tu servicio de mailing
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        to: email,
+        subject: 'Respuesta a tu ticket',
+        message: message
+      })
+    })
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) {
+          alert('Respuesta enviada con éxito');
+          document.getElementById('replyMessage').value = '';
+          replyForm.style.display = 'none';
+        } else {
+          alert('Error al enviar el mensaje');
+        }
+      })
+      .catch(err => {
+        console.error('Error al enviar:', err);
+        alert('Error al enviar el mensaje');
+      });
+  }
+
   function updateTicketStatus(status) {
     const ticketId = "{{ticket._id}}"; // Obtener el ID del ticket
     fetch(`/admin/tickets/details/updateStatus`, {

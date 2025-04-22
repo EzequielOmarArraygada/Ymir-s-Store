@@ -40,7 +40,8 @@ const {
 const {
     updateMessageStatus,
     getMessageDetails,
-    getMessages
+    getMessages,
+    sendReply
 } = new MessageController
 
 const {
@@ -82,6 +83,7 @@ DashboardRouter.get('/messages/details/:mid', passportCall('login', 'admin'), is
 
 DashboardRouter.post('/messages/details/updateMessageStatus', passportCall('login', 'admin'), isAdmin, updateMessageStatus);
 
+DashboardRouter.post('/messages/send-reply', passportCall('login', 'admin'), isAdmin, sendReply);
 
 export default DashboardRouter;    
 

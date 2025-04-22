@@ -185,6 +185,29 @@
 .btn-back:active {
   transform: translateY(0); /* Regresar a la posición normal al hacer clic */
 }
+.btn-responder {
+  background-color: #8B5B29; /* marrón medieval elegante */
+  color: #fff;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.2s;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  margin-top: 8px;
+  justify-self: center;
+}
+
+.btn-responder:hover {
+  background-color: #5B1F0F; /* tono más oscuro al pasar el mouse */
+  transform: translateY(-2px);
+}
+
+.btn-responder:active {
+  transform: translateY(0);
+}
+
 </style>
 
 <div class="navbarDash">
@@ -220,27 +243,118 @@
   <button class="btn-status btn-spam {{#ifEquals message.status 'Spam'}}active{{else}}btn-apagado{{/ifEquals}}" onclick="updateMessageStatus('Spam')">Spam</button>
   <button class="btn-status btn-contestado {{#ifEquals message.status 'Contestado'}}active{{else}}btn-apagado{{/ifEquals}}" onclick="updateMessageStatus('Contestado')">Contestado</button>
   </div>
+  <div class="reply-toggle-container">
+  <button id="toggleReplyBtn" class="btn-responder" onclick="toggleReply()">Responder</button>
+  
+  <div id="replyForm" style="display: none; margin-top: 20px;">
+    <textarea id="replyMessage" placeholder="Escribe tu respuesta..." rows="5" style="width: 100%; padding: 10px; border-radius: 5px; border: 1px solid #ccc;"></textarea>
+    <button class="btn-primary" style="margin-top: 10px;" onclick="sendReply()">Enviar respuesta</button>
+  </div>
 </div>
 
+</div>
+
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
-  function updateMessageStatus(status) {
-    const messageId = "{{message._id}}"; // Obtener el ID del message
-    fetch(`/admin/messages/details/updateMessageStatus`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ mid: messageId, status: status }),
-    })
-      .then(response => response.json())
-      .then(data => {
-        if (data.success) {
-          alert('Estado actualizado con éxito');
-          location.reload(); // Recargar la página para ver el estado actualizado
-        } else {
-          alert('Hubo un error al actualizar el estado');
-        }
-      })
-      .catch(error => console.error('Error:', error));
+  function toggleReply() {
+    const form = document.getElementById("replyForm");
+    form.style.display = form.style.display === "none" ? "block" : "none";
   }
+
+  function sendReply() {
+  const message = document.getElementById("replyMessage").value.trim();
+  if (!message) {
+    Swal.fire({
+      icon: 'warning',
+      title: 'Mensaje vacío',
+      text: 'Por favor, escribe una respuesta antes de enviar.',
+      confirmButtonColor: '#8B5B29',
+    });
+    return;
+  }
+
+  const email = "{{message.client_email}}";
+  const name = "{{message.client_name}}";
+
+  fetch("/admin/messages/send-reply", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({ to: email, name: name, message: message })
+  })
+  .then(res => res.json())
+  .then(data => {
+    if (data.success) {
+      Swal.fire({
+        icon: 'success',
+        title: 'Correo enviado',
+        text: 'La respuesta fue enviada con éxito.',
+        confirmButtonColor: '#8B5B29',
+      });
+      document.getElementById("replyForm").style.display = "none";
+      document.getElementById("replyMessage").value = "";
+      updateMessageStatus("Contestado");
+    } else {
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: 'No se pudo enviar el correo.',
+        confirmButtonColor: '#8B5B29',
+      });
+    }
+  })
+  .catch(err => {
+    console.error("Error:", err);
+    Swal.fire({
+      icon: 'error',
+      title: 'Oops...',
+      text: 'Hubo un problema al enviar el correo.',
+      confirmButtonColor: '#8B5B29',
+    });
+  });
+}
+
+  
+  function updateMessageStatus(status) {
+  const messageId = "{{message._id}}";
+
+  fetch(`/admin/messages/details/updateMessageStatus`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ mid: messageId, status: status }),
+  })
+    .then(response => response.json())
+    .then(data => {
+      if (data.success) {
+        Swal.fire({
+          icon: 'success',
+          title: 'Estado actualizado',
+          text: `El estado se cambió a "${status}" correctamente.`,
+          confirmButtonColor: '#8B5B29',
+        }).then(() => {
+          location.reload();
+        });
+      } else {
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'No se pudo actualizar el estado.',
+          confirmButtonColor: '#8B5B29',
+        });
+      }
+    })
+    .catch(error => {
+      console.error('Error:', error);
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: 'Hubo un error inesperado.',
+        confirmButtonColor: '#8B5B29',
+      });
+    });
+}
 </script>

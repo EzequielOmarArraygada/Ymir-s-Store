@@ -1,6 +1,7 @@
 import messageModel from '../dao/models/message.model.js'
 import { MessageManagerMongo } from '../dao/services/managers/MessageManagerMongo.js'
 import { UserManagerMongo } from '../dao/services/managers/UserManagerMongo.js'
+import { sendEmail } from '../services/mailing.js'
 
 
 export class MessageController {
@@ -91,5 +92,21 @@ export class MessageController {
         res.status(500).json({ success: false, message: 'Error al actualizar el estado del ticket' });
       }
     };
+
+    sendReply = async (req, res) => {
+      const { to, name, message } = req.body;
+      try {
+        await sendEmail({
+          to,
+          subject: `Respuesta a tu mensaje - Ymir`,
+          html: `<p>Hola ${name},</p><p>${message}</p><p>Saludos cordiales,<br>Equipo de Ymir</p>`
+        });
+    
+        res.json({ success: true });
+      } catch (error) {
+        console.error('Error al enviar el correo:', error);
+        res.status(500).json({ success: false });
+      }
+    }
 
     }
