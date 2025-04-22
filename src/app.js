@@ -122,7 +122,7 @@ app.use(session({
     mongoUrl: mongooseUrl,
     ttl: 60 * 60
   }),
-  secret: '12345679',
+  secret: process.env.JWT_SECRET,
   resave: false,
   saveUninitialized: false
 }));
