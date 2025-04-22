@@ -66,10 +66,11 @@ export class MessageController {
         }
       };
 
-    getMessageDetails = async (req, res) => {
+      getMessageDetails = async (req, res) => {
         try {
             let { mid } = req.params;
             let message = await this.messageService.getMessage(mid);
+            await this.messageService.updateMessageStatus(mid, "Visto");
             res.render('adminMessagesDetails', { message });
         } catch (error) {
             console.error(error);

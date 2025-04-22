@@ -246,7 +246,7 @@
     window.location.href = `/admin/messages/details/${messageId}`;
   }
 
-  function togglePaymentInfo(messageId) {
+  function toggleResponse(messageId) {
     const paymentInfo = document.getElementById('payment-info-' + messageId);
     const arrow = document.querySelector(`#toggle-btn-${messageId} .arrow`);
     if (paymentInfo.style.display === 'none' || paymentInfo.style.display === '') {
@@ -297,7 +297,7 @@
     </div>
 
     {{#if this.paymentInf}} <!-- Verifica si hay datos de pago -->
-  <button id="toggle-btn-{{this._id}}" class="toggle-payment-info" onclick="togglePaymentInfo('{{this._id}}')">
+  <button id="toggle-btn-{{this._id}}" class="toggle-payment-info" onclick="toggleResponse('{{this._id}}')">
     <span class="arrow">&#9660;</span> Ver Datos de Pago
   </button>
   <div class="payment-info" id="payment-info-{{this._id}}" style="display: none;">
