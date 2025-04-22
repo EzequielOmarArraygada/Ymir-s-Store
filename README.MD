@@ -1,95 +1,141 @@
-YmirShop
+# Ymir's Store API
 
-YmirShop es una aplicación web de comercio electrónico desarrollada con una arquitectura Full Stack,
-que ofrece una experiencia completa de navegación de productos y compras para los usuarios. La tienda 
-está diseñada para que los usuarios puedan explorar productos sin necesidad de iniciar sesión, aunque 
-es necesario estar registrado para realizar compras.
+**ESPAÑOL / ENGLISH**
 
-Características del Proyecto
+---
 
-Navegación de Productos: Los usuarios pueden explorar y buscar productos disponibles en la tienda sin 
-necesidad de autenticarse.
+## 🌐 Introducción / Introduction
 
-Autenticación y Autorización: Se utiliza Passport.js para la gestión de usuarios, que permite registro 
-e inicio de sesión con seguridad.
+**ES:** Ymir's Store API es el backend de una tienda de comercio electrónico especializada en productos medievales y de fantasía. Está desplegada y funcionando en producción en: **[ymir.up.railway.app](https://ymir.up.railway.app)**. Esta API demuestra el uso combinado de múltiples tecnologías modernas del ecosistema JavaScript, manejo de lógica de negocio, estructuración profesional de proyectos y experiencia real en desarrollo full stack.
 
-Carrito de Compras: Los usuarios autenticados pueden agregar productos al carrito, visualizar el total 
-y proceder con la compra.
+**EN:** Ymir's Store API is the backend of an e-commerce store focused on medieval and fantasy products. It is deployed and running in production at: **[ymir.up.railway.app](https://ymir.up.railway.app)**. This API showcases the combined use of modern JavaScript ecosystem technologies, business logic handling, professional project structuring, and real-world full stack development experience.
 
-Gestión de Sesiones:
+---
 
-Los usuarios autenticados tienen acceso a un menú donde pueden cerrar sesión.
-Si no han iniciado sesión, se les solicitará autenticarse antes de realizar una compra.
-Dashboard de Administración: El cliente tiene acceso a un panel de administración en la ruta /admin, 
-desde donde puede gestionar los productos, usuarios y pedidos de la tienda en un solo lugar.
+## 🚀 Tecnologías Utilizadas / Technologies Used
 
-Productos: Añadir, editar o eliminar productos.
-Usuarios: Control de usuarios registrados.
-Pedidos: Visualización y gestión de los pedidos realizados por los usuarios.
-Integración de Mock y Test: Uso de Faker.js para la generación de datos simulados en las pruebas, y 
-tests automatizados utilizando las librerías adecuadas para asegurar la calidad del código.
+- **Node.js + Express.js** – Backend robusto y modular / Robust and modular backend
+- **MongoDB + Mongoose** – Base de datos NoSQL / NoSQL database
+- **Passport.js** – Autenticación local y con GitHub / Local and GitHub authentication
+- **JWT** – Gestión segura de sesiones / Secure session handling
+- **Socket.io** – Comunicación en tiempo real / Real-time communication
+- **MercadoPago SDK** – Integración completa de pagos / Full payment integration
+- **Nodemailer** – Envío de correos electrónicos (recuperación, compra, etc.) / Email services (recovery, purchases, etc.)
+- **Handlebars** – Plantillas de emails personalizadas / Custom email templates
+- **Swagger** – Documentación de la API / API documentation
+- **Winston** – Registro de logs avanzados / Advanced logging system
 
-Tecnologías Utilizadas
+---
 
-Backend:
+## 🔍 Características Principales / Key Features
 
-Node.js con Express como framework principal.
-Passport.js para la autenticación y autorización.
-Uso de Handlebars para la generación de vistas del lado del servidor.
-Integración de Swagger para la documentación de API.
+- Autenticación de usuarios (local y GitHub)
+- Registro y login con validaciones personalizadas
+- CRUD de productos con control de permisos (usuarios y admins)
+- Gestión avanzada de carritos y órdenes de compra
+- Pasarela de pagos integrada con MercadoPago (incluyendo webhooks y validaciones)
+- Generación de tickets y actualización automática del stock
+- Sistema de mensajería en tiempo real con WebSockets
+- Envío de correos HTML estilizados ante distintas acciones del usuario
+- Logging con diferentes niveles y archivos de salida
+- Documentación dinámica y navegable con Swagger
+- Arquitectura escalable basada en capas (routers, controllers, services, DAO)
 
-Frontend:
+---
 
-HTML y CSS para el diseño de las vistas.
-JavaScript para la interacción dinámica y validaciones.
-Handlebars para la renderización dinámica de las páginas.
-Base de Datos: MongoDB para la persistencia de datos.
+## 📂 Estructura Profesional del Proyecto / Professional Project Structure
 
-Testing: Pruebas unitarias y de integración usando Mocha y Chai.
+```
+src/
+├── app.js
+├── config/              # Configuración general / App config
+├── controllers/         # Controladores HTTP / HTTP controllers
+├── dao/                 # Capa de acceso a datos / Data Access Layer
+├── middlewares/         # Middlewares personalizados / Custom middlewares
+├── models/              # Modelos de Mongoose / Mongoose models
+├── routes/              # Rutas del servidor / API routes
+├── services/            # Lógica de negocio / Business logic
+├── utils/               # Utilidades generales / General utilities
+├── views/               # Templates de correos electrónicos / Email templates
+├── logs/                # Archivos de logs / Log files
+```
 
-Estructura del Proyecto
+---
 
+## 📄 Endpoints Destacados / Featured Endpoints
 
-YmirShop-main/
-├── src/
-│   ├── config/                  # Configuraciones (Passport, logger, Swagger)
-│   ├── controllers/             # Controladores (productos, carritos, sesiones, etc.)
-│   ├── dao/                     # DAO (acceso a datos)
-│   ├── public/                  # Archivos estáticos (imágenes, CSS, JS)
-│   ├── views/                   # Vistas (Handlebars)
-│   ├── app.js                   # Archivo principal de la aplicación
-├── test/                        # Tests
-├── uploads/                     # Almacenamiento de archivos (documentos y fotos)
-├── package.json                 # Dependencias del proyecto
-├── .gitignore                   # Archivos ignorados por git
+**ES:** A continuación, algunos de los endpoints clave que ilustran el uso de la API. Para ver toda la documentación técnica, visitar `/api/docs`.
 
-Instalación y Configuración
+**EN:** Below are some key endpoints showcasing the API's functionality. For full technical documentation, visit `/api/docs`.
 
-Clona el repositorio:
+### Productos / Products
+- `GET /api/products` — Lista todos los productos / Lists all products
+- `GET /api/products/:pid` — Producto por ID / Product by ID
+- `POST /api/products` — Crear nuevo producto (solo admins) / Create product (admins only)
 
-git clone https://github.com/EzequielOmarArraygada/YmirShop.git
-Instala las dependencias:
+### Carrito de Compras / Shopping Cart
+- `POST /api/carts` — Crear nuevo carrito / Create new cart
+- `PUT /api/carts/:cid` — Actualizar contenido del carrito / Update cart content
+- `POST /api/carts/:cid/purchase` — Iniciar compra vía MercadoPago / Start purchase via MercadoPago
 
-npm install
-Configura las variables de entorno en un archivo .env (ejemplo proporcionado en .env.example).
+### Sesiones / Sessions
+- `POST /api/sessions/login` — Iniciar sesión / Login
+- `POST /api/sessions/register` — Registro de usuario / Register
+- `GET /api/sessions/github` — Login con GitHub / GitHub login
 
-Inicia la aplicación:
+---
 
-npm start
-Pruebas
-Puedes ejecutar las pruebas unitarias e integrales con el siguiente comando:
+## 🛡️ Seguridad y Manejo de Sesiones / Security & Session Handling
 
-npm test
-Contribución
-Si deseas contribuir a este proyecto, sigue los siguientes pasos:
+**ES:** Autenticación basada en JWT para sesiones locales. GitHub OAuth integrado. Protección de rutas por rol (usuario o administrador).
 
-Haz un fork del repositorio.
-Crea una nueva rama (git checkout -b feature/nueva-funcionalidad).
-Realiza los cambios necesarios y haz commit (git commit -m 'Agrega nueva funcionalidad').
-Sube los cambios a tu repositorio (git push origin feature/nueva-funcionalidad).
-Abre un Pull Request.
+**EN:** JWT-based authentication for local sessions. GitHub OAuth integrated. Role-based route protection (user or admin).
 
-Contacto
+---
 
-Si tienes alguna pregunta o sugerencia, no dudes en contactarme en tr.ezequiel@gmail.com o a través de mi https://www.linkedin.com/in/ezequiel-arraygada.
+## 📨 Emails Automatizados / Automated Emails
 
+**ES:** Correos enviados en eventos clave: registro, recuperación de contraseña, confirmación de compra, cambios de estado del pedido. Estilizados con Handlebars.
+
+**EN:** Emails sent on key events: registration, password recovery, purchase confirmation, order status updates. Styled with Handlebars.
+
+---
+
+## 🔧 Logging Avanzado / Advanced Logging
+
+**ES:** Sistema de logging con Winston. Guarda logs de errores y logs combinados por niveles de severidad.
+
+**EN:** Logging system using Winston. Saves error logs and combined logs by severity level.
+
+---
+
+## 📚 Documentación con Swagger / Swagger Documentation
+
+**Disponible en:** `/api/docs`
+**Available at:** `/api/docs`
+
+---
+
+## 📈 Para Empleadores y Clientes / For Employers and Clients
+
+**ES:** Este proyecto demuestra:
+- Capacidad de estructurar proyectos Node.js 
+- Dominio de APIs RESTful con control de acceso y validación
+- Integración con servicios externos como MercadoPago y Nodemailer
+- Habilidades de debugging y logging con buenas prácticas
+- Capacidad para desplegar en producción y manejar entornos complejos
+
+**EN:** This project demonstrates:
+- Ability to structure Node.js projects
+- Mastery of RESTful APIs with access control and validation
+- Integration with external services such as MercadoPago and Nodemailer
+- Debugging and logging skills following best practices
+- Production deployment and management of complex environments
+
+---
+
+### 🌟 Creado con pasión por Ezequiel Arraygada / Created with passion by Ezequiel Arraygada
+
+> Un alma medieval en un mundo digital / A medieval soul in a digital world
+
+🌍 API en producción: **https://ymir.up.railway.app**
