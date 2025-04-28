@@ -191,8 +191,15 @@ const environment = async () => {
 app.use(errorHandler);
 
 cron.schedule('0 0 * * *', async () => {
-  console.log("🕐 Ejecutando revisión automática de tickets vencidos...");
-  await TicketController.cancelarTicketsVencidos();
+  try {
+    const ticketControllerInstance = new TicketController();
+
+    await ticketControllerInstance.cancelarTicketsVencidos(); 
+    console.log("✅ Revisión automática de tickets vencidos completada.");
+
+  } catch (error) {
+    console.error("❌ Error durante la revisión automática de tickets vencidos:", error);
+  }
 });
 
 environment();
