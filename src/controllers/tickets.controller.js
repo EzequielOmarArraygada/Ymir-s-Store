@@ -2,7 +2,7 @@ import Ticket from '../dao/models/ticket.model.js';
 import { TicketManagerMongo } from '../dao/services/managers/TicketManagerMongo.js'
 import { UserManagerMongo } from '../dao/services/managers/UserManagerMongo.js';
 import {formatDate} from '../utils/utils.js'
-
+import { sendCompraCancelada } from '../services/mailing.js'
 
 
 export class TicketController {
