@@ -1,5 +1,6 @@
 import Ticket from '../dao/models/ticket.model.js';
 import { TicketManagerMongo } from '../dao/services/managers/TicketManagerMongo.js'
+import { UserManagerMongo } from '../dao/services/managers/UserManagerMongo.js';
 import {formatDate} from '../utils/utils.js'
 
 
@@ -7,6 +8,7 @@ import {formatDate} from '../utils/utils.js'
 export class TicketController {
     constructor(){
         this.ticketsService = new TicketManagerMongo();
+        this.usersService = new UserManagerMongo();
     }
 
     getTickets = async (req, res) => {
@@ -69,7 +71,7 @@ export class TicketController {
             ticket.status = "Cancelado";
             await ticket.save();
     
-            const user = await this.userService.findById(ticket.purchaser);
+            const user = await this.usersService.findById(ticket.purchaser);
             await sendCompraCancelada(user.email, ticket);
         }
     
